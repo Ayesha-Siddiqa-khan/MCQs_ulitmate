@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from app.api.routes import auth as auth_routes
 from app.api.routes import dashboard, materials, mistakes, question_sets, quiz_attempts
 from app.api.routes import settings as settings_routes
 from app.core.config import get_settings
@@ -46,6 +47,7 @@ def create_app() -> FastAPI:
     async def root() -> dict[str, str]:
         return {"name": "MCQ Mentor API", "docs": "/docs"}
 
+    app.include_router(auth_routes.router)
     app.include_router(settings_routes.router)
     app.include_router(materials.router)
     app.include_router(question_sets.router)

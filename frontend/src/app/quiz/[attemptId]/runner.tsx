@@ -22,7 +22,10 @@ export function QuizRunner({ attemptId, questions }: { attemptId: string; questi
 
   const current = questions[index];
   const total = questions.length;
-  const progress = useMemo(() => Math.round(((index + 1) / total) * 100), [index, total]);
+  const progress = useMemo(
+    () => (total > 0 ? Math.round(((index + 1) / total) * 100) : 0),
+    [index, total],
+  );
 
   function setAnswer(qid: string, val: string) {
     setAnswers((prev) => ({ ...prev, [qid]: val }));
@@ -44,15 +47,25 @@ export function QuizRunner({ attemptId, questions }: { attemptId: string; questi
           json: {
             answers: questions.map((q) => ({
               question_id: q.id,
-              user_answer: answers[q.id] ?? null,
+              selected_answer: answers[q.id] ?? null,
             })),
           },
         });
-        router.push(`/results/${r.attempt.id}`);
+        router.push(`/results/${r.attempt_id}`);
       } catch (e) {
         setError((e as Error).message);
       }
     });
+  }
+
+  if (!current) {
+    return (
+      <Card>
+        <CardContent className="pt-6 text-sm text-muted-foreground">
+          This quiz has no questions.
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -69,13 +82,13 @@ export function QuizRunner({ attemptId, questions }: { attemptId: string; questi
 
       <Card>
         <CardContent className="pt-6 space-y-4">
-          <p className="text-lg font-medium">{current.prompt}</p>
-          {current.options_json ? (
+          <p className="text-lg font-medium">{current.question_text}</p>
+          {current.options.length > 0 ? (
             <RadioGroup
               value={answers[current.id] ?? ""}
               onValueChange={(v) => setAnswer(current.id, v)}
             >
-              {current.options_json.map((o) => (
+              {current.options.map((o) => (
                 <div key={o.key} className="flex items-start gap-3 p-2 rounded hover:bg-muted">
                   <RadioGroupItem id={`${current.id}-${o.key}`} value={o.key} />
                   <Label htmlFor={`${current.id}-${o.key}`} className="font-normal cursor-pointer">

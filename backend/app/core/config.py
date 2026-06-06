@@ -38,7 +38,10 @@ class Settings(BaseSettings):
     supabase_url: str = Field(default="", validation_alias="SUPABASE_URL")
     supabase_anon_key: str = Field(default="", validation_alias="SUPABASE_ANON_KEY")
     supabase_service_role_key: str = Field(default="", validation_alias="SUPABASE_SERVICE_ROLE_KEY")
+    # The Supabase project's JWT signing secret. Also accept a generic
+    # JWT_SECRET for documentation parity with the architecture spec.
     supabase_jwt_secret: str = Field(default="", validation_alias="SUPABASE_JWT_SECRET")
+    jwt_secret: str = Field(default="", validation_alias="JWT_SECRET")
     supabase_storage_bucket: str = Field(default="materials", validation_alias="SUPABASE_STORAGE_BUCKET")
 
     # ---- Server --------------------------------------------------------------
@@ -73,11 +76,17 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _fail_fast_on_missing_secrets(self) -> "Settings":
+        # Treat JWT_SECRET as an alias for SUPABASE_JWT_SECRET.
+        if self.jwt_secret and not self.supabase_jwt_secret:
+            self.supabase_jwt_secret = self.jwt_secret
+
         missing: list[str] = []
         if not self.supabase_url:
             missing.append("SUPABASE_URL")
-        if not self.supabase_jwt_secret:
-            missing.append("SUPABASE_JWT_SECRET")
+        # Note: Supabase Cloud issues ES256 JWTs; we verify them with the
+        # project's JWKS endpoint, so SUPABASE_JWT_SECRET is no longer
+        # strictly required for token validation.  It's only needed if the
+        # project ever falls back to legacy HS256 tokens.
         if not self.supabase_anon_key:
             missing.append("SUPABASE_ANON_KEY")
         if not self.supabase_service_role_key:

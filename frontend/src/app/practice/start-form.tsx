@@ -8,25 +8,36 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
-import { type PracticeSession, type QuestionSet } from "@/lib/types";
+import { type MistakeFilter, type StartPracticeResponse } from "@/lib/types";
 
 export function PracticeStartForm() {
   const router = useRouter();
   const [limit, setLimit] = useState(20);
+  const [onlyUnmastered, setOnlyUnmastered] = useState(true);
+  const [onlyRepeated, setOnlyRepeated] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   function onStart() {
     setError(null);
+    const filter: MistakeFilter = {
+      limit,
+      only_unmastered: onlyUnmastered,
+      only_repeated: onlyRepeated,
+      session_type: onlyRepeated
+        ? "mistakes_repeated"
+        : onlyUnmastered
+          ? "mistakes_unmastered"
+          : "mistakes_all",
+    };
     startTransition(async () => {
       try {
-        const sess = await api<PracticeSession>("/mistakes/practice", {
-          json: { limit },
+        const resp = await api<StartPracticeResponse>("/mistakes/practice-session", {
+          json: { filter },
         });
-        // Backend returns session with question_set_id; route to a generated set view.
-        // We synthesize a transient quiz-set page by looking up the set first.
-        const qs = await api<QuestionSet>(`/question-sets/${sess.question_set_id}`);
-        router.push(`/quiz-sets/${qs.id}`);
+        router.push(
+          `/quiz/${resp.quiz_attempt_id}?setId=${encodeURIComponent(resp.question_set_id)}`,
+        );
       } catch (e) {
         setError((e as Error).message);
       }
@@ -54,6 +65,26 @@ export function PracticeStartForm() {
             onChange={(e) => setLimit(Math.max(1, Math.min(50, Number(e.target.value) || 1)))}
             className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
           />
+        </div>
+        <div className="flex flex-wrap gap-4">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={onlyUnmastered}
+              onChange={(e) => setOnlyUnmastered(e.target.checked)}
+              className="h-4 w-4"
+            />
+            <span>Only unmastered</span>
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={onlyRepeated}
+              onChange={(e) => setOnlyRepeated(e.target.checked)}
+              className="h-4 w-4"
+            />
+            <span>Only repeated mistakes</span>
+          </label>
         </div>
         {error ? (
           <Alert variant="destructive">

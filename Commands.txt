@@ -3,3 +3,8 @@ cd "F:\Mobile apps projects\MCQs_ulitmate\backend"
 
 cd "F:\Mobile apps projects\MCQs_ulitmate\frontend"
 npm run dev
+
+# NOTE:
+#   backend\.env        = private secrets (Supabase service role, JWT secret, AI fallbacks, ...)
+#   frontend\.env.local = public NEXT_PUBLIC_* values only (Supabase URL, anon key, API base URL)
+#   Do NOT put service-role / AI / JWT / DB keys in frontend\.env.local.

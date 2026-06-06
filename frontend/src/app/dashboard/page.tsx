@@ -1,39 +1,37 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, Brain, ListChecks, Sparkles, Upload } from "lucide-react";
 
-import { AppNav } from "@/components/app-nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
-import { type DashboardSummary, type Mistake, type UserSettings } from "@/lib/types";
-
-function isApiError(e: unknown): boolean {
-  return e instanceof Error && "status" in e;
-}
+import {
+  type DashboardSummary,
+  type MistakeRecommendation,
+  type UserSettings,
+} from "@/lib/types";
 
 export default async function DashboardPage() {
-  const { user } = await requireUser();
+  const user = await requireUser();
 
   let summary: DashboardSummary | null = null;
   let settings: UserSettings | null = null;
-  let recommendations: Mistake[] | null = null;
+  let recommendations: MistakeRecommendation[] = [];
   let apiError: string | null = null;
 
   try {
     [summary, settings, recommendations] = await Promise.all([
       api<DashboardSummary>("/dashboard/summary"),
-      api<UserSettings>("/settings/me"),
-      api<Mistake[]>("/mistakes/recommendations", { query: { limit: 5 } }),
+      api<UserSettings>("/settings"),
+      api<MistakeRecommendation[]>("/mistakes/recommendations"),
     ]);
   } catch (err) {
-    if (isApiError(err)) {
-      apiError = (err as Error).message;
-    } else {
-      apiError = (err as Error).message;
-    }
+    apiError = (err as Error).message;
   }
+
+  const openMistakes = summary?.total_wrong_questions ?? 0;
+  const mastered = summary?.mastered_mistakes ?? 0;
 
   return (
     <main className="container mx-auto px-4 py-8 space-y-8">
@@ -74,37 +72,41 @@ export default async function DashboardPage() {
           </Card>
         ) : null}
 
+        {summary?.continue_practice_attempt_id ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="h-5 w-5" /> Continue your last quiz
+              </CardTitle>
+              <CardDescription>
+                You have an unfinished attempt. Pick up where you left off.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild>
+                <Link href={`/quiz/${summary.continue_practice_attempt_id}`}>
+                  Resume <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : null}
+
         <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Stat
-            label="Materials"
-            value={summary?.total_materials ?? 0}
-            icon={BookOpen}
-            href="/materials"
-          />
-          <Stat
-            label="Question sets"
-            value={summary?.total_question_sets ?? 0}
-            icon={ListChecks}
-            href="/materials"
-          />
-          <Stat
-            label="Quiz attempts"
-            value={summary?.total_attempts ?? 0}
+            label="Quizzes taken"
+            value={summary?.total_quizzes ?? 0}
             icon={Brain}
             href="/dashboard"
           />
           <Stat
-            label="Open mistakes"
-            value={
-              summary
-                ? (summary.mastery_breakdown?.new_mistake ?? 0) +
-                  (summary.mastery_breakdown?.needs_practice ?? 0) +
-                  (summary.mastery_breakdown?.improving ?? 0)
-                : 0
-            }
-            icon={Brain}
-            href="/mistakes"
+            label="Average score"
+            value={`${Math.round(summary?.average_score ?? 0)}%`}
+            icon={ListChecks}
+            href="/dashboard"
           />
+          <Stat label="Open mistakes" value={openMistakes} icon={Brain} href="/mistakes" />
+          <Stat label="Mastered" value={mastered} icon={BookOpen} href="/mistakes" />
         </section>
 
         <section className="grid md:grid-cols-2 gap-4">
@@ -145,31 +147,106 @@ export default async function DashboardPage() {
             <CardHeader>
               <CardTitle>Recommended practice</CardTitle>
               <CardDescription>
-                Top questions to revisit, ranked by mastery and recency.
+                Suggested practice sessions based on your open mistakes.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {!recommendations || recommendations.length === 0 ? (
+              {recommendations.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   No recommendations yet. Take a quiz first.
                 </p>
               ) : (
                 <ul className="space-y-3">
-                  {recommendations.map((m) => (
-                    <li key={m.id} className="flex items-start gap-3">
+                  {recommendations.slice(0, 5).map((r) => (
+                    <li key={r.label} className="flex items-start gap-3">
                       <Badge variant="secondary" className="shrink-0 mt-0.5">
-                        {m.status.replace(/_/g, " ")}
+                        {r.count}
                       </Badge>
-                      <p className="text-sm line-clamp-2">{m.question.prompt}</p>
+                      <div className="text-sm">
+                        <p className="font-medium">{r.label}</p>
+                        <p className="text-muted-foreground">{r.reason}</p>
+                      </div>
                     </li>
                   ))}
                 </ul>
               )}
-              {recommendations && recommendations.length > 0 ? (
+              {recommendations.length > 0 ? (
                 <Button asChild className="mt-4 w-full">
                   <Link href="/practice">Start practice session</Link>
                 </Button>
               ) : null}
+            </CardContent>
+          </Card>
+        </section>
+
+        {summary && summary.weak_topics.length > 0 ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Weak topics</CardTitle>
+              <CardDescription>Topics you keep getting wrong.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {summary.weak_topics.map((t) => (
+                  <Badge key={t} variant="outline">
+                    {t}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
+
+        <section className="grid md:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent uploads</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {summary?.recent_uploads?.length ? (
+                summary.recent_uploads.map((m) => (
+                  <Link
+                    key={m.id}
+                    href={`/materials/${m.id}`}
+                    className="flex items-center justify-between rounded border p-3 hover:border-foreground/30"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{m.title}</p>
+                      <p className="text-xs text-muted-foreground uppercase">{m.file_type}</p>
+                    </div>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  </Link>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No materials yet.</p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent attempts</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {summary?.recent_attempts?.length ? (
+                summary.recent_attempts.map((a) => (
+                  <Link
+                    key={a.id}
+                    href={`/results/${a.id}`}
+                    className="flex items-center justify-between rounded border p-3 hover:border-foreground/30"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{a.title ?? "Untitled set"}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {a.score}/{a.total_questions} · {Math.round(a.percentage)}%
+                      </p>
+                    </div>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  </Link>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No attempts yet.</p>
+              )}
             </CardContent>
           </Card>
         </section>
@@ -184,7 +261,7 @@ function Stat({
   href,
 }: {
   label: string;
-  value: number;
+  value: number | string;
   icon: React.ComponentType<{ className?: string }>;
   href: string;
 }) {

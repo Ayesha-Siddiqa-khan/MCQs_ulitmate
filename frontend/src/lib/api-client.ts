@@ -1,15 +1,10 @@
-import { createClient } from "@/lib/supabase/client";
+// Browser-side API client. Uses credentials: "include" so the
+// backend's HttpOnly session cookie is sent on every request.
+
 import { ApiCallError, buildUrl, parseErrorBody, type ApiOptions } from "@/lib/api-shared";
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  const supabase = createClient();
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 export async function api<T = unknown>(path: string, opts: ApiOptions = {}): Promise<T> {
-  const headers: Record<string, string> = { ...(await getAuthHeaders()) };
+  const headers: Record<string, string> = { Accept: "application/json" };
   let body: BodyInit | undefined;
   if (opts.json !== undefined) {
     headers["Content-Type"] = "application/json";
@@ -23,6 +18,7 @@ export async function api<T = unknown>(path: string, opts: ApiOptions = {}): Pro
     headers,
     body,
     signal: opts.signal,
+    credentials: "include",
     cache: "no-store",
   });
 
@@ -34,11 +30,10 @@ export async function api<T = unknown>(path: string, opts: ApiOptions = {}): Pro
 }
 
 export async function apiUpload<T = unknown>(path: string, form: FormData): Promise<T> {
-  const headers = await getAuthHeaders();
   const res = await fetch(buildUrl(path), {
     method: "POST",
-    headers,
     body: form,
+    credentials: "include",
     cache: "no-store",
   });
   if (!res.ok) {

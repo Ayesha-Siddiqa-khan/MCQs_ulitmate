@@ -24,29 +24,50 @@ You can use the Supabase MCP server after adding it to `~/.config/opencode/openc
 - `supabase/migrations/0001_initial_schema.sql` — tables, enums, RLS
 - `supabase/migrations/0002_storage_bucket.sql` — `materials` bucket + storage RLS
 
-### 2. Backend
+### 2. Backend (private secrets only)
 ```sh
 cd backend
 uv sync
-cp .env.example .env       # then fill in Supabase URL, JWT secret, ENCRYPTION_KEY
+cp .env.example .env       # then fill in Supabase URL, anon key, service-role key, JWT secret
 uv run uvicorn app.main:app --reload --port 8000
 ```
-
 Healthcheck: `GET http://localhost:8000/healthz` → `{"status":"ok"}`.
 
-Required env:
+Required env (in `backend/.env`):
 - `SUPABASE_URL` — project URL
+- `SUPABASE_ANON_KEY` — public anon / publishable key (still RLS-protected)
+- `SUPABASE_SERVICE_ROLE_KEY` — **server-only**, bypasses RLS
 - `SUPABASE_JWT_SECRET` — used to verify incoming JWTs and as Fernet-key fallback
+- `ALLOWED_ORIGINS` (or legacy `BACKEND_CORS_ORIGINS`) — comma-separated frontend origins
 - `ENCRYPTION_KEY` — optional 32-byte url-safe base64 key. If absent, derived from `SUPABASE_JWT_SECRET`.
-- `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GOOGLE_API_KEY` — **not used**. Each student brings their own key, stored encrypted in their `user_settings.api_key_encrypted`.
+- `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GOOGLE_API_KEY` — **optional fallbacks**. Each student normally brings their own key, stored encrypted in their `user_settings.ai_api_key_encrypted`.
 
-### 3. Frontend
+### 3. Frontend (public values only)
 ```sh
 cd frontend
-cp .env.example .env.local
+cp .env.example .env.local   # only NEXT_PUBLIC_* values belong in this file
 npm run dev
 ```
 Opens on http://localhost:3000.
+
+> The frontend **never** holds service-role keys, AI provider keys, JWT
+> secrets, or database passwords. All privileged work (DB writes, AI calls,
+> file processing, mistake-bank updates, quiz generation) goes through the
+> FastAPI backend. The browser only ever sees `NEXT_PUBLIC_SUPABASE_URL`,
+> `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `NEXT_PUBLIC_API_BASE_URL`.
+
+## Environment variable architecture
+
+| File                          | Committed? | Audience                  | Contents                                                                |
+| ----------------------------- | ---------- | ------------------------- | ----------------------------------------------------------------------- |
+| `backend/.env`                | no         | FastAPI server only       | Supabase URL, anon key, service-role key, JWT secret, AI fallbacks, …   |
+| `backend/.env.example`        | yes        | repo / new contributors   | Placeholders for the variables above                                    |
+| `frontend/.env.local`         | no         | Next.js server + browser  | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_API_BASE_URL` |
+| `frontend/.env.example`       | yes        | repo / new contributors   | Placeholders for the three public values                                |
+| `.env.example` (repo root)    | yes        | repo / new contributors   | Combined reference; mirrors both files above                            |
+
+`.gitignore` ignores every `*.env` / `.env.*.local` / `backend/.env` /
+`frontend/.env.local` variant.
 
 ## What works in this slice
 

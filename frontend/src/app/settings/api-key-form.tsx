@@ -45,10 +45,15 @@ export function ApiKeyForm({ current }: { current: UserSettings | null }) {
   const [pending, startTransition] = useTransition();
   const [deleting, startDeleting] = useTransition();
 
+  const currentProvider: AIProvider =
+    current?.ai_provider && current.ai_provider !== "none"
+      ? (current.ai_provider as AIProvider)
+      : "openai";
+
   const form = useForm<Values>({
     resolver: zodResolver(schema),
     defaultValues: {
-      provider: (current?.preferred_provider as AIProvider) ?? "openai",
+      provider: currentProvider,
       api_key: "",
     },
   });
@@ -84,7 +89,7 @@ export function ApiKeyForm({ current }: { current: UserSettings | null }) {
         <Alert>
           <AlertTitle>Key on file</AlertTitle>
           <AlertDescription>
-            Provider: {current.preferred_provider ?? "unspecified"}. Encrypted at rest.{" "}
+            Provider: {current.ai_provider ?? "unspecified"}. Encrypted at rest.{" "}
             <Button
               type="button"
               variant="link"

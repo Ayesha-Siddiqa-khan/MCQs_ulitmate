@@ -4,7 +4,11 @@ import { revalidatePath } from "next/cache";
 
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
-import { type AIProvider, type UserSettings } from "@/lib/types";
+import {
+  type AIProvider,
+  type UpdateSettingsRequest,
+  type UserSettings,
+} from "@/lib/types";
 
 export type SettingsResult = { error?: string; ok?: boolean } | undefined;
 
@@ -19,10 +23,11 @@ export async function saveApiKeyAction(formData: FormData): Promise<SettingsResu
     return { error: "API key is required." };
   }
   try {
-    await api("/settings/me/api-key", {
-      method: "PUT",
-      json: { provider, api_key: apiKey },
-    });
+    const payload: UpdateSettingsRequest = {
+      ai_provider: provider,
+      ai_api_key: apiKey,
+    };
+    await api("/settings", { method: "PUT", json: payload });
     revalidatePath("/settings");
     return { ok: true };
   } catch (e) {
@@ -33,7 +38,8 @@ export async function saveApiKeyAction(formData: FormData): Promise<SettingsResu
 export async function deleteApiKeyAction(): Promise<SettingsResult> {
   await requireUser();
   try {
-    await api("/settings/me/api-key", { method: "DELETE" });
+    const payload: UpdateSettingsRequest = { clear_api_key: true };
+    await api("/settings", { method: "PUT", json: payload });
     revalidatePath("/settings");
     return { ok: true };
   } catch (e) {
@@ -43,7 +49,7 @@ export async function deleteApiKeyAction(): Promise<SettingsResult> {
 
 export async function fetchSettings(): Promise<UserSettings | null> {
   try {
-    return await api<UserSettings>("/settings/me");
+    return await api<UserSettings>("/settings");
   } catch {
     return null;
   }

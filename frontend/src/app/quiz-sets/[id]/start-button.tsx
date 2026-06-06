@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { type QuizAttempt } from "@/lib/types";
+import { type StartQuizResponse } from "@/lib/types";
 
 export function StartAttemptButton({ setId }: { setId: string }) {
   const router = useRouter();
@@ -17,10 +17,10 @@ export function StartAttemptButton({ setId }: { setId: string }) {
     setError(null);
     startTransition(async () => {
       try {
-        const a = await api<QuizAttempt>("/quiz-attempts", {
-          json: { question_set_id: setId },
+        const resp = await api<StartQuizResponse>("/quiz-attempts/start", {
+          json: { question_set_id: setId, mode: "practice" },
         });
-        router.push(`/quiz/${a.id}`);
+        router.push(`/quiz/${resp.attempt_id}?setId=${encodeURIComponent(setId)}`);
       } catch (e) {
         setError((e as Error).message);
       }

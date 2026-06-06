@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { BookOpen, Brain, ListChecks } from "lucide-react";
-
-import { createClient } from "@/lib/supabase/server";
-import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
+
+import { getCurrentUser } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 
 const features = [
   {
@@ -24,9 +24,8 @@ const features = [
 ];
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  if (data.user) redirect("/dashboard");
+  const user = await getCurrentUser();
+  if (user) redirect("/dashboard");
 
   return (
     <main className="container mx-auto px-4 py-16">

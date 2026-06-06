@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FileText, Type } from "lucide-react";
 
-import { apiUpload } from "@/lib/api-client";
+import { api, apiUpload } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,8 +31,10 @@ const fileSchema = z.object({
     .refine((f) => f.size <= 20 * 1024 * 1024, "Max 20 MB")
     .refine(
       (f) =>
-        ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
-          .includes(f.type),
+        [
+          "application/pdf",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ].includes(f.type),
       "Only PDF or DOCX",
     ),
 });
@@ -40,6 +42,9 @@ const fileSchema = z.object({
 const pasteSchema = z.object({
   title: z.string().min(1, "Title is required").max(200),
   content: z.string().min(20, "Paste at least 20 characters of text"),
+  subject: z.string().max(100).optional().or(z.literal("")),
+  chapter: z.string().max(100).optional().or(z.literal("")),
+  topic: z.string().max(100).optional().or(z.literal("")),
 });
 
 type FileValues = z.infer<typeof fileSchema>;
@@ -54,7 +59,7 @@ export function MaterialNewForm() {
   const fileForm = useForm<FileValues>({ resolver: zodResolver(fileSchema) });
   const pasteForm = useForm<PasteValues>({
     resolver: zodResolver(pasteSchema),
-    defaultValues: { title: "", content: "" },
+    defaultValues: { title: "", content: "", subject: "", chapter: "", topic: "" },
   });
 
   function onFileSubmit(values: FileValues) {
@@ -74,12 +79,18 @@ export function MaterialNewForm() {
 
   function onPasteSubmit(values: PasteValues) {
     setError(null);
-    const fd = new FormData();
-    fd.set("title", values.title);
-    fd.set("content", values.content);
+    const { title, content, subject, chapter, topic } = values;
     startTransition(async () => {
       try {
-        const m = await apiUpload<Material>("/materials/paste", fd);
+        const m = await api<Material>("/materials/paste-text", {
+          json: {
+            title,
+            text: content,
+            subject: subject || undefined,
+            chapter: chapter || undefined,
+            topic: topic || undefined,
+          },
+        });
         router.push(`/materials/${m.id}`);
       } catch (e) {
         setError((e as Error).message);
@@ -165,6 +176,47 @@ export function MaterialNewForm() {
                 </FormItem>
               )}
             />
+            <div className="grid sm:grid-cols-3 gap-3">
+              <FormField
+                control={pasteForm.control}
+                name="subject"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subject</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Math" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={pasteForm.control}
+                name="chapter"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Chapter</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ch. 5" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={pasteForm.control}
+                name="topic"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Topic</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Derivatives" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={pasteForm.control}
               name="content"

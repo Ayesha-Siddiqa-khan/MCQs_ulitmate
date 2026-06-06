@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
-import { type QuizResult } from "@/lib/types";
+import { type QuizResult, type TopicBreakdown } from "@/lib/types";
 
 export default async function ResultsPage({
   params,
@@ -36,9 +36,6 @@ export default async function ResultsPage({
   if (!result) notFound();
 
   const r = result;
-  const wrong = r.breakdown.filter((q) => q.answered && !q.is_correct).length;
-  const correct = r.breakdown.filter((q) => q.is_correct === true).length;
-  const unanswered = r.breakdown.filter((q) => !q.answered).length;
 
   return (
     <main className="container mx-auto px-4 py-8 max-w-3xl space-y-6">
@@ -46,11 +43,9 @@ export default async function ResultsPage({
           <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">
             ← Dashboard
           </Link>
-          <h1 className="text-3xl font-semibold tracking-tight mt-2">
-            {r.question_set_title}
-          </h1>
+          <h1 className="text-3xl font-semibold tracking-tight mt-2">Quiz results</h1>
           <p className="text-sm text-muted-foreground">
-            {r.attempt.total_questions} questions
+            {r.total_questions} questions · {r.time_spent_seconds}s
           </p>
         </div>
 
@@ -58,13 +53,13 @@ export default async function ResultsPage({
           <CardHeader>
             <CardTitle>Score</CardTitle>
             <CardDescription>
-              {correct} correct · {wrong} wrong · {unanswered} unanswered
+              {r.correct} correct · {r.incorrect} wrong · {r.unanswered} unanswered
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <Progress value={r.attempt.score_percent} />
-            <p className="text-2xl font-semibold">{r.attempt.score_percent.toFixed(0)}%</p>
-            {wrong > 0 ? (
+            <Progress value={r.percentage} />
+            <p className="text-2xl font-semibold">{Math.round(r.percentage)}%</p>
+            {r.incorrect > 0 ? (
               <Button asChild className="mt-2">
                 <Link href="/practice">Practice my mistakes</Link>
               </Button>
@@ -72,23 +67,37 @@ export default async function ResultsPage({
           </CardContent>
         </Card>
 
+        {r.topic_breakdown.length > 0 || r.difficulty_breakdown.length > 0 ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Breakdown</CardTitle>
+            </CardHeader>
+            <CardContent className="grid sm:grid-cols-2 gap-6">
+              {r.topic_breakdown.length > 0 ? (
+                <BreakdownSection title="By topic" items={r.topic_breakdown} />
+              ) : null}
+              {r.difficulty_breakdown.length > 0 ? (
+                <BreakdownSection title="By difficulty" items={r.difficulty_breakdown} />
+              ) : null}
+            </CardContent>
+          </Card>
+        ) : null}
+
         <Card>
           <CardHeader>
-            <CardTitle>Breakdown</CardTitle>
+            <CardTitle>Question-by-question</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {r.breakdown.map((q, i) => {
-              const isRight = q.is_correct === true;
+            {r.questions.map((qr, i) => {
+              const isRight = qr.is_correct === true;
+              const q = qr.question;
               return (
-                <div
-                  key={q.question_id}
-                  className="rounded border p-3 space-y-2"
-                >
+                <div key={q?.id ?? i} className="rounded border p-3 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <p className="font-medium">
-                      {i + 1}. {q.prompt}
+                      {i + 1}. {q?.question_text ?? "(question unavailable)"}
                     </p>
-                    {!q.answered ? (
+                    {qr.is_correct === null ? (
                       <Badge variant="outline">unanswered</Badge>
                     ) : isRight ? (
                       <Badge>correct</Badge>
@@ -96,10 +105,10 @@ export default async function ResultsPage({
                       <Badge variant="destructive">wrong</Badge>
                     )}
                   </div>
-                  {q.options_json ? (
+                  {q && q.options.length > 0 ? (
                     <ul className="text-sm space-y-1 pl-4 list-disc">
-                      {q.options_json.map((o) => {
-                        const isUser = q.user_answer === o.key;
+                      {q.options.map((o) => {
+                        const isUser = qr.selected_answer === o.key;
                         const isCorrect = q.correct_answer === o.key;
                         return (
                           <li
@@ -119,22 +128,19 @@ export default async function ResultsPage({
                         );
                       })}
                     </ul>
-                  ) : (
+                  ) : qr.selected_answer ? (
                     <div className="text-sm space-y-1">
                       <p>
                         <span className="text-muted-foreground">Your answer: </span>
-                        {q.user_answer || <em>unanswered</em>}
+                        {qr.selected_answer}
                       </p>
-                      {q.model_answer ? (
+                      {q?.explanation ? (
                         <p>
-                          <span className="text-muted-foreground">Model answer: </span>
-                          {q.model_answer}
+                          <span className="text-muted-foreground">Explanation: </span>
+                          {q.explanation}
                         </p>
                       ) : null}
                     </div>
-                  )}
-                  {q.explanation ? (
-                    <p className="text-sm text-muted-foreground">{q.explanation}</p>
                   ) : null}
                 </div>
               );
@@ -142,5 +148,35 @@ export default async function ResultsPage({
           </CardContent>
         </Card>
       </main>
+  );
+}
+
+function BreakdownSection({
+  title,
+  items,
+}: {
+  title: string;
+  items: TopicBreakdown[];
+}) {
+  return (
+    <div className="space-y-2">
+      <h3 className="text-sm font-semibold">{title}</h3>
+      <ul className="space-y-1.5">
+        {items.map((b) => {
+          const pct = b.total > 0 ? Math.round((b.correct / b.total) * 100) : 0;
+          return (
+            <li key={b.label} className="space-y-0.5">
+              <div className="flex items-center justify-between text-sm">
+                <span>{b.label}</span>
+                <span className="text-muted-foreground">
+                  {b.correct}/{b.total} · {pct}%
+                </span>
+              </div>
+              <Progress value={pct} className="h-1.5" />
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

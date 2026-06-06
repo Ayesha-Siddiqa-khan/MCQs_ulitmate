@@ -6,16 +6,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
-import { type Material } from "@/lib/types";
+import { type Material, type MaterialStatus } from "@/lib/types";
 
-const statusVariant: Record<
-  Material["status"],
-  "default" | "secondary" | "destructive" | "outline"
-> = {
-  pending: "outline",
-  extracting: "secondary",
-  ready: "default",
-  error: "destructive",
+const statusVariant: Record<MaterialStatus, "default" | "secondary" | "destructive" | "outline"> = {
+  uploaded: "secondary",
+  extracted: "default",
+  failed: "destructive",
+  manual: "outline",
 };
 
 export default async function MaterialsPage() {
@@ -76,12 +73,14 @@ export default async function MaterialsPage() {
                   <p className="font-medium leading-snug line-clamp-2">{m.title}</p>
                   <Badge variant={statusVariant[m.status]}>{m.status}</Badge>
                 </div>
-                <p className="text-xs text-muted-foreground uppercase">{m.source_type}</p>
-                <p className="text-xs text-muted-foreground">
-                  {m.char_count.toLocaleString()} chars
-                </p>
-                {m.status === "error" && m.error_message ? (
-                  <p className="text-xs text-destructive line-clamp-2">{m.error_message}</p>
+                <p className="text-xs text-muted-foreground uppercase">{m.file_type}</p>
+                {m.size_bytes ? (
+                  <p className="text-xs text-muted-foreground">
+                    {(m.size_bytes / 1024).toFixed(1)} KB
+                  </p>
+                ) : null}
+                {m.status === "failed" ? (
+                  <p className="text-xs text-destructive">Extraction failed</p>
                 ) : null}
               </Link>
             ))}

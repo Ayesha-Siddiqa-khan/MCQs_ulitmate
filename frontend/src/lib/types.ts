@@ -1,128 +1,239 @@
-export type QuestionType = "mcq" | "short";
+// Frontend types — mirror app/schemas/*.py on the backend. Keep them in sync.
 
-export interface MCQOption {
+export type Difficulty = "easy" | "medium" | "hard";
+
+export type AIProvider = "openai" | "anthropic" | "google";
+export type AIProviderOrNone = AIProvider | "none";
+
+export type MaterialFileType =
+  | "pdf"
+  | "txt"
+  | "md"
+  | "docx"
+  | "csv"
+  | "json"
+  | "pasted";
+
+export type MaterialStatus = "uploaded" | "extracted" | "failed" | "manual";
+
+export type QuestionSetMode = "extract_existing" | "generate_mcq" | "generate_short";
+
+export type QuestionSource = "extracted" | "ai_generated" | "manual";
+
+export type QuizMode = "practice" | "exam" | "mistakes";
+
+export type MasteryStatus = "new_mistake" | "needs_practice" | "improving" | "mastered";
+
+export interface Option {
   key: string;
   text: string;
+}
+
+export interface Material {
+  id: string;
+  title: string;
+  original_file_name: string | null;
+  file_type: MaterialFileType;
+  storage_path: string | null;
+  extracted_text: string | null;
+  subject: string | null;
+  chapter: string | null;
+  topic: string | null;
+  exam_type: string | null;
+  status: MaterialStatus;
+  size_bytes: number | null;
+  page_count: number | null;
+  notes: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface ExtractTextResponse {
+  material_id: string;
+  text: string;
+  page_count: number | null;
+  warning: string | null;
 }
 
 export interface Question {
   id: string;
   question_set_id: string;
+  material_id: string | null;
   position: number;
-  type: QuestionType;
-  prompt: string;
-  options_json: MCQOption[] | null;
+  question_text: string;
+  options: Option[];
   correct_answer: string | null;
-  model_answer: string | null;
   explanation: string | null;
+  key_points: string | null;
+  subject: string | null;
+  chapter: string | null;
   topic: string | null;
-  source_chunk: string | null;
-  created_at: string;
+  difficulty: Difficulty | null;
+  source_type: QuestionSource;
+  created_at: string | null;
+}
+
+export interface QuestionPublic {
+  id: string;
+  position: number;
+  question_text: string;
+  options: Option[];
 }
 
 export interface QuestionSet {
   id: string;
-  user_id: string;
-  learning_material_id: string | null;
+  material_id: string | null;
   title: string;
-  description: string | null;
-  question_type: QuestionType;
-  generation_mode: "extracted" | "ai" | "hybrid";
-  source_provider: string | null;
-  question_count: number;
-  created_at: string;
+  mode: QuestionSetMode;
+  total_questions: number;
+  difficulty: Difficulty | null;
+  subject: string | null;
+  chapter: string | null;
+  topic: string | null;
+  created_at: string | null;
 }
 
-export interface QuestionSetWithQuestions extends QuestionSet {
+export interface QuestionSetDetail extends QuestionSet {
   questions: Question[];
 }
 
-export type MasteryStatus = "new_mistake" | "needs_practice" | "improving" | "mastered";
-
-export interface Mistake {
-  id: string;
-  user_id: string;
-  question_id: string;
-  status: MasteryStatus;
-  wrong_attempts: number;
-  correct_after_wrong: number;
-  last_wrong_at: string;
-  last_correct_at: string | null;
-  updated_at: string;
-  question: Question;
-}
-
-export interface PracticeSession {
-  id: string;
-  user_id: string;
-  question_set_id: string;
-  created_at: string;
-}
-
-export type AttemptStatus = "in_progress" | "submitted" | "abandoned";
-
-export interface QuizAttempt {
-  id: string;
-  user_id: string;
-  question_set_id: string;
-  practice_session_id: string | null;
-  status: AttemptStatus;
-  started_at: string;
-  submitted_at: string | null;
-  total_questions: number;
-  correct_count: number;
-  score_percent: number;
-}
-
-export interface QuestionAttemptResult {
-  question_id: string;
-  position: number;
-  prompt: string;
-  user_answer: string | null;
-  correct_answer: string | null;
-  model_answer: string | null;
-  options_json: MCQOption[] | null;
-  is_correct: boolean | null;
-  answered: boolean;
-  explanation: string | null;
-}
-
-export interface QuizResult {
-  attempt: QuizAttempt;
-  breakdown: QuestionAttemptResult[];
-  question_set_title: string;
-}
-
-export interface Material {
-  id: string;
-  user_id: string;
-  title: string;
-  source_type: "pdf" | "docx" | "text" | "csv" | "json";
-  storage_path: string | null;
-  raw_text: string | null;
-  char_count: number;
-  status: "pending" | "extracting" | "ready" | "error";
-  error_message: string | null;
-  created_at: string;
-}
-
 export interface UserSettings {
-  user_id: string;
-  preferred_provider: "openai" | "anthropic" | "google" | null;
+  ai_provider: AIProviderOrNone;
+  ai_model: string | null;
   has_api_key: boolean;
-  updated_at: string;
+  default_difficulty: Difficulty;
+  questions_per_quiz: number;
+}
+
+export interface UpdateSettingsRequest {
+  ai_provider?: AIProviderOrNone | null;
+  ai_model?: string | null;
+  ai_api_key?: string | null;
+  default_difficulty?: Difficulty | null;
+  questions_per_quiz?: number | null;
+  clear_api_key?: boolean;
+}
+
+export interface RecentMaterial {
+  id: string;
+  title: string;
+  file_type: string;
+  created_at: string | null;
+}
+
+export interface RecentAttempt {
+  id: string;
+  question_set_id: string;
+  title: string | null;
+  score: number;
+  total_questions: number;
+  percentage: number;
+  submitted_at: string | null;
 }
 
 export interface DashboardSummary {
-  total_materials: number;
-  total_question_sets: number;
-  total_attempts: number;
-  total_mistakes: number;
-  mastery_breakdown: Record<MasteryStatus, number>;
-  recent_attempts: QuizAttempt[];
+  total_quizzes: number;
+  average_score: number;
+  accuracy_trend: number[];
+  total_wrong_questions: number;
+  mastered_mistakes: number;
+  weak_topics: string[];
+  recent_uploads: RecentMaterial[];
+  recent_attempts: RecentAttempt[];
+  continue_practice_attempt_id: string | null;
 }
 
-export type AIProvider = "openai" | "anthropic" | "google";
+export interface Mistake {
+  id: string;
+  question_id: string;
+  wrong_count: number;
+  correct_after_wrong_count: number;
+  mastery_status: MasteryStatus;
+  last_practiced_at: string | null;
+  created_at: string | null;
+  question: Question | null;
+}
+
+export interface MistakeFilter {
+  subject?: string | null;
+  chapter?: string | null;
+  topic?: string | null;
+  difficulty?: Difficulty | null;
+  only_unmastered?: boolean;
+  only_repeated?: boolean;
+  limit?: number;
+  session_type?:
+    | "mistakes_all"
+    | "mistakes_by_subject"
+    | "mistakes_by_chapter"
+    | "mistakes_by_difficulty"
+    | "mistakes_repeated"
+    | "mistakes_unmastered";
+}
+
+export interface MistakeRecommendation {
+  label: string;
+  reason: string;
+  count: number;
+  filter: MistakeFilter;
+}
+
+export interface StartPracticeResponse {
+  practice_session_id: string;
+  quiz_attempt_id: string;
+  question_set_id: string;
+  total_questions: number;
+}
+
+export interface StartQuizResponse {
+  attempt_id: string;
+  question_set_id: string;
+  mode: QuizMode;
+  started_at: string;
+  questions: QuestionPublic[];
+}
+
+export interface AnswerRequest {
+  question_id: string;
+  selected_answer: string | null;
+  is_marked?: boolean;
+  time_spent_seconds?: number;
+}
+
+export interface SubmitQuizRequest {
+  answers: AnswerRequest[];
+  time_spent_seconds?: number;
+}
+
+export interface QuestionResult {
+  question: Question;
+  selected_answer: string | null;
+  is_correct: boolean | null;
+  is_marked: boolean;
+  time_spent_seconds: number;
+}
+
+export interface TopicBreakdown {
+  label: string;
+  correct: number;
+  total: number;
+}
+
+export interface QuizResult {
+  attempt_id: string;
+  question_set_id: string;
+  score: number;
+  total_questions: number;
+  correct: number;
+  incorrect: number;
+  unanswered: number;
+  percentage: number;
+  time_spent_seconds: number;
+  submitted_at: string | null;
+  questions: QuestionResult[];
+  topic_breakdown: TopicBreakdown[];
+  difficulty_breakdown: TopicBreakdown[];
+}
 
 export interface ApiError {
   detail: string;

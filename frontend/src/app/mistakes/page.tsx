@@ -26,7 +26,7 @@ export default async function MistakesPage() {
 
   const counts = mistakes.reduce<Record<MasteryStatus, number>>(
     (acc, m) => {
-      acc[m.status] = (acc[m.status] ?? 0) + 1;
+      acc[m.mastery_status] = (acc[m.mastery_status] ?? 0) + 1;
       return acc;
     },
     { new_mistake: 0, needs_practice: 0, improving: 0, mastered: 0 },
@@ -80,13 +80,15 @@ export default async function MistakesPage() {
               {mistakes.map((m) => (
                 <div key={m.id} className="rounded border p-3 space-y-2">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="font-medium">{m.question.prompt}</p>
-                    <Badge variant={statusVariant[m.status]}>
-                      {m.status.replace(/_/g, " ")}
+                    <p className="font-medium">
+                      {m.question?.question_text ?? "(question unavailable)"}
+                    </p>
+                    <Badge variant={statusVariant[m.mastery_status]}>
+                      {m.mastery_status.replace(/_/g, " ")}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {m.wrong_attempts} wrong · {m.correct_after_wrong} correct after wrong
+                    {m.wrong_count} wrong · {m.correct_after_wrong_count} correct after wrong
                   </p>
                 </div>
               ))}

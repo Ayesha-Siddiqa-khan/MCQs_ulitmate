@@ -1,12 +1,12 @@
-"use client";
+// Server component shell of the top navigation. The user is fetched
+// from the FastAPI backend (no Supabase in the browser / frontend bundle).
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
 
-import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { signOutAction } from "@/app/actions/auth";
+import { getCurrentUser } from "@/lib/auth";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard" },
@@ -15,31 +15,8 @@ const navItems = [
   { href: "/settings", label: "Settings" },
 ];
 
-export function AppNav() {
-  const [user, setUser] = useState<User | null>(null);
-  const [pending, setPending] = useState(false);
-
-  useEffect(() => {
-    const supabase = createClient();
-    let active = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (active) setUser(data.user);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (active) setUser(session?.user ?? null);
-    });
-    return () => {
-      active = false;
-      sub.subscription.unsubscribe();
-    };
-  }, []);
-
-  async function signOut() {
-    setPending(true);
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    window.location.href = "/login";
-  }
+export async function AppNav() {
+  const user = await getCurrentUser();
 
   return (
     <header className="border-b">
@@ -65,9 +42,11 @@ export function AppNav() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           {user ? (
-            <Button variant="ghost" size="sm" onClick={signOut} disabled={pending}>
-              Sign out
-            </Button>
+            <form action={signOutAction}>
+              <Button type="submit" variant="ghost" size="sm">
+                Sign out
+              </Button>
+            </form>
           ) : (
             <>
               <Button asChild variant="ghost" size="sm">

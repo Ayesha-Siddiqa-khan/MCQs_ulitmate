@@ -15,10 +15,17 @@ FastAPI service that handles:
 ```bash
 cd backend
 uv sync --extra dev
-cp ../.env.example .env
-# fill SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_JWT_SECRET, ENCRYPTION_KEY
+cp .env.example .env
+# fill SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY,
+# SUPABASE_JWT_SECRET, ENCRYPTION_KEY (and AI fallbacks if you want them)
 uv run uvicorn app.main:app --reload --port 8000
 ```
+
+> `backend/.env` is loaded automatically. To point at a different file, set
+> `BACKEND_ENV_FILE=/abs/path/.env` in your shell.
+
+> `APP_ENV=production` triggers fail-fast startup if any Supabase secret is
+> missing. Leave it unset (or `=development`) while iterating locally.
 
 ## Layout
 

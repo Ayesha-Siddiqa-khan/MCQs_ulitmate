@@ -21,10 +21,14 @@ export default async function MaterialDetailPage({
   let sets: QuestionSet[] = [];
   let error: string | null = null;
   try {
-    [material, sets] = await Promise.all([
-      api<Material>(`/materials/${id}`),
-      api<QuestionSet[]>("/question-sets", { query: { material_id: id } }),
-    ]);
+    material = await api<Material>(`/materials/${id}`);
+    // Backend's GET /question-sets returns all of the user's sets; filter locally.
+    try {
+      const all = await api<QuestionSet[]>("/question-sets");
+      sets = (all ?? []).filter((s) => s.material_id === id);
+    } catch {
+      sets = [];
+    }
   } catch (e) {
     error = (e as Error).message;
   }
@@ -43,6 +47,8 @@ export default async function MaterialDetailPage({
   }
   if (!material) notFound();
 
+  const charCount = material.extracted_text?.length ?? 0;
+
   return (
     <main className="container mx-auto px-4 py-8 space-y-6">
         <div>
@@ -53,17 +59,18 @@ export default async function MaterialDetailPage({
             <div>
               <h1 className="text-3xl font-semibold tracking-tight">{material.title}</h1>
               <p className="text-sm text-muted-foreground">
-                {material.source_type.toUpperCase()} · {material.char_count.toLocaleString()} chars
+                {material.file_type.toUpperCase()} · {charCount.toLocaleString()} chars
+                {material.page_count ? ` · ${material.page_count} pages` : ""}
               </p>
             </div>
             <Badge>{material.status}</Badge>
           </div>
         </div>
 
-        {material.status === "error" && material.error_message ? (
+        {material.status === "failed" ? (
           <Card>
             <CardContent className="pt-6 text-sm text-destructive">
-              {material.error_message}
+              Text extraction failed for this file. Try re-uploading or use Re-extract below.
             </CardContent>
           </Card>
         ) : null}
@@ -78,13 +85,14 @@ export default async function MaterialDetailPage({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {material.raw_text ? (
+            {material.extracted_text ? (
               <pre className="max-h-96 overflow-auto rounded bg-muted p-4 text-xs whitespace-pre-wrap">
-                {material.raw_text}
+                {material.extracted_text}
               </pre>
             ) : (
               <p className="text-sm text-muted-foreground">
-                No text extracted yet. {material.status === "pending" ? "Still processing..." : ""}
+                No text extracted yet.
+                {material.status === "uploaded" ? " Click Re-extract above." : ""}
               </p>
             )}
           </CardContent>
@@ -107,8 +115,8 @@ export default async function MaterialDetailPage({
                   <div>
                     <p className="font-medium">{s.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      {s.question_count} questions · {s.generation_mode}
-                      {s.source_provider ? ` · ${s.source_provider}` : ""}
+                      {s.total_questions} questions · {s.mode.replace(/_/g, " ")}
+                      {s.difficulty ? ` · ${s.difficulty}` : ""}
                     </p>
                   </div>
                   <Button variant="outline" size="sm">

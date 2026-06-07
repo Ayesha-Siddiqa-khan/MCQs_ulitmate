@@ -125,3 +125,68 @@
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   }
 }
+
+:root {
+  --success: oklch(0.72 0.17 142);
+  --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.78 0.16 70);
+  --warning-foreground: oklch(0.205 0 0);
+  --info: oklch(0.7 0.15 235);
+  --info-foreground: oklch(0.985 0 0);
+  --orange: oklch(0.72 0.18 50);
+  --orange-foreground: oklch(0.205 0 0);
+  --purple: oklch(0.62 0.2 295);
+  --purple-foreground: oklch(0.985 0 0);
+  --yellow: oklch(0.83 0.18 95);
+  --yellow-foreground: oklch(0.205 0 0);
+}
+
+.dark {
+  --success: oklch(0.72 0.17 142);
+  --warning: oklch(0.78 0.16 70);
+  --info: oklch(0.7 0.15 235);
+  --orange: oklch(0.72 0.18 50);
+  --purple: oklch(0.7 0.18 295);
+  --yellow: oklch(0.83 0.18 95);
+}
+
+@keyframes mcq-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mcq-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-up {
+  animation: mcq-fade-up 0.4s ease-out both;
+}
+
+.animate-fade-in {
+  animation: mcq-fade-in 0.3s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-in {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}

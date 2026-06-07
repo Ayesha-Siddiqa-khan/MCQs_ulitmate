@@ -1,0 +1,415 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "MCQ Mentor" [ref=e5] [cursor=pointer]:
+          - /url: /dashboard
+        - navigation [ref=e6]:
+          - link "Dashboard" [ref=e7] [cursor=pointer]:
+            - /url: /dashboard
+          - link "Materials" [ref=e8] [cursor=pointer]:
+            - /url: /materials
+          - link "Mistakes" [ref=e9] [cursor=pointer]:
+            - /url: /mistakes
+          - link "Settings" [ref=e10] [cursor=pointer]:
+            - /url: /settings
+      - generic [ref=e11]:
+        - button "Toggle theme" [ref=e12]:
+          - img
+        - button "Sign out" [ref=e14]
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - link "← Materials" [ref=e18] [cursor=pointer]:
+        - /url: /materials
+      - 'heading "Ch6: Algebraic Manipulation" [level=1] [ref=e19]'
+      - paragraph [ref=e20]: 25 questions · extract existing
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - generic [ref=e23]: Ready to start?
+        - generic [ref=e24]: Your answers are graded when you submit. Wrong answers go to your mistake bank.
+      - generic [ref=e25]:
+        - button "Start quiz" [ref=e26]
+        - link "Back" [ref=e27] [cursor=pointer]:
+          - /url: /materials
+    - generic [ref=e28]:
+      - generic [ref=e30]: Preview questions
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - paragraph [ref=e34]: 1. H.C.F of p3q-pq3 and p5q2 -p2q5 is _
+          - list [ref=e35]:
+            - listitem [ref=e36]:
+              - generic [ref=e37]: A.
+              - text: pq(p2-q2)
+            - listitem [ref=e38]:
+              - generic [ref=e39]: B.
+              - text: pq(p-q
+            - listitem [ref=e40]:
+              - generic [ref=e41]: C.
+              - text: p2q2(p-q)
+            - listitem [ref=e42]:
+              - generic [ref=e43]: D.
+              - text: pq(p3-q3)
+        - generic [ref=e44]:
+          - paragraph [ref=e46]: 2. H.C.F. of 5x2y2 and 20 x3y3 is:___
+          - list [ref=e47]:
+            - listitem [ref=e48]:
+              - generic [ref=e49]: A.
+              - text: 5x2y2
+            - listitem [ref=e50]:
+              - generic [ref=e51]: B.
+              - text: 20 x3y3
+            - listitem [ref=e52]:
+              - generic [ref=e53]: C.
+              - text: 100 x5y5
+            - listitem [ref=e54]:
+              - generic [ref=e55]: D.
+              - text: 5xy
+        - generic [ref=e56]:
+          - paragraph [ref=e58]: 3. H.C.F of x - 2 and x2 + x - 6 is _
+          - list [ref=e59]:
+            - listitem [ref=e60]:
+              - generic [ref=e61]: A.
+              - text: x2 + x - 6
+            - listitem [ref=e62]:
+              - generic [ref=e63]: B.
+              - text: x + 2
+            - listitem [ref=e64]:
+              - generic [ref=e65]: C.
+              - text: x - 2
+            - listitem [ref=e66]:
+              - generic [ref=e67]: D.
+              - text: x + 3
+        - generic [ref=e68]:
+          - paragraph [ref=e70]: 4. H.C.F of a3 + b3 and a2 - ab + b2 is
+          - list [ref=e71]:
+            - listitem [ref=e72]:
+              - generic [ref=e73]: A.
+              - text: a + b
+            - listitem [ref=e74]:
+              - generic [ref=e75]: B.
+              - text: a2 - ab + b2
+            - listitem [ref=e76]:
+              - generic [ref=e77]: C.
+              - text: (a-b)2
+            - listitem [ref=e78]:
+              - generic [ref=e79]: D.
+              - text: a2 + b2
+        - generic [ref=e80]:
+          - paragraph [ref=e82]: "5. H.C.F of x2-5x+6 and x2-x-6 is __:"
+          - list [ref=e83]:
+            - listitem [ref=e84]:
+              - generic [ref=e85]: A.
+              - text: x - 3
+            - listitem [ref=e86]:
+              - generic [ref=e87]: B.
+              - text: x + 2
+            - listitem [ref=e88]:
+              - generic [ref=e89]: C.
+              - text: x2 -4
+            - listitem [ref=e90]:
+              - generic [ref=e91]: D.
+              - text: x - 2
+        - generic [ref=e92]:
+          - paragraph [ref=e94]: 6. H.C.F of a2 -b2 and a3 - b3 is___
+          - list [ref=e95]:
+            - listitem [ref=e96]:
+              - generic [ref=e97]: A.
+              - text: a - b
+            - listitem [ref=e98]:
+              - generic [ref=e99]: B.
+              - text: a + b
+            - listitem [ref=e100]:
+              - generic [ref=e101]: C.
+              - text: a2 + ab + b2
+            - listitem [ref=e102]:
+              - generic [ref=e103]: D.
+              - text: a2-ab + b2
+        - generic [ref=e104]:
+          - paragraph [ref=e106]: "7. H.C.F of x2 + 3x + 2, x2 + 4 x +3, x2 + 5x + 4 is:"
+          - list [ref=e107]:
+            - listitem [ref=e108]:
+              - generic [ref=e109]: A.
+              - text: x+1
+            - listitem [ref=e110]:
+              - generic [ref=e111]: B.
+              - text: ( )( ) x 1 x 2 + +
+            - listitem [ref=e112]:
+              - generic [ref=e113]: C.
+              - text: (x + 3)
+            - listitem [ref=e114]:
+              - generic [ref=e115]: D.
+              - text: (x +4) (x + 1)
+        - generic [ref=e116]:
+          - paragraph [ref=e118]: "8. L.C.M of 15x2,45xy and 30 xyz is:"
+          - list [ref=e119]:
+            - listitem [ref=e120]:
+              - generic [ref=e121]: A.
+              - text: 90 xyz
+            - listitem [ref=e122]:
+              - generic [ref=e123]: B.
+              - text: 90x2yz
+            - listitem [ref=e124]:
+              - generic [ref=e125]: C.
+              - text: 15 xyz
+            - listitem [ref=e126]:
+              - generic [ref=e127]: D.
+              - text: 15x2yz
+        - generic [ref=e128]:
+          - paragraph [ref=e130]: 9. L.C.M of a2+b2 and a4-b4 is:__
+          - list [ref=e131]:
+            - listitem [ref=e132]:
+              - generic [ref=e133]: A.
+              - text: a2 + b2
+            - listitem [ref=e134]:
+              - generic [ref=e135]: B.
+              - text: a2 - b2
+            - listitem [ref=e136]:
+              - generic [ref=e137]: C.
+              - text: a4 - b4
+            - listitem [ref=e138]:
+              - generic [ref=e139]: D.
+              - text: a - b
+        - generic [ref=e140]:
+          - paragraph [ref=e142]: 10. The product of two algebraic expression is equal to the ___ of their H.C.F and L.C.M.
+          - list [ref=e143]:
+            - listitem [ref=e144]:
+              - generic [ref=e145]: A.
+              - text: Sum
+            - listitem [ref=e146]:
+              - generic [ref=e147]: B.
+              - text: Difference
+            - listitem [ref=e148]:
+              - generic [ref=e149]: C.
+              - text: Product
+            - listitem [ref=e150]:
+              - generic [ref=e151]: D.
+              - text: Quotient
+        - generic [ref=e152]:
+          - paragraph [ref=e154]: 11. Simplify 2 2 a 1 + 3a -b 9a -b
+          - list [ref=e155]:
+            - listitem [ref=e156]:
+              - generic [ref=e157]: A.
+              - text: 2 2 4a 9a b -
+            - listitem [ref=e158]:
+              - generic [ref=e159]: B.
+              - text: 2 2 4a b 9a b - -
+            - listitem [ref=e160]:
+              - generic [ref=e161]: C.
+              - text: 2 2 4a b 9a b + -
+            - listitem [ref=e162]:
+              - generic [ref=e163]: D.
+              - text: 2 2 b 9a b -
+        - generic [ref=e164]:
+          - paragraph [ref=e166]: 12. Simplify 2 2 a + 5a -14 a + 3 × a - 2 a - 3a -18 =
+          - list [ref=e167]:
+            - listitem [ref=e168]:
+              - generic [ref=e169]: A.
+              - text: a 7 a 6 + -
+            - listitem [ref=e170]:
+              - generic [ref=e171]: B.
+              - text: a 7 a 2 + -
+            - listitem [ref=e172]:
+              - generic [ref=e173]: C.
+              - text: a 3 a 6 + -
+            - listitem [ref=e174]:
+              - generic [ref=e175]: D.
+              - text: a 2 a 3 - +
+        - generic [ref=e176]:
+          - paragraph [ref=e178]: 13. Simplify 3 3 4 4 a - b a - b 2 2 2 2 a + ab + b a + b =
+          - list [ref=e179]:
+            - listitem [ref=e180]:
+              - generic [ref=e181]: A.
+              - text: 1 a b +
+            - listitem [ref=e182]:
+              - generic [ref=e183]: B.
+              - text: 1 a b -
+            - listitem [ref=e184]:
+              - generic [ref=e185]: C.
+              - text: 2 2 a b a b - +
+            - listitem [ref=e186]:
+              - generic [ref=e187]: D.
+              - text: 2 2 a b a b + +
+        - generic [ref=e188]:
+          - paragraph [ref=e190]: "14. Simplify: 2x + y x -1 ÷ 1- x + y x + y"
+          - list [ref=e191]:
+            - listitem [ref=e192]:
+              - generic [ref=e193]: A.
+              - text: x x y +
+            - listitem [ref=e194]:
+              - generic [ref=e195]: B.
+              - text: y x y +
+            - listitem [ref=e196]:
+              - generic [ref=e197]: C.
+              - text: y x
+            - listitem [ref=e198]:
+              - generic [ref=e199]: D.
+              - text: x y
+        - generic [ref=e200]:
+          - paragraph [ref=e202]: 15. The square root of a2 - 2a +1 is _
+          - list [ref=e203]:
+            - listitem [ref=e204]:
+              - generic [ref=e205]: A.
+              - text: (a+1)
+            - listitem [ref=e206]:
+              - generic [ref=e207]: B.
+              - text: (a-1)
+            - listitem [ref=e208]:
+              - generic [ref=e209]: C.
+              - text: a-1
+            - listitem [ref=e210]:
+              - generic [ref=e211]: D.
+              - text: a+ 1
+        - generic [ref=e212]:
+          - paragraph [ref=e214]: 16. What should be added to complete the square of x4 + 64?
+          - list [ref=e215]:
+            - listitem [ref=e216]:
+              - generic [ref=e217]: A.
+              - text: 8x2
+            - listitem [ref=e218]:
+              - generic [ref=e219]: B.
+              - text: "-8x2"
+            - listitem [ref=e220]:
+              - generic [ref=e221]: C.
+              - text: 16x2
+            - listitem [ref=e222]:
+              - generic [ref=e223]: D.
+              - text: 4x2
+        - generic [ref=e224]:
+          - paragraph [ref=e226]: 17. The square root of 4 4 1 x + + 2 x is __
+          - list [ref=e227]:
+            - listitem [ref=e228]:
+              - generic [ref=e229]: A.
+              - text: 1 x x
+            - listitem [ref=e230]:
+              - generic [ref=e231]: B.
+              - text: 2 2 1 x x
+            - listitem [ref=e232]:
+              - generic [ref=e233]: C.
+              - text: 1 x x
+            - listitem [ref=e234]:
+              - generic [ref=e235]: D.
+              - text: 2 2 1 x x
+        - generic [ref=e236]:
+          - paragraph [ref=e238]: "18. The square root of 4x2-12x+9 is:"
+          - list [ref=e239]:
+            - listitem [ref=e240]:
+              - generic [ref=e241]: A.
+              - text: (2x - 3)
+            - listitem [ref=e242]:
+              - generic [ref=e243]: B.
+              - text: (2x + 3)
+            - listitem [ref=e244]:
+              - generic [ref=e245]: C.
+              - text: (2x + 3)2
+            - listitem [ref=e246]:
+              - generic [ref=e247]: D.
+              - text: (2x - 3)2
+        - generic [ref=e248]:
+          - paragraph [ref=e250]: 19. L.C.M = ___
+          - list [ref=e251]:
+            - listitem [ref=e252]:
+              - generic [ref=e253]: A.
+              - text: p(x) q(x) H.C.F x
+            - listitem [ref=e254]:
+              - generic [ref=e255]: B.
+              - text: p(x) q(x) L.C.M x
+            - listitem [ref=e256]:
+              - generic [ref=e257]: C.
+              - text: p(x) q(x) H.C.F x
+            - listitem [ref=e258]:
+              - generic [ref=e259]: D.
+              - text: q(x) p(x) H.C.F x
+        - generic [ref=e260]:
+          - paragraph [ref=e262]: 20. H.C.F. = ___
+          - list [ref=e263]:
+            - listitem [ref=e264]:
+              - generic [ref=e265]: A.
+              - text: p(x) q(x) L.C.M x
+            - listitem [ref=e266]:
+              - generic [ref=e267]: B.
+              - text: p(x) q(x) H.C.F x
+            - listitem [ref=e268]:
+              - generic [ref=e269]: C.
+              - text: p(x) q(x) L.C.M x
+            - listitem [ref=e270]:
+              - generic [ref=e271]: D.
+              - text: L.C.M p(x) q(x) x
+        - generic [ref=e272]:
+          - paragraph [ref=e274]: 21. L.C.M x H.C.F =......
+          - list [ref=e275]:
+            - listitem [ref=e276]:
+              - generic [ref=e277]: A.
+              - text: p(x) q(x) x
+            - listitem [ref=e278]:
+              - generic [ref=e279]: B.
+              - text: p(x) H.C.F x
+            - listitem [ref=e280]:
+              - generic [ref=e281]: C.
+              - text: q(x) L.C.M x
+            - listitem [ref=e282]:
+              - generic [ref=e283]: D.
+              - text: None
+        - generic [ref=e284]:
+          - paragraph [ref=e286]: 22. Any unknown expression may be found if ____ of them are known by using the relation L.C.M x H.C.F = p(x) x q(x)
+          - list [ref=e287]:
+            - listitem [ref=e288]:
+              - generic [ref=e289]: A.
+              - text: Two
+            - listitem [ref=e290]:
+              - generic [ref=e291]: B.
+              - text: Three
+            - listitem [ref=e292]:
+              - generic [ref=e293]: C.
+              - text: Four
+            - listitem [ref=e294]:
+              - generic [ref=e295]: D.
+              - text: None
+        - generic [ref=e296]:
+          - paragraph [ref=e298]: "23. The H.C.F of 2 2 x -4, x +4x +4 and 2 2x + x-6 is: L.C.M x H.C.F = p(x) x q(x)"
+          - list [ref=e299]:
+            - listitem [ref=e300]:
+              - generic [ref=e301]: A.
+              - text: 2 x-
+            - listitem [ref=e302]:
+              - generic [ref=e303]: B.
+              - text: 2 x +
+            - listitem [ref=e304]:
+              - generic [ref=e305]: C.
+              - text: ( ) 2 3 x -
+            - listitem [ref=e306]:
+              - generic [ref=e307]: D.
+              - text: ( )( )( ) 2 2 2 3 x x x - + -
+        - generic [ref=e308]:
+          - paragraph [ref=e310]: 24. 2 2 2 2 2 a + b a -ab ÷ a -b a - 2ab + b
+          - list [ref=e311]:
+            - listitem [ref=e312]:
+              - generic [ref=e313]: A.
+              - text: a b
+            - listitem [ref=e314]:
+              - generic [ref=e315]: B.
+              - text: b a
+            - listitem [ref=e316]:
+              - generic [ref=e317]: C.
+              - text: 1 a
+            - listitem [ref=e318]:
+              - generic [ref=e319]: D.
+              - text: a
+        - generic [ref=e320]:
+          - paragraph [ref=e322]: "25. If a + b A = a -b , then 1 A is:"
+          - list [ref=e323]:
+            - listitem [ref=e324]:
+              - generic [ref=e325]: A.
+              - text: a b a b - +
+            - listitem [ref=e326]:
+              - generic [ref=e327]: B.
+              - text: a b a b + -
+            - listitem [ref=e328]:
+              - generic [ref=e329]: C.
+              - text: a b a b - -
+            - listitem [ref=e330]:
+              - generic [ref=e331]: D.
+              - text: a b a b + +
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e337] [cursor=pointer]:
+    - img [ref=e338]
+  - alert [ref=e341]

@@ -10,9 +10,19 @@ from app.core.config import Settings, get_settings
 from app.core.security import CurrentUserDep, encrypt_secret
 from app.db.supabase_client import get_user_client
 from app.schemas.common import AIProvider, Difficulty
-from app.schemas.settings import UpdateSettingsRequest, UserSettingsOut
+from app.schemas.settings import DeleteStudentDataResponse, UpdateSettingsRequest, UserSettingsOut
 
 router = APIRouter(prefix="/settings", tags=["settings"])
+
+_STUDENT_DATA_TABLES = (
+    "practice_sessions",
+    "mistake_bank",
+    "question_attempts",
+    "quiz_attempts",
+    "questions",
+    "question_sets",
+    "learning_materials",
+)
 
 
 def _row_to_out(row: dict | None) -> UserSettingsOut:
@@ -76,3 +86,44 @@ async def update_settings(
 
     res = db.table("user_settings").select("*").eq("user_id", user.id).maybe_single().execute()
     return _row_to_out(res.data)
+
+
+@router.delete("/student-data", response_model=DeleteStudentDataResponse)
+async def delete_student_data(
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> DeleteStudentDataResponse:
+    materials = (
+        db.table("learning_materials")
+        .select("id, storage_path")
+        .eq("user_id", user.id)
+        .execute()
+        .data
+        or []
+    )
+    storage_paths = [row["storage_path"] for row in materials if row.get("storage_path")]
+
+    storage_removed = 0
+    warning: str | None = None
+    if storage_paths:
+        try:
+            for start in range(0, len(storage_paths), 100):
+                batch = storage_paths[start : start + 100]
+                db.storage.from_(settings.supabase_storage_bucket).remove(batch)
+                storage_removed += len(batch)
+        except Exception as exc:
+            warning = f"Database rows were deleted, but some stored files may remain: {exc}"
+
+    deleted: dict[str, int] = {}
+    for table in _STUDENT_DATA_TABLES:
+        rows = db.table(table).select("id").eq("user_id", user.id).execute().data or []
+        deleted[table] = len(rows)
+        if rows:
+            db.table(table).delete().eq("user_id", user.id).execute()
+
+    return DeleteStudentDataResponse(
+        deleted=deleted,
+        storage_paths_removed=storage_removed,
+        warning=warning,
+    )

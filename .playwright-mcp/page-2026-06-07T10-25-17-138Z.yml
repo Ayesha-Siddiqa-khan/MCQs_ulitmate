@@ -1,0 +1,149 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "MCQ Mentor" [ref=e5] [cursor=pointer]:
+          - /url: /dashboard
+        - navigation [ref=e6]:
+          - link "Dashboard" [ref=e7] [cursor=pointer]:
+            - /url: /dashboard
+          - link "Materials" [ref=e8] [cursor=pointer]:
+            - /url: /materials
+          - link "Mistakes" [ref=e9] [cursor=pointer]:
+            - /url: /mistakes
+          - link "Settings" [ref=e10] [cursor=pointer]:
+            - /url: /settings
+      - generic [ref=e11]:
+        - button "Toggle theme" [ref=e12]:
+          - img
+        - button "Sign out" [ref=e14]
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - link "← Materials" [ref=e18] [cursor=pointer]:
+        - /url: /materials
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - heading "9th Math MCQs (Imported)" [level=1] [ref=e21]
+          - paragraph [ref=e22]: PASTED · 0 chars · 40 pages
+        - generic [ref=e23]: extracted
+    - generic [ref=e25]:
+      - button "Extract solved MCQs" [ref=e26]:
+        - img
+        - text: Extract solved MCQs
+      - button "Generate MCQs" [ref=e27]:
+        - img
+        - text: Generate MCQs
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e30]: Extracted text
+        - generic [ref=e31]: This is what we will feed to the AI when you generate questions.
+      - paragraph [ref=e33]: No text extracted yet.
+    - generic [ref=e34]:
+      - generic [ref=e36]: Question sets from this material
+      - generic [ref=e37]:
+        - 'link "Ch1: Matrices and Determinants 20 questions · extract existing Open" [ref=e38] [cursor=pointer]':
+          - /url: /quiz-sets/729c4f98-a197-4236-ac6b-2f5ab0e24056
+          - generic [ref=e39]:
+            - paragraph [ref=e40]: "Ch1: Matrices and Determinants"
+            - paragraph [ref=e41]: 20 questions · extract existing
+          - button "Open" [ref=e42]
+        - 'link "Ch2: Real and Complex Numbers 28 questions · extract existing Open" [ref=e43] [cursor=pointer]':
+          - /url: /quiz-sets/2e83a3f0-8f99-46b9-8d61-fdf24073d3a6
+          - generic [ref=e44]:
+            - paragraph [ref=e45]: "Ch2: Real and Complex Numbers"
+            - paragraph [ref=e46]: 28 questions · extract existing
+          - button "Open" [ref=e47]
+        - 'link "Ch3: Logarithms 23 questions · extract existing Open" [ref=e48] [cursor=pointer]':
+          - /url: /quiz-sets/1ea7bbfd-0122-4e35-87f2-53ec4e81d102
+          - generic [ref=e49]:
+            - paragraph [ref=e50]: "Ch3: Logarithms"
+            - paragraph [ref=e51]: 23 questions · extract existing
+          - button "Open" [ref=e52]
+        - 'link "Ch4: Algebraic Expressions and Algebraic Formulas 20 questions · extract existing Open" [ref=e53] [cursor=pointer]':
+          - /url: /quiz-sets/14be8b9d-bcd9-4510-aaaf-b0ecc491c657
+          - generic [ref=e54]:
+            - paragraph [ref=e55]: "Ch4: Algebraic Expressions and Algebraic Formulas"
+            - paragraph [ref=e56]: 20 questions · extract existing
+          - button "Open" [ref=e57]
+        - 'link "Ch5: Factorization 18 questions · extract existing Open" [ref=e58] [cursor=pointer]':
+          - /url: /quiz-sets/e25ddf6f-274a-40b8-aa68-1b08682b728d
+          - generic [ref=e59]:
+            - paragraph [ref=e60]: "Ch5: Factorization"
+            - paragraph [ref=e61]: 18 questions · extract existing
+          - button "Open" [ref=e62]
+        - 'link "Ch6: Algebraic Manipulation 25 questions · extract existing Open" [ref=e63] [cursor=pointer]':
+          - /url: /quiz-sets/2190a4e0-965f-4bfd-a178-114e8abe7727
+          - generic [ref=e64]:
+            - paragraph [ref=e65]: "Ch6: Algebraic Manipulation"
+            - paragraph [ref=e66]: 25 questions · extract existing
+          - button "Open" [ref=e67]
+        - 'link "Ch7: Linear Equations and Inequalities 27 questions · extract existing Open" [ref=e68] [cursor=pointer]':
+          - /url: /quiz-sets/d6c8c76c-ffa9-4c03-8985-bbdaf5ff88e7
+          - generic [ref=e69]:
+            - paragraph [ref=e70]: "Ch7: Linear Equations and Inequalities"
+            - paragraph [ref=e71]: 27 questions · extract existing
+          - button "Open" [ref=e72]
+        - 'link "Ch8: Linear Graphs and Their Applications 20 questions · extract existing Open" [ref=e73] [cursor=pointer]':
+          - /url: /quiz-sets/1d28c0db-6fd1-4cca-acde-9e58dcd97d44
+          - generic [ref=e74]:
+            - paragraph [ref=e75]: "Ch8: Linear Graphs and Their Applications"
+            - paragraph [ref=e76]: 20 questions · extract existing
+          - button "Open" [ref=e77]
+        - 'link "Ch9: Introduction to Coordinate Geometry 16 questions · extract existing Open" [ref=e78] [cursor=pointer]':
+          - /url: /quiz-sets/95403435-b256-4ec5-bf1b-0f558d5c98f1
+          - generic [ref=e79]:
+            - paragraph [ref=e80]: "Ch9: Introduction to Coordinate Geometry"
+            - paragraph [ref=e81]: 16 questions · extract existing
+          - button "Open" [ref=e82]
+        - 'link "Ch10: Congruent Triangles 20 questions · extract existing Open" [ref=e83] [cursor=pointer]':
+          - /url: /quiz-sets/9f4a6a07-e0dc-4fee-954b-d74291bef985
+          - generic [ref=e84]:
+            - paragraph [ref=e85]: "Ch10: Congruent Triangles"
+            - paragraph [ref=e86]: 20 questions · extract existing
+          - button "Open" [ref=e87]
+        - 'link "Ch11: Parallelograms and Triangles 10 questions · extract existing Open" [ref=e88] [cursor=pointer]':
+          - /url: /quiz-sets/55c2d1f5-7981-4798-bf1b-2390a295994a
+          - generic [ref=e89]:
+            - paragraph [ref=e90]: "Ch11: Parallelograms and Triangles"
+            - paragraph [ref=e91]: 10 questions · extract existing
+          - button "Open" [ref=e92]
+        - 'link "Ch12: Line Bisectors and Angle Bisectors 13 questions · extract existing Open" [ref=e93] [cursor=pointer]':
+          - /url: /quiz-sets/7a93c96e-2005-4740-9775-5576828f9623
+          - generic [ref=e94]:
+            - paragraph [ref=e95]: "Ch12: Line Bisectors and Angle Bisectors"
+            - paragraph [ref=e96]: 13 questions · extract existing
+          - button "Open" [ref=e97]
+        - 'link "Ch13: Sides and Angles of a Triangle 17 questions · extract existing Open" [ref=e98] [cursor=pointer]':
+          - /url: /quiz-sets/0c9732d0-90b2-4bfd-bc2b-adbd39832205
+          - generic [ref=e99]:
+            - paragraph [ref=e100]: "Ch13: Sides and Angles of a Triangle"
+            - paragraph [ref=e101]: 17 questions · extract existing
+          - button "Open" [ref=e102]
+        - 'link "Ch14: Ratio and Proportion 18 questions · extract existing Open" [ref=e103] [cursor=pointer]':
+          - /url: /quiz-sets/5698dad5-0361-4207-96fe-84a63c849c21
+          - generic [ref=e104]:
+            - paragraph [ref=e105]: "Ch14: Ratio and Proportion"
+            - paragraph [ref=e106]: 18 questions · extract existing
+          - button "Open" [ref=e107]
+        - 'link "Ch15: Pythagoras Theorem 16 questions · extract existing Open" [ref=e108] [cursor=pointer]':
+          - /url: /quiz-sets/76996b84-e028-47b9-bad9-9ea19323ba06
+          - generic [ref=e109]:
+            - paragraph [ref=e110]: "Ch15: Pythagoras Theorem"
+            - paragraph [ref=e111]: 16 questions · extract existing
+          - button "Open" [ref=e112]
+        - 'link "Ch16: Theorems Related to Areas 17 questions · extract existing Open" [ref=e113] [cursor=pointer]':
+          - /url: /quiz-sets/205b33eb-e95c-4acf-9239-e5735b5123a7
+          - generic [ref=e114]:
+            - paragraph [ref=e115]: "Ch16: Theorems Related to Areas"
+            - paragraph [ref=e116]: 17 questions · extract existing
+          - button "Open" [ref=e117]
+        - 'link "Ch17: Practical Geometry 32 questions · extract existing Open" [ref=e118] [cursor=pointer]':
+          - /url: /quiz-sets/af116185-0ad4-4208-a9eb-9697e579bef8
+          - generic [ref=e119]:
+            - paragraph [ref=e120]: "Ch17: Practical Geometry"
+            - paragraph [ref=e121]: 32 questions · extract existing
+          - button "Open" [ref=e122]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e128] [cursor=pointer]:
+    - img [ref=e129]
+  - alert [ref=e132]

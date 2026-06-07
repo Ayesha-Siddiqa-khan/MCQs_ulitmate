@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -28,6 +28,8 @@ type Values = z.infer<typeof schema>;
 
 export function SignUpForm() {
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [cooldown, setCooldown] = useState(0);
   const [pending, startTransition] = useTransition();
 
   const form = useForm<Values>({
@@ -35,16 +37,35 @@ export function SignUpForm() {
     defaultValues: { email: "", password: "" },
   });
 
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = window.setInterval(() => {
+      setCooldown((value) => Math.max(0, value - 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [cooldown]);
+
   function onSubmit(values: Values) {
+    if (cooldown > 0) return;
     setError(null);
+    setSuccess(null);
     const fd = new FormData();
     fd.set("email", values.email);
     fd.set("password", values.password);
     startTransition(async () => {
       const result = await signUpAction(fd);
-      if (result?.error) setError(result.error);
+      if (result?.error) {
+        setError(result.error);
+        if (result.retryAfterSeconds) setCooldown(result.retryAfterSeconds);
+      }
+      if (result?.success) {
+        setSuccess(result.success);
+        form.reset({ email: values.email, password: "" });
+      }
     });
   }
+
+  const submitDisabled = pending || cooldown > 0;
 
   return (
     <Form {...form}>
@@ -53,6 +74,12 @@ export function SignUpForm() {
           <Alert variant="destructive">
             <AlertTitle>Could not sign up</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        ) : null}
+        {success ? (
+          <Alert>
+            <AlertTitle>Check your email</AlertTitle>
+            <AlertDescription>{success}</AlertDescription>
           </Alert>
         ) : null}
         <FormField
@@ -81,8 +108,12 @@ export function SignUpForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={pending}>
-          {pending ? "Creating account..." : "Create account"}
+        <Button type="submit" className="w-full" disabled={submitDisabled}>
+          {pending
+            ? "Creating account..."
+            : cooldown > 0
+              ? `Email limit reached (${cooldown}s)`
+              : "Create account"}
         </Button>
         <p className="text-sm text-muted-foreground text-center">
           Already have an account?{" "}

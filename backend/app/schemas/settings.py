@@ -21,3 +21,9 @@ class UpdateSettingsRequest(BaseModel):
     default_difficulty: Difficulty | None = None
     questions_per_quiz: int | None = Field(default=None, ge=1, le=100)
     clear_api_key: bool = False
+
+
+class DeleteStudentDataResponse(BaseModel):
+    deleted: dict[str, int]
+    storage_paths_removed: int = 0
+    warning: str | None = None

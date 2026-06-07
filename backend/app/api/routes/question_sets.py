@@ -115,7 +115,10 @@ async def extract_existing(
     if not questions:
         raise HTTPException(
             status_code=422,
-            detail="no MCQs detected. Try the AI generation mode or paste a cleaner text.",
+            detail=(
+                "No solved MCQs detected. Use a PDF/text file with numbered questions, A-D "
+                "options, and either inline answers or an answer key section at the end."
+            ),
         )
     title = payload.title or f"Extracted MCQs - {material['title']}"
     qset, inserted = _persist_set(

@@ -105,6 +105,12 @@ export interface UserSettings {
   questions_per_quiz: number;
 }
 
+export interface DeleteStudentDataResponse {
+  deleted: Record<string, number>;
+  storage_paths_removed: number;
+  warning: string | null;
+}
+
 export interface UpdateSettingsRequest {
   ai_provider?: AIProviderOrNone | null;
   ai_model?: string | null;

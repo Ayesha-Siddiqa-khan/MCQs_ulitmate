@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, BookOpen, FileQuestion } from "lucide-react";
 
 import { StartAttemptButton } from "@/app/quiz-sets/[id]/start-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeader } from "@/components/page-header";
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
 import { type QuestionSetDetail } from "@/lib/types";
@@ -26,78 +28,101 @@ export default async function QuizSetPage({
   }
   if (error) {
     return (
-      <main className="container mx-auto px-4 py-8 max-w-3xl space-y-4">
-          <Link href="/materials" className="text-sm text-muted-foreground hover:underline">
-            ← Materials
+      <main className="mx-auto max-w-3xl space-y-4 px-4 py-8">
+        <Button asChild variant="ghost" size="sm">
+          <Link href="/materials">
+            <ArrowLeft className="h-4 w-4" /> Materials
           </Link>
-          <Card>
-            <CardContent className="pt-6 text-sm">Could not load set: {error}</CardContent>
-          </Card>
-        </main>
+        </Button>
+        <Card className="border-2 border-destructive/40">
+          <CardContent className="pt-6 text-sm text-destructive">
+            Could not load set: {error}
+          </CardContent>
+        </Card>
+      </main>
     );
   }
   if (!qs) notFound();
 
   return (
-    <main className="container mx-auto px-4 py-8 max-w-3xl space-y-6">
-        <div>
-          <Link href="/materials" className="text-sm text-muted-foreground hover:underline">
-            ← Materials
-          </Link>
-          <h1 className="text-3xl font-semibold tracking-tight mt-2">{qs.title}</h1>
-          <p className="text-sm text-muted-foreground">
-            {qs.total_questions} questions · {qs.mode.replace(/_/g, " ")}
-            {qs.difficulty ? ` · ${qs.difficulty}` : ""}
-          </p>
-        </div>
+    <main className="mx-auto max-w-3xl space-y-6 px-4 py-8 sm:px-6">
+      <Button asChild variant="ghost" size="sm" className="-ml-2 w-fit">
+        <Link href="/materials">
+          <ArrowLeft className="h-4 w-4" /> Materials
+        </Link>
+      </Button>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Ready to start?</CardTitle>
-            <CardDescription>
-              Your answers are graded when you submit. Wrong answers go to your mistake bank.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <StartAttemptButton setId={qs.id} />
-            <Button asChild variant="outline">
-              <Link href="/materials">Back</Link>
+      <PageHeader
+        title={qs.title}
+        description={`${qs.total_questions} questions · ${qs.mode.replace(/_/g, " ")}${qs.difficulty ? ` · ${qs.difficulty}` : ""}`}
+        icon={BookOpen}
+        actions={
+          qs.material_id ? (
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/materials/${qs.material_id}`}>View material</Link>
             </Button>
-          </CardContent>
-        </Card>
+          ) : null
+        }
+      />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Preview questions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {qs.questions.length === 0 ? (
-              <p className="text-sm text-muted-foreground">This set has no questions yet.</p>
-            ) : (
-              qs.questions.map((q, i) => (
-                <div key={q.id} className="rounded border p-3 space-y-2">
-                  <div className="flex items-start justify-between gap-3">
-                    <p className="font-medium">
-                      {i + 1}. {q.question_text}
-                    </p>
-                    {q.difficulty ? (
-                      <Badge variant="secondary">{q.difficulty}</Badge>
-                    ) : null}
-                  </div>
-                  {q.options.length > 0 ? (
-                    <ul className="text-sm text-muted-foreground space-y-1 pl-4 list-disc">
-                      {q.options.map((o) => (
-                        <li key={o.key}>
-                          <span className="font-mono mr-1">{o.key}.</span> {o.text}
-                        </li>
-                      ))}
-                    </ul>
+      <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-purple-500/5">
+        <CardHeader>
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <FileQuestion className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <CardTitle>Ready to start?</CardTitle>
+              <CardDescription>
+                Your answers are graded when you submit. Wrong answers go to your mistake bank.
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <StartAttemptButton setId={qs.id} />
+        </CardContent>
+      </Card>
+
+      <Card className="border-2">
+        <CardHeader>
+          <CardTitle>Preview questions</CardTitle>
+          <CardDescription>
+            A quick look at what you&apos;ll be answering.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {qs.questions.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-4 text-center">
+              This set has no questions yet.
+            </p>
+          ) : (
+            qs.questions.map((q, i) => (
+              <div key={q.id} className="rounded-lg border-2 p-4 space-y-2">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-medium">
+                    {i + 1}. {q.question_text}
+                  </p>
+                  {q.difficulty ? (
+                    <Badge variant="secondary" className="uppercase text-[10px]">
+                      {q.difficulty}
+                    </Badge>
                   ) : null}
                 </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
-      </main>
+                {q.options.length > 0 ? (
+                  <ul className="text-sm text-muted-foreground space-y-1 pl-4 list-disc">
+                    {q.options.map((o) => (
+                      <li key={o.key}>
+                        <span className="font-mono mr-1">{o.key}.</span> {o.text}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ))
+          )}
+        </CardContent>
+      </Card>
+    </main>
   );
 }

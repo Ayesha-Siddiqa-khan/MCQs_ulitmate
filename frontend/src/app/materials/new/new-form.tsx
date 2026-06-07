@@ -56,7 +56,10 @@ export function MaterialNewForm() {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const fileForm = useForm<FileValues>({ resolver: zodResolver(fileSchema) });
+  const fileForm = useForm<FileValues>({
+    resolver: zodResolver(fileSchema),
+    defaultValues: { title: "" } as FileValues,
+  });
   const pasteForm = useForm<PasteValues>({
     resolver: zodResolver(pasteSchema),
     defaultValues: { title: "", content: "", subject: "", chapter: "", topic: "" },

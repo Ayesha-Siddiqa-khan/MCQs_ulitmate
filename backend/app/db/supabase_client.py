@@ -37,12 +37,16 @@ def supabase_user_client(access_token: str, settings: Settings | None = None) ->
             detail="SUPABASE_URL / SUPABASE_ANON_KEY missing on server",
         )
     client = create_client(s.supabase_url, s.supabase_anon_key)
-    # PostgREST + Storage need the user JWT so RLS sees auth.uid()
+    # The storage client is built lazily on first .storage access; it copies
+    # `client.options.headers` into its own per-request Headers. If we leave
+    # the anon-key Authorization there, storage uploads will be sent as the
+    # anon role and hit "new row violates row-level security policy" on the
+    # user-scoped storage.objects policy. Setting it on options.headers
+    # BEFORE any .storage access is the supported way to fix this.
+    client.options.headers["Authorization"] = f"Bearer {access_token}"
+    # PostgREST is a separate httpx session; it needs the same header set
+    # through its own auth() helper.
     client.postgrest.auth(access_token)
-    try:
-        client.storage._client.headers["Authorization"] = f"Bearer {access_token}"  # type: ignore[attr-defined]
-    except Exception:
-        pass
     return client
 
 

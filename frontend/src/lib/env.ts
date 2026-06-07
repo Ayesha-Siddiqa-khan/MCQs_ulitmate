@@ -31,7 +31,6 @@ const FORBIDDEN_PUBLIC_VARS = [
 
 for (const name of FORBIDDEN_PUBLIC_VARS) {
   if (process.env[name]) {
-    // eslint-disable-next-line no-console
     console.error(
       `[env] Refusing to start: "${name}" is a server-only secret. ` +
         `Move it to backend/.env and remove the NEXT_PUBLIC_ prefix.`,

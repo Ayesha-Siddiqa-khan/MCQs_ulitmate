@@ -62,6 +62,23 @@ def _scoped_client(settings: Settings) -> Client:
     return create_client(settings.supabase_url, settings.supabase_anon_key)
 
 
+def _signup_error_response(exc: Exception) -> tuple[int, str]:
+    message = str(exc).strip()
+    lower = message.lower()
+
+    if "rate limit" in lower:
+        return status.HTTP_429_TOO_MANY_REQUESTS, (
+            "Signup email limit reached. Wait before trying again, or configure Supabase SMTP."
+        )
+    if "email address" in lower and "invalid" in lower:
+        return status.HTTP_400_BAD_REQUEST, "Use a valid email address that can receive confirmation email."
+    if "password" in lower:
+        return status.HTTP_400_BAD_REQUEST, message
+    if "user already registered" in lower:
+        return status.HTTP_400_BAD_REQUEST, "This email may already have an account. Try logging in instead."
+    return status.HTTP_400_BAD_REQUEST, "Could not create account."
+
+
 def _set_session_cookies(response: Response, session: dict[str, Any] | None) -> None:
     """Mirror the Supabase session onto HttpOnly cookies."""
     if not session:
@@ -96,11 +113,12 @@ async def signup(
         res = sb.auth.sign_up({"email": body.email, "password": body.password})
     except Exception as exc:  # pragma: no cover - upstream errors
         log.warning("supabase signup error: %s", exc)
-        raise HTTPException(status_code=400, detail="Could not create account.") from exc
+        status_code, detail = _signup_error_response(exc)
+        raise HTTPException(status_code=status_code, detail=detail) from exc
 
-    user = getattr(res, "user", None)
     session = getattr(res, "session", None)
-    if user is None:
+    user = getattr(res, "user", None)
+    if session is None:
         # Supabase returns no session when email confirmation is required.
         # We still report success: the user must confirm via email.
         return AuthResponse(id="", email=body.email)

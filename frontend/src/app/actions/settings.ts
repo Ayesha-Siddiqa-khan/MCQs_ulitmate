@@ -6,11 +6,15 @@ import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
 import {
   type AIProvider,
+  type DeleteStudentDataResponse,
   type UpdateSettingsRequest,
   type UserSettings,
 } from "@/lib/types";
 
 export type SettingsResult = { error?: string; ok?: boolean } | undefined;
+export type DeleteStudentDataResult =
+  | { error?: string; data?: DeleteStudentDataResponse }
+  | undefined;
 
 export async function saveApiKeyAction(formData: FormData): Promise<SettingsResult> {
   await requireUser();
@@ -52,5 +56,24 @@ export async function fetchSettings(): Promise<UserSettings | null> {
     return await api<UserSettings>("/settings");
   } catch {
     return null;
+  }
+}
+
+export async function deleteStudentDataAction(confirm: string): Promise<DeleteStudentDataResult> {
+  await requireUser();
+  if (confirm !== "DELETE") {
+    return { error: "Type DELETE to confirm." };
+  }
+  try {
+    const data = await api<DeleteStudentDataResponse>("/settings/student-data", {
+      method: "DELETE",
+    });
+    revalidatePath("/dashboard");
+    revalidatePath("/materials");
+    revalidatePath("/mistakes");
+    revalidatePath("/settings");
+    return { data };
+  } catch (e) {
+    return { error: (e as Error).message };
   }
 }

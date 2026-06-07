@@ -1,0 +1,8110 @@
+[
+  {
+    "chapter": 1,
+    "position": 1,
+    "question_text": "The order of matrix [2 1] is ...",
+    "options": [
+      {
+        "key": "A",
+        "text": "2-by-1"
+      },
+      {
+        "key": "B",
+        "text": "1-by-2"
+      },
+      {
+        "key": "C",
+        "text": "1-by-1"
+      },
+      {
+        "key": "D",
+        "text": "2-by-2"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 1,
+    "position": 2,
+    "question_text": "2 0 0 2 [ ] [ ] is called ....... Matrix.",
+    "options": [
+      {
+        "key": "A",
+        "text": "zero"
+      },
+      {
+        "key": "B",
+        "text": "unit"
+      },
+      {
+        "key": "C",
+        "text": "scalar"
+      },
+      {
+        "key": "D",
+        "text": "singular"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 1,
+    "position": 3,
+    "question_text": "Which is order of a square matrix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "2-by-2"
+      },
+      {
+        "key": "B",
+        "text": "1-by-2"
+      },
+      {
+        "key": "C",
+        "text": "2-by-1"
+      },
+      {
+        "key": "D",
+        "text": "3-by-2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 1,
+    "position": 4,
+    "question_text": "Which is order of a rectangular matrix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "2-by-2"
+      },
+      {
+        "key": "B",
+        "text": "4-by-4"
+      },
+      {
+        "key": "C",
+        "text": "2-by-1"
+      },
+      {
+        "key": "D",
+        "text": "3-by-3"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 1,
+    "position": 5,
+    "question_text": "Order of transpose of 2 0 3 2 [ ] [ ] is ...",
+    "options": [
+      {
+        "key": "A",
+        "text": "3-by-2"
+      },
+      {
+        "key": "B",
+        "text": "2-by-3"
+      },
+      {
+        "key": "C",
+        "text": "1-by-3"
+      },
+      {
+        "key": "D",
+        "text": "3-by-1"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 1,
+    "position": 6,
+    "question_text": "Adjoint of 1 2 0 [ ] - [ ] is .........",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 0 - -"
+      },
+      {
+        "key": "B",
+        "text": "2 0 - [ ] -"
+      },
+      {
+        "key": "C",
+        "text": "2 0 - [ ] -"
+      },
+      {
+        "key": "D",
+        "text": "0 2 -"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 1,
+    "position": 7,
+    "question_text": "If 2 6 0 3 x = , then x is equal to",
+    "options": [
+      {
+        "key": "A",
+        "text": "9"
+      },
+      {
+        "key": "B",
+        "text": "-6"
+      },
+      {
+        "key": "C",
+        "text": "6"
+      },
+      {
+        "key": "D",
+        "text": "-9"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 1,
+    "position": 8,
+    "question_text": "Product of [x y] 2 [ ] - [ ] is ........",
+    "options": [
+      {
+        "key": "A",
+        "text": "2x y +"
+      },
+      {
+        "key": "B",
+        "text": "x 2y -"
+      },
+      {
+        "key": "C",
+        "text": "2x y -"
+      },
+      {
+        "key": "D",
+        "text": "x 2y +"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 1,
+    "position": 9,
+    "question_text": "[ ] [ ] [ ] -1 -2 0 If X+ = 0 -1 0 thenXisequalto.........",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 2 2 0"
+      },
+      {
+        "key": "B",
+        "text": "0 2 2 2"
+      },
+      {
+        "key": "C",
+        "text": "2 0 0 2"
+      },
+      {
+        "key": "D",
+        "text": "2 2 0 2"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 1,
+    "position": 10,
+    "question_text": "The idea of a matrices was given by:__",
+    "options": [
+      {
+        "key": "A",
+        "text": "Arthur Cayley"
+      },
+      {
+        "key": "B",
+        "text": "Leonard Euler"
+      },
+      {
+        "key": "C",
+        "text": "Henry Briggs"
+      },
+      {
+        "key": "D",
+        "text": "John Napier"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 1,
+    "position": 11,
+    "question_text": "If 2 A 3 4 - [ ] = [ ] then -A = ______",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 3 4 - - -"
+      },
+      {
+        "key": "B",
+        "text": "2 3 4 - - -"
+      },
+      {
+        "key": "C",
+        "text": "2 3 4"
+      },
+      {
+        "key": "D",
+        "text": "2 3 4 - -"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 1,
+    "position": 12,
+    "question_text": "A square matrix is symmetric if ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "At = A"
+      },
+      {
+        "key": "B",
+        "text": "A-1 = A"
+      },
+      {
+        "key": "C",
+        "text": "(At)t= -At"
+      },
+      {
+        "key": "D",
+        "text": "At = - A"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 1,
+    "position": 13,
+    "question_text": "A square matrix is skew-symmetric if:",
+    "options": [
+      {
+        "key": "A",
+        "text": "At = -A"
+      },
+      {
+        "key": "B",
+        "text": "A-1 = -A C."
+      },
+      {
+        "key": "D",
+        "text": "At = A"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 1,
+    "position": 14,
+    "question_text": "A square matrix A is called singular if",
+    "options": [
+      {
+        "key": "A",
+        "text": "|A| ≠ 0"
+      },
+      {
+        "key": "B",
+        "text": "|A| = 0"
+      },
+      {
+        "key": "C",
+        "text": "A = 0"
+      },
+      {
+        "key": "D",
+        "text": "At = 0"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 1,
+    "position": 15,
+    "question_text": "A square matrix A is called non-singular if:",
+    "options": [
+      {
+        "key": "A",
+        "text": "|A| = 0"
+      },
+      {
+        "key": "B",
+        "text": "A = 0"
+      },
+      {
+        "key": "C",
+        "text": "|A| ≠ 0"
+      },
+      {
+        "key": "D",
+        "text": "At = 0"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 1,
+    "position": 16,
+    "question_text": "(AB)-1 = ____",
+    "options": [
+      {
+        "key": "A",
+        "text": "A-1 B-1"
+      },
+      {
+        "key": "B",
+        "text": "B-1 A -1"
+      },
+      {
+        "key": "C",
+        "text": "BA"
+      },
+      {
+        "key": "D",
+        "text": "AB"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 1,
+    "position": 17,
+    "question_text": "Additive inverse of 1 0 1 - [ ] - [ ] is ____",
+    "options": [
+      {
+        "key": "A",
+        "text": "1 0 1 -"
+      },
+      {
+        "key": "B",
+        "text": "1 0 1 -"
+      },
+      {
+        "key": "C",
+        "text": "1 0 1 - - [ ] -"
+      },
+      {
+        "key": "D",
+        "text": "1 0 1 - [ ] -"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 1,
+    "position": 18,
+    "question_text": "If A is a matrix then its transpose is denoted by:",
+    "options": [
+      {
+        "key": "A",
+        "text": "A-1"
+      },
+      {
+        "key": "B",
+        "text": "At"
+      },
+      {
+        "key": "C",
+        "text": "-A"
+      },
+      {
+        "key": "D",
+        "text": "(At)t"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 1,
+    "position": 19,
+    "question_text": "Which of the following is singular matrix?",
+    "options": [
+      {
+        "key": "A",
+        "text": "1 4 7"
+      },
+      {
+        "key": "B",
+        "text": "1 3 4"
+      },
+      {
+        "key": "C",
+        "text": "1 0 0 1"
+      },
+      {
+        "key": "D",
+        "text": "1 3 6"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 1,
+    "position": 20,
+    "question_text": "If a b A c d [ ] = [ ] then the det. A is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "ad - bc"
+      },
+      {
+        "key": "B",
+        "text": "bc - ad"
+      },
+      {
+        "key": "C",
+        "text": "ad + bc"
+      },
+      {
+        "key": "D",
+        "text": "bc + ad"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 1,
+    "question_text": "( ) - - 1 3 27x = _____",
+    "options": [
+      {
+        "key": "A",
+        "text": "3 9 x"
+      },
+      {
+        "key": "B",
+        "text": "3 9 x"
+      },
+      {
+        "key": "C",
+        "text": "3 8 x"
+      },
+      {
+        "key": "D",
+        "text": "3 8 x"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 2,
+    "question_text": "Write 7 x in exponential form",
+    "options": [
+      {
+        "key": "A",
+        "text": "x"
+      },
+      {
+        "key": "B",
+        "text": "x7"
+      },
+      {
+        "key": "C",
+        "text": "1 7 x"
+      },
+      {
+        "key": "D",
+        "text": "7 x"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 2,
+    "position": 3,
+    "question_text": "Write 3 4 with radical sign....",
+    "options": [
+      {
+        "key": "A",
+        "text": "3 4"
+      },
+      {
+        "key": "B",
+        "text": "3 4"
+      },
+      {
+        "key": "C",
+        "text": "2 3 4"
+      },
+      {
+        "key": "D",
+        "text": "6 4"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 5,
+    "question_text": "- \u0000 \u0000 \u0000 \u0000 \u0000 \u0000 1 2 25 = _____ 16",
+    "options": [
+      {
+        "key": "A",
+        "text": "5 4"
+      },
+      {
+        "key": "B",
+        "text": "4 5"
+      },
+      {
+        "key": "C",
+        "text": "5 4 -"
+      },
+      {
+        "key": "D",
+        "text": "4 5 -"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 2,
+    "position": 6,
+    "question_text": "The conjugate of 5 + 4i is _____",
+    "options": [
+      {
+        "key": "A",
+        "text": "- 5 + 4i"
+      },
+      {
+        "key": "B",
+        "text": "- 5 - 4i"
+      },
+      {
+        "key": "C",
+        "text": "5 - 4i"
+      },
+      {
+        "key": "D",
+        "text": "5 + 4i"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 2,
+    "position": 7,
+    "question_text": "The value of i9 is ____",
+    "options": [
+      {
+        "key": "A",
+        "text": "1"
+      },
+      {
+        "key": "B",
+        "text": "-1"
+      },
+      {
+        "key": "C",
+        "text": "i"
+      },
+      {
+        "key": "D",
+        "text": "-i"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 2,
+    "position": 8,
+    "question_text": "Every real number is ____",
+    "options": [
+      {
+        "key": "A",
+        "text": "A positive integer"
+      },
+      {
+        "key": "B",
+        "text": "A rational number"
+      },
+      {
+        "key": "C",
+        "text": "A negative integer"
+      },
+      {
+        "key": "D",
+        "text": "A complex number"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 2,
+    "position": 9,
+    "question_text": "Real part of 2ab ( ) i i2 + is ____",
+    "options": [
+      {
+        "key": "A",
+        "text": "2ab"
+      },
+      {
+        "key": "B",
+        "text": "-2ab"
+      },
+      {
+        "key": "C",
+        "text": "2abi"
+      },
+      {
+        "key": "D",
+        "text": "-2abi"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 2,
+    "position": 10,
+    "question_text": "Imaginary part of -i (3i +2) is_",
+    "options": [
+      {
+        "key": "A",
+        "text": "-2"
+      },
+      {
+        "key": "B",
+        "text": "2"
+      },
+      {
+        "key": "C",
+        "text": "3"
+      },
+      {
+        "key": "D",
+        "text": "-3"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 11,
+    "question_text": "Which of the following sets have the closure property w.r.t. addition_____",
+    "options": [
+      {
+        "key": "A",
+        "text": "{0}"
+      },
+      {
+        "key": "B",
+        "text": "{0, -1}"
+      },
+      {
+        "key": "C",
+        "text": "{0, 1}"
+      },
+      {
+        "key": "D",
+        "text": "1 1, 2, 2 \u0000 \u0000 \u0000 \u0000 \u0000 \u0000"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 12,
+    "question_text": "Name the property of real numbers used in \u0000 \u0000 - - \u0000 \u0000 \u0000 \u0000 5 5 × 1 = 2 2",
+    "options": [
+      {
+        "key": "A",
+        "text": "Additive identity"
+      },
+      {
+        "key": "B",
+        "text": "Additive Inverse"
+      },
+      {
+        "key": "C",
+        "text": "Multiplicative identity"
+      },
+      {
+        "key": "D",
+        "text": "Multiplicative Inverse"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 2,
+    "position": 13,
+    "question_text": "If x, y, z in R z < 0 then x<y⇒",
+    "options": [
+      {
+        "key": "A",
+        "text": "x z < y z"
+      },
+      {
+        "key": "B",
+        "text": "x z > y z"
+      },
+      {
+        "key": "C",
+        "text": "x z = y z"
+      },
+      {
+        "key": "D",
+        "text": "none of these"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 2,
+    "position": 14,
+    "question_text": "If a, in b R then only one of a = b or a < b or a > b holds is called...",
+    "options": [
+      {
+        "key": "A",
+        "text": "Trichotomy property"
+      },
+      {
+        "key": "B",
+        "text": "Transitive property"
+      },
+      {
+        "key": "C",
+        "text": "Additive property"
+      },
+      {
+        "key": "D",
+        "text": "Multiplicative property"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 15,
+    "question_text": "A non-terminating, non-recurring decimal represents:",
+    "options": [
+      {
+        "key": "A",
+        "text": "A natural number"
+      },
+      {
+        "key": "B",
+        "text": "A rational number"
+      },
+      {
+        "key": "C",
+        "text": "An irrational number"
+      },
+      {
+        "key": "D",
+        "text": "A prime number"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 2,
+    "position": 16,
+    "question_text": "The union of the set of rational numbers and irrational numbers is known as set of ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "Rational number"
+      },
+      {
+        "key": "B",
+        "text": "Irrational"
+      },
+      {
+        "key": "C",
+        "text": "Real number"
+      },
+      {
+        "key": "D",
+        "text": "Whole number"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 2,
+    "position": 18,
+    "question_text": "n ab = ____",
+    "options": [
+      {
+        "key": "A",
+        "text": "n n a b"
+      },
+      {
+        "key": "B",
+        "text": "a b"
+      },
+      {
+        "key": "C",
+        "text": "n a b"
+      },
+      {
+        "key": "D",
+        "text": "n a b"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 19,
+    "question_text": "- 5 8 = - - - - - -",
+    "options": [
+      {
+        "key": "A",
+        "text": "15 ( 8) -"
+      },
+      {
+        "key": "B",
+        "text": "(-8)5"
+      },
+      {
+        "key": "C",
+        "text": "(-8)"
+      },
+      {
+        "key": "D",
+        "text": "1 5 (8)"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 20,
+    "question_text": "The value of i 10 is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "-1"
+      },
+      {
+        "key": "B",
+        "text": "1"
+      },
+      {
+        "key": "C",
+        "text": "- i"
+      },
+      {
+        "key": "D",
+        "text": "i"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 21,
+    "question_text": "The conjugate of 2 + 3i is ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 - 3i"
+      },
+      {
+        "key": "B",
+        "text": "-2 -3i"
+      },
+      {
+        "key": "C",
+        "text": "-2 + 3i"
+      },
+      {
+        "key": "D",
+        "text": "2 + 3i"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 22,
+    "question_text": "Real part of ( ) - - 2 1 + 2 is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "-1"
+      },
+      {
+        "key": "B",
+        "text": "2 2 -"
+      },
+      {
+        "key": "C",
+        "text": "1"
+      },
+      {
+        "key": "D",
+        "text": "2 2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 23,
+    "question_text": "Imaginary part of ( ) 2 -1+ -2 is",
+    "options": [
+      {
+        "key": "A",
+        "text": "-1"
+      },
+      {
+        "key": "B",
+        "text": "2 2 -"
+      },
+      {
+        "key": "C",
+        "text": "1"
+      },
+      {
+        "key": "D",
+        "text": "2 2"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 2,
+    "position": 24,
+    "question_text": "P q is a/an..........number",
+    "options": [
+      {
+        "key": "A",
+        "text": "irrational"
+      },
+      {
+        "key": "B",
+        "text": "rational"
+      },
+      {
+        "key": "C",
+        "text": "natural"
+      },
+      {
+        "key": "D",
+        "text": "whole"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 25,
+    "question_text": "The value of i (iota) is_____",
+    "options": [
+      {
+        "key": "A",
+        "text": "1 -"
+      },
+      {
+        "key": "B",
+        "text": "-1"
+      },
+      {
+        "key": "C",
+        "text": "+1"
+      },
+      {
+        "key": "D",
+        "text": "(-1)2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 26,
+    "question_text": "In -2+3i, 3 is called _____",
+    "options": [
+      {
+        "key": "A",
+        "text": "imaginary part"
+      },
+      {
+        "key": "B",
+        "text": "real part"
+      },
+      {
+        "key": "C",
+        "text": "negative part"
+      },
+      {
+        "key": "D",
+        "text": "complex number"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 27,
+    "question_text": "The set of natural numbers is......",
+    "options": [
+      {
+        "key": "A",
+        "text": "{0,1,2,3....}"
+      },
+      {
+        "key": "B",
+        "text": "{2,4,6....}"
+      },
+      {
+        "key": "C",
+        "text": "{1,2,3.....}"
+      },
+      {
+        "key": "D",
+        "text": "{2,3,5,7...}"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 2,
+    "position": 28,
+    "question_text": "pi , e, 2 , 3 and 5 are called...",
+    "options": [
+      {
+        "key": "A",
+        "text": "irrational numbers"
+      },
+      {
+        "key": "B",
+        "text": "rational number"
+      },
+      {
+        "key": "C",
+        "text": "natural numbers"
+      },
+      {
+        "key": "D",
+        "text": "real number"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 2,
+    "position": 29,
+    "question_text": "If 1 4 3 , x iy i + + = - then",
+    "options": [
+      {
+        "key": "A",
+        "text": "4, 3 x y = = -"
+      },
+      {
+        "key": "B",
+        "text": "3, 3 x y = ="
+      },
+      {
+        "key": "C",
+        "text": "3, 3 x y = = -"
+      },
+      {
+        "key": "D",
+        "text": "5, 3 x y = = -"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 2,
+    "position": 30,
+    "question_text": "p q form of 0.3 is _____.",
+    "options": [
+      {
+        "key": "A",
+        "text": "3 10"
+      },
+      {
+        "key": "B",
+        "text": "1 3"
+      },
+      {
+        "key": "C",
+        "text": "0.33"
+      },
+      {
+        "key": "D",
+        "text": "10 3"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 3,
+    "position": 1,
+    "question_text": "If ax = n, then _____",
+    "options": [
+      {
+        "key": "A",
+        "text": "a = x log n"
+      },
+      {
+        "key": "B",
+        "text": "x = logn a"
+      },
+      {
+        "key": "C",
+        "text": "x = a log n"
+      },
+      {
+        "key": "D",
+        "text": "a = n log x"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 3,
+    "position": 2,
+    "question_text": "The relation of y = logz x implies",
+    "options": [
+      {
+        "key": "A",
+        "text": "yx z ="
+      },
+      {
+        "key": "B",
+        "text": "yz x ="
+      },
+      {
+        "key": "C",
+        "text": "zx y ="
+      },
+      {
+        "key": "D",
+        "text": "zy x ="
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 3,
+    "position": 3,
+    "question_text": "The logarithm of unity to any base is",
+    "options": [
+      {
+        "key": "A",
+        "text": "1"
+      },
+      {
+        "key": "B",
+        "text": "10"
+      },
+      {
+        "key": "C",
+        "text": "e"
+      },
+      {
+        "key": "D",
+        "text": "0"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 3,
+    "position": 4,
+    "question_text": "The logarithm of any number to itself as base is___",
+    "options": [
+      {
+        "key": "A",
+        "text": "1"
+      },
+      {
+        "key": "B",
+        "text": "0"
+      },
+      {
+        "key": "C",
+        "text": "-1"
+      },
+      {
+        "key": "D",
+        "text": "10"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 6,
+    "question_text": "The value of log\u0000 \u0000 \u0000 \u0000 \u0000 \u0000 p q is ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "log p -log q"
+      },
+      {
+        "key": "B",
+        "text": "log p logq"
+      },
+      {
+        "key": "C",
+        "text": "log p + log q"
+      },
+      {
+        "key": "D",
+        "text": "log q - log p"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 7,
+    "question_text": "Logp - logq is same as:",
+    "options": [
+      {
+        "key": "A",
+        "text": "q log p \u0000 \u0000 \u0000 \u0000 \u0000 \u0000"
+      },
+      {
+        "key": "B",
+        "text": "( ) log p q -"
+      },
+      {
+        "key": "C",
+        "text": "log p logq"
+      },
+      {
+        "key": "D",
+        "text": "p log q"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 3,
+    "position": 8,
+    "question_text": "log n m can be written as",
+    "options": [
+      {
+        "key": "A",
+        "text": "(log m)n"
+      },
+      {
+        "key": "B",
+        "text": "m log n"
+      },
+      {
+        "key": "C",
+        "text": "n log m"
+      },
+      {
+        "key": "D",
+        "text": "log (m n)"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 3,
+    "position": 9,
+    "question_text": "b c log a×log b can be written as___",
+    "options": [
+      {
+        "key": "A",
+        "text": "c log a"
+      },
+      {
+        "key": "B",
+        "text": "a log c"
+      },
+      {
+        "key": "C",
+        "text": "a log b"
+      },
+      {
+        "key": "D",
+        "text": "b log c"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 10,
+    "question_text": "Logy x will be equal to___",
+    "options": [
+      {
+        "key": "A",
+        "text": "z y lo x g log z"
+      },
+      {
+        "key": "B",
+        "text": "x y lo z g log z"
+      },
+      {
+        "key": "C",
+        "text": "z z lo x g log y"
+      },
+      {
+        "key": "D",
+        "text": "y z z log log x"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 3,
+    "position": 11,
+    "question_text": "For common logarithm, the base is_",
+    "options": [
+      {
+        "key": "A",
+        "text": "2"
+      },
+      {
+        "key": "B",
+        "text": "10"
+      },
+      {
+        "key": "C",
+        "text": "e"
+      },
+      {
+        "key": "D",
+        "text": "1"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 3,
+    "position": 12,
+    "question_text": "For natural logarithm, the base is__",
+    "options": [
+      {
+        "key": "A",
+        "text": "10"
+      },
+      {
+        "key": "B",
+        "text": "e"
+      },
+      {
+        "key": "C",
+        "text": "2"
+      },
+      {
+        "key": "D",
+        "text": "1"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 3,
+    "position": 13,
+    "question_text": "The integral part of the common logarithm of a number is called the_",
+    "options": [
+      {
+        "key": "A",
+        "text": "Characteristic"
+      },
+      {
+        "key": "B",
+        "text": "Mantissa"
+      },
+      {
+        "key": "C",
+        "text": "Logarithm"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 14,
+    "question_text": "The decimal part of the common logarithm of a number is called the _____:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Characteristic"
+      },
+      {
+        "key": "B",
+        "text": "Mantissa"
+      },
+      {
+        "key": "C",
+        "text": "Logarithm"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 3,
+    "position": 15,
+    "question_text": "If x = log y, then y is called the _____ of x.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Antilogarithm"
+      },
+      {
+        "key": "B",
+        "text": "Logarithm"
+      },
+      {
+        "key": "C",
+        "text": "Characteristic"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 16,
+    "question_text": "30600 in scientific notation is __",
+    "options": [
+      {
+        "key": "A",
+        "text": "3.06 x 104"
+      },
+      {
+        "key": "B",
+        "text": "3.006 104"
+      },
+      {
+        "key": "C",
+        "text": "30.6 x 104"
+      },
+      {
+        "key": "D",
+        "text": "306 x 104"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 17,
+    "question_text": "6.35 x 106 in ordinary notation is___",
+    "options": [
+      {
+        "key": "A",
+        "text": "6350000"
+      },
+      {
+        "key": "B",
+        "text": "635000"
+      },
+      {
+        "key": "C",
+        "text": "6350"
+      },
+      {
+        "key": "D",
+        "text": "63500"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 18,
+    "question_text": "A number written in the form a x 10n, where 1 a 10 ≤< and n is an integer is called ____",
+    "options": [
+      {
+        "key": "A",
+        "text": "Scientific notation"
+      },
+      {
+        "key": "B",
+        "text": "Ordinary notation"
+      },
+      {
+        "key": "C",
+        "text": "Logarithm notation"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 19,
+    "question_text": "Common logarithm is also known as ______ logarithm.",
+    "options": [
+      {
+        "key": "A",
+        "text": "natural"
+      },
+      {
+        "key": "B",
+        "text": "simple"
+      },
+      {
+        "key": "C",
+        "text": "scientific"
+      },
+      {
+        "key": "D",
+        "text": "decadic"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 3,
+    "position": 20,
+    "question_text": "a a log m + log n is same as:",
+    "options": [
+      {
+        "key": "A",
+        "text": "( ) loga m n +"
+      },
+      {
+        "key": "B",
+        "text": "loga m n x"
+      },
+      {
+        "key": "C",
+        "text": "log log a a m n x"
+      },
+      {
+        "key": "D",
+        "text": "loga m n"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 3,
+    "position": 21,
+    "question_text": "John Napier prepared the logarithms tables to the base _____.",
+    "options": [
+      {
+        "key": "A",
+        "text": "0"
+      },
+      {
+        "key": "B",
+        "text": "1"
+      },
+      {
+        "key": "C",
+        "text": "10"
+      },
+      {
+        "key": "D",
+        "text": "e"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 3,
+    "position": 22,
+    "question_text": "3 2 log in common logarithm is written as _____.",
+    "options": [
+      {
+        "key": "A",
+        "text": "log3 log 2"
+      },
+      {
+        "key": "B",
+        "text": "log 2 log3"
+      },
+      {
+        "key": "C",
+        "text": "log3 2"
+      },
+      {
+        "key": "D",
+        "text": "3 log2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 23,
+    "question_text": "e log 10 = ______",
+    "options": [
+      {
+        "key": "A",
+        "text": "2.3026"
+      },
+      {
+        "key": "B",
+        "text": "0.4343"
+      },
+      {
+        "key": "C",
+        "text": "10 e"
+      },
+      {
+        "key": "D",
+        "text": "10"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 3,
+    "position": 24,
+    "question_text": "If x 2 log = 5 then x is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "25"
+      },
+      {
+        "key": "B",
+        "text": "32"
+      },
+      {
+        "key": "C",
+        "text": "10"
+      },
+      {
+        "key": "D",
+        "text": "2 x"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 4,
+    "position": 1,
+    "question_text": "4x + 3y - 2 is an algebraic___",
+    "options": [
+      {
+        "key": "A",
+        "text": "Expression"
+      },
+      {
+        "key": "B",
+        "text": "Sentence"
+      },
+      {
+        "key": "C",
+        "text": "Equation"
+      },
+      {
+        "key": "D",
+        "text": "In equation"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 4,
+    "position": 2,
+    "question_text": "The degree of polynomial 4x4+2x2y is ____",
+    "options": [
+      {
+        "key": "A",
+        "text": "1"
+      },
+      {
+        "key": "B",
+        "text": "2"
+      },
+      {
+        "key": "C",
+        "text": "3"
+      },
+      {
+        "key": "D",
+        "text": "4"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 4,
+    "position": 3,
+    "question_text": "a3 + b3 is equal to____",
+    "options": [
+      {
+        "key": "A",
+        "text": "(a-b) (a2+ab+b2)"
+      },
+      {
+        "key": "B",
+        "text": "(a+b) (a2-ab + b2)"
+      },
+      {
+        "key": "C",
+        "text": "(a-b) (a2-ab + b2)"
+      },
+      {
+        "key": "D",
+        "text": "(a-b) (a2 + ab-b2)"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 4,
+    "position": 4,
+    "question_text": "( )( ) 3 2 3 2 + - is equal to:___",
+    "options": [
+      {
+        "key": "A",
+        "text": "7"
+      },
+      {
+        "key": "B",
+        "text": "-7"
+      },
+      {
+        "key": "C",
+        "text": "-1"
+      },
+      {
+        "key": "D",
+        "text": "1"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 4,
+    "position": 5,
+    "question_text": "Conjugate of Surd a b + is_",
+    "options": [
+      {
+        "key": "A",
+        "text": "a b -+"
+      },
+      {
+        "key": "B",
+        "text": "a b -"
+      },
+      {
+        "key": "D",
+        "text": "a b +"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 4,
+    "position": 6,
+    "question_text": "1 a b a b \u0000 - - + is equal to",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 2 a a b \u0000 -"
+      },
+      {
+        "key": "B",
+        "text": "2 2 2b a b -"
+      },
+      {
+        "key": "C",
+        "text": "2 2 2a a b - -"
+      },
+      {
+        "key": "D",
+        "text": "2 2 2b a b - -"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 4,
+    "position": 8,
+    "question_text": "( ) a b + ( ) a b - is equal to:__",
+    "options": [
+      {
+        "key": "A",
+        "text": "a2 + b2"
+      },
+      {
+        "key": "B",
+        "text": "a2- b2"
+      },
+      {
+        "key": "C",
+        "text": "a - b"
+      },
+      {
+        "key": "D",
+        "text": "a + b"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 4,
+    "position": 9,
+    "question_text": "The degree of the polynomial x2y2+3xy+y3 is ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "4"
+      },
+      {
+        "key": "B",
+        "text": "5"
+      },
+      {
+        "key": "C",
+        "text": "6"
+      },
+      {
+        "key": "D",
+        "text": "2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 4,
+    "position": 10,
+    "question_text": "2 x 4 - = .....................",
+    "options": [
+      {
+        "key": "A",
+        "text": "(x-2) (x+2)"
+      },
+      {
+        "key": "B",
+        "text": "(x-2) (x-2)"
+      },
+      {
+        "key": "C",
+        "text": "(x +2) (x+2)"
+      },
+      {
+        "key": "D",
+        "text": "(x - 2)2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 4,
+    "position": 11,
+    "question_text": "3 3 1 1 x x x x \u0000 \u0000 + = + \u0000 \u0000 \u0000 \u0000 (...............)",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 2 1 x 1 x -+"
+      },
+      {
+        "key": "B",
+        "text": "2 2 1 x 1 x + +"
+      },
+      {
+        "key": "C",
+        "text": "2 2 1 x 1 x + -"
+      },
+      {
+        "key": "D",
+        "text": "2 2 1 x 1 x --"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 4,
+    "position": 12,
+    "question_text": "1 ____ 2 3 = -",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 3 +"
+      },
+      {
+        "key": "B",
+        "text": "2 3 -"
+      },
+      {
+        "key": "D",
+        "text": "2 3 -+"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 4,
+    "position": 13,
+    "question_text": "(a+b)2- (a-b)2 = ______",
+    "options": [
+      {
+        "key": "A",
+        "text": "2(a2 + b2)"
+      },
+      {
+        "key": "B",
+        "text": "4ab"
+      },
+      {
+        "key": "C",
+        "text": "2ab"
+      },
+      {
+        "key": "D",
+        "text": "3ab"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 4,
+    "position": 14,
+    "question_text": "A surd which contains a single term is called _____surd.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Monomial"
+      },
+      {
+        "key": "B",
+        "text": "Binomial"
+      },
+      {
+        "key": "C",
+        "text": "Trinomial"
+      },
+      {
+        "key": "D",
+        "text": "Conjugate"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 4,
+    "position": 15,
+    "question_text": "What is the leading coefficient of polynomial 2 3x +8x +5?",
+    "options": [
+      {
+        "key": "A",
+        "text": "2"
+      },
+      {
+        "key": "B",
+        "text": "3"
+      },
+      {
+        "key": "C",
+        "text": "5"
+      },
+      {
+        "key": "D",
+        "text": "8"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 4,
+    "position": 16,
+    "question_text": "A surd which contains two terms is called _____surd.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Monomial"
+      },
+      {
+        "key": "B",
+        "text": "Binomial"
+      },
+      {
+        "key": "C",
+        "text": "Trinomial"
+      },
+      {
+        "key": "D",
+        "text": "Conjugate"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 4,
+    "position": 17,
+    "question_text": "Which of the following is polynomial?",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 1 3x x +"
+      },
+      {
+        "key": "B",
+        "text": "2 4 3 x x -"
+      },
+      {
+        "key": "C",
+        "text": "2 3 2 x x - +"
+      },
+      {
+        "key": "D",
+        "text": "2 1 2 3 x x- +"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 4,
+    "position": 18,
+    "question_text": "( )( ) 3 + 3 3- 3 = _____",
+    "options": [
+      {
+        "key": "A",
+        "text": "12"
+      },
+      {
+        "key": "B",
+        "text": "9"
+      },
+      {
+        "key": "C",
+        "text": "6"
+      },
+      {
+        "key": "D",
+        "text": "3"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 4,
+    "position": 19,
+    "question_text": "Which of the following is not surd?",
+    "options": [
+      {
+        "key": "A",
+        "text": "2"
+      },
+      {
+        "key": "B",
+        "text": "3"
+      },
+      {
+        "key": "C",
+        "text": "2 5 +"
+      },
+      {
+        "key": "D",
+        "text": "pi"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 4,
+    "position": 20,
+    "question_text": "In the polynomial with the variable x, all the powers of x are------ integers.",
+    "options": [
+      {
+        "key": "A",
+        "text": "non-negative"
+      },
+      {
+        "key": "B",
+        "text": "negative"
+      },
+      {
+        "key": "C",
+        "text": "non-positive"
+      },
+      {
+        "key": "D",
+        "text": "none of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 4,
+    "position": 21,
+    "question_text": "Polynomial means an expression with:",
+    "options": [
+      {
+        "key": "A",
+        "text": "one term"
+      },
+      {
+        "key": "B",
+        "text": "two terms"
+      },
+      {
+        "key": "C",
+        "text": "three terms"
+      },
+      {
+        "key": "D",
+        "text": "many term correct answer."
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 5,
+    "position": 1,
+    "question_text": "The factor of x2-5x+6 are: __",
+    "options": [
+      {
+        "key": "A",
+        "text": "x +1, x - 6"
+      },
+      {
+        "key": "B",
+        "text": "x -2, x-3"
+      },
+      {
+        "key": "C",
+        "text": "x + 6, x -1"
+      },
+      {
+        "key": "D",
+        "text": "x +2 , x + 3"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 5,
+    "position": 2,
+    "question_text": "Factors of 8x3 + 27y3 are:___",
+    "options": [
+      {
+        "key": "A",
+        "text": "(2x+3y) (4x2-9y2)"
+      },
+      {
+        "key": "B",
+        "text": "(2x-3y) (4x2 - 9y2)"
+      },
+      {
+        "key": "C",
+        "text": "(2x + 3y) (4x2 - 6xy + 9y2)"
+      },
+      {
+        "key": "D",
+        "text": "(2x-3y) (4x2 + 6xy + 9y2)"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 5,
+    "position": 3,
+    "question_text": "Factors of 3x2- x-2 are:",
+    "options": [
+      {
+        "key": "A",
+        "text": "(x+1) (3x-2)"
+      },
+      {
+        "key": "B",
+        "text": "(x+1) (3x+2)"
+      },
+      {
+        "key": "C",
+        "text": "(x-1) (3x-2)"
+      },
+      {
+        "key": "D",
+        "text": "(x-1) (3x+2)"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 5,
+    "position": 4,
+    "question_text": "Factors of a4- 4b4 are: ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "(a-b) (a+b) (a2+4b2)"
+      },
+      {
+        "key": "B",
+        "text": "(a2-2b2) (a2 + 2b2)"
+      },
+      {
+        "key": "C",
+        "text": "(a-b) (a+b) (a2-4b2)"
+      },
+      {
+        "key": "D",
+        "text": "(a-2b) (a2+ 2b2)"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 5,
+    "position": 5,
+    "question_text": "What will be added to complete the square of 9a2-12ab?___",
+    "options": [
+      {
+        "key": "A",
+        "text": "-16 b2"
+      },
+      {
+        "key": "B",
+        "text": "16 b2"
+      },
+      {
+        "key": "C",
+        "text": "4b2"
+      },
+      {
+        "key": "D",
+        "text": "-4b2"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 5,
+    "position": 6,
+    "question_text": "Find m so that x2 + 4x+m is a complete square:",
+    "options": [
+      {
+        "key": "A",
+        "text": "8"
+      },
+      {
+        "key": "B",
+        "text": "-8"
+      },
+      {
+        "key": "C",
+        "text": "4"
+      },
+      {
+        "key": "D",
+        "text": "16"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 5,
+    "position": 7,
+    "question_text": "Factors of 5x2 - 17xy -12y2 are___",
+    "options": [
+      {
+        "key": "A",
+        "text": "(x+4y) (5x+3y)"
+      },
+      {
+        "key": "B",
+        "text": "(x-4y) (5x - 3y)"
+      },
+      {
+        "key": "C",
+        "text": "(x-4y) (5x + 3y)"
+      },
+      {
+        "key": "D",
+        "text": "(5x - 4y) (x +3y)"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 5,
+    "position": 9,
+    "question_text": "If x-2 is a factor of p(x) = x2+2kx+8, then k = __",
+    "options": [
+      {
+        "key": "A",
+        "text": "-3"
+      },
+      {
+        "key": "B",
+        "text": "3"
+      },
+      {
+        "key": "C",
+        "text": "4"
+      },
+      {
+        "key": "D",
+        "text": "5"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 5,
+    "position": 10,
+    "question_text": "4a2+4ab+(.....) is a complete square",
+    "options": [
+      {
+        "key": "A",
+        "text": "b2"
+      },
+      {
+        "key": "B",
+        "text": "2b"
+      },
+      {
+        "key": "C",
+        "text": "a2"
+      },
+      {
+        "key": "D",
+        "text": "4b2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 5,
+    "position": 11,
+    "question_text": "- 2 2 2 2 x y 2 + = .......... y x",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 x y y x \u0000 \u0000 - \u0000 \u0000 \u0000 \u0000"
+      },
+      {
+        "key": "B",
+        "text": "2 x y y x \u0000 \u0000 + \u0000 \u0000 \u0000 \u0000"
+      },
+      {
+        "key": "C",
+        "text": "3 x y y x \u0000 \u0000 - \u0000 \u0000 \u0000 \u0000"
+      },
+      {
+        "key": "D",
+        "text": "3 x y y x \u0000 \u0000 + \u0000 \u0000 \u0000 \u0000"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 5,
+    "position": 12,
+    "question_text": "(x+y) (x2 - xy + y2) = ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "x3- y3"
+      },
+      {
+        "key": "B",
+        "text": "x3 + y3"
+      },
+      {
+        "key": "C",
+        "text": "(x+y)3"
+      },
+      {
+        "key": "D",
+        "text": "(x - y)3"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 5,
+    "position": 13,
+    "question_text": "Factors of x4 - 16 is ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "(x-2)2"
+      },
+      {
+        "key": "B",
+        "text": "(x-2) (x+2) (x2+4)"
+      },
+      {
+        "key": "C",
+        "text": "(x-2) (x+2 )"
+      },
+      {
+        "key": "D",
+        "text": "(x+2)2"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 5,
+    "position": 14,
+    "question_text": "Factors of 3x - 3a + xy - ay.",
+    "options": [
+      {
+        "key": "A",
+        "text": "(3+y) (x-a)"
+      },
+      {
+        "key": "B",
+        "text": "(3-y) (x+a)"
+      },
+      {
+        "key": "C",
+        "text": "(3-y) (x-a)"
+      },
+      {
+        "key": "D",
+        "text": "(3+y) (x+a)"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 5,
+    "position": 15,
+    "question_text": "Factors of pqr + qr2 -pr2 - r3 is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "r(p+r) (q-r)"
+      },
+      {
+        "key": "B",
+        "text": "r(p-r) (q + r)"
+      },
+      {
+        "key": "C",
+        "text": "r(p-r) (q-r)"
+      },
+      {
+        "key": "D",
+        "text": "r(p+r) (q+r)"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 5,
+    "position": 16,
+    "question_text": "What is the value of ( ) 4 3 p x = 6x + 2x - x + 2 at = x 0?",
+    "options": [
+      {
+        "key": "A",
+        "text": "9"
+      },
+      {
+        "key": "B",
+        "text": "8"
+      },
+      {
+        "key": "C",
+        "text": "2"
+      },
+      {
+        "key": "D",
+        "text": "7"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 5,
+    "position": 17,
+    "question_text": "2 x +5x +6 =",
+    "options": [
+      {
+        "key": "A",
+        "text": "( )( ) 1 x x + -"
+      },
+      {
+        "key": "B",
+        "text": "( )( ) 2 3 x x - -"
+      },
+      {
+        "key": "C",
+        "text": "( )( ) 6 1 x x + -"
+      },
+      {
+        "key": "D",
+        "text": "( )( ) 2 3 x x + +"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 5,
+    "position": 18,
+    "question_text": "2 4a -16 =",
+    "options": [
+      {
+        "key": "A",
+        "text": "( )( ) 2 8 2 8 a a + -"
+      },
+      {
+        "key": "B",
+        "text": "( )( ) 4 2 2 a a + -"
+      },
+      {
+        "key": "C",
+        "text": "( ) 2 4 2 a +"
+      },
+      {
+        "key": "D",
+        "text": "( ) 2 4 2 a -"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 5,
+    "position": 19,
+    "question_text": "How many factors of a cubic expression are there?",
+    "options": [
+      {
+        "key": "A",
+        "text": "zero"
+      },
+      {
+        "key": "B",
+        "text": "1"
+      },
+      {
+        "key": "C",
+        "text": "2"
+      },
+      {
+        "key": "D",
+        "text": "3 20 (x - y) (x2 + xy + y2) = ___"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 6,
+    "position": 1,
+    "question_text": "H.C.F of p3q-pq3 and p5q2 -p2q5 is _",
+    "options": [
+      {
+        "key": "A",
+        "text": "pq(p2-q2)"
+      },
+      {
+        "key": "B",
+        "text": "pq(p-q"
+      },
+      {
+        "key": "C",
+        "text": "p2q2(p-q)"
+      },
+      {
+        "key": "D",
+        "text": "pq(p3-q3)"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 6,
+    "position": 2,
+    "question_text": "H.C.F. of 5x2y2 and 20 x3y3 is:___",
+    "options": [
+      {
+        "key": "A",
+        "text": "5x2y2"
+      },
+      {
+        "key": "B",
+        "text": "20 x3y3"
+      },
+      {
+        "key": "C",
+        "text": "100 x5y5"
+      },
+      {
+        "key": "D",
+        "text": "5xy"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 3,
+    "question_text": "H.C.F of x - 2 and x2 + x - 6 is _",
+    "options": [
+      {
+        "key": "A",
+        "text": "x2 + x - 6"
+      },
+      {
+        "key": "B",
+        "text": "x + 2"
+      },
+      {
+        "key": "C",
+        "text": "x - 2"
+      },
+      {
+        "key": "D",
+        "text": "x + 3"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 6,
+    "position": 4,
+    "question_text": "H.C.F of a3 + b3 and a2 - ab + b2 is",
+    "options": [
+      {
+        "key": "A",
+        "text": "a + b"
+      },
+      {
+        "key": "B",
+        "text": "a2 - ab + b2"
+      },
+      {
+        "key": "C",
+        "text": "(a-b)2"
+      },
+      {
+        "key": "D",
+        "text": "a2 + b2"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 6,
+    "position": 5,
+    "question_text": "H.C.F of x2-5x+6 and x2-x-6 is __:",
+    "options": [
+      {
+        "key": "A",
+        "text": "x - 3"
+      },
+      {
+        "key": "B",
+        "text": "x + 2"
+      },
+      {
+        "key": "C",
+        "text": "x2 -4"
+      },
+      {
+        "key": "D",
+        "text": "x - 2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 6,
+    "question_text": "H.C.F of a2 -b2 and a3 - b3 is___",
+    "options": [
+      {
+        "key": "A",
+        "text": "a - b"
+      },
+      {
+        "key": "B",
+        "text": "a + b"
+      },
+      {
+        "key": "C",
+        "text": "a2 + ab + b2"
+      },
+      {
+        "key": "D",
+        "text": "a2-ab + b2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 7,
+    "question_text": "H.C.F of x2 + 3x + 2, x2 + 4 x +3, x2 + 5x + 4 is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "x+1"
+      },
+      {
+        "key": "B",
+        "text": "( )( ) x 1 x 2 + +"
+      },
+      {
+        "key": "C",
+        "text": "(x + 3)"
+      },
+      {
+        "key": "D",
+        "text": "(x +4) (x + 1)"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 8,
+    "question_text": "L.C.M of 15x2,45xy and 30 xyz is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "90 xyz"
+      },
+      {
+        "key": "B",
+        "text": "90x2yz"
+      },
+      {
+        "key": "C",
+        "text": "15 xyz"
+      },
+      {
+        "key": "D",
+        "text": "15x2yz"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 6,
+    "position": 9,
+    "question_text": "L.C.M of a2+b2 and a4-b4 is:__",
+    "options": [
+      {
+        "key": "A",
+        "text": "a2 + b2"
+      },
+      {
+        "key": "B",
+        "text": "a2 - b2"
+      },
+      {
+        "key": "C",
+        "text": "a4 - b4"
+      },
+      {
+        "key": "D",
+        "text": "a - b"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 6,
+    "position": 10,
+    "question_text": "The product of two algebraic expression is equal to the ___ of their H.C.F and L.C.M.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Sum"
+      },
+      {
+        "key": "B",
+        "text": "Difference"
+      },
+      {
+        "key": "C",
+        "text": "Product"
+      },
+      {
+        "key": "D",
+        "text": "Quotient"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 6,
+    "position": 11,
+    "question_text": "Simplify 2 2 a 1 + 3a -b 9a -b",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 2 4a 9a b -"
+      },
+      {
+        "key": "B",
+        "text": "2 2 4a b 9a b - -"
+      },
+      {
+        "key": "C",
+        "text": "2 2 4a b 9a b + -"
+      },
+      {
+        "key": "D",
+        "text": "2 2 b 9a b -"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 6,
+    "position": 12,
+    "question_text": "Simplify 2 2 a + 5a -14 a + 3 × a - 2 a - 3a -18 =",
+    "options": [
+      {
+        "key": "A",
+        "text": "a 7 a 6 + -"
+      },
+      {
+        "key": "B",
+        "text": "a 7 a 2 + -"
+      },
+      {
+        "key": "C",
+        "text": "a 3 a 6 + -"
+      },
+      {
+        "key": "D",
+        "text": "a 2 a 3 - +"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 13,
+    "question_text": "Simplify 3 3 4 4 a - b a - b \u0000 \u0000 \u0000 \u0000 \u0000 \u0000 \u0000 \u0000 \u0000 2 2 2 2 a + ab + b a + b =",
+    "options": [
+      {
+        "key": "A",
+        "text": "1 a b +"
+      },
+      {
+        "key": "B",
+        "text": "1 a b -"
+      },
+      {
+        "key": "C",
+        "text": "2 2 a b a b - +"
+      },
+      {
+        "key": "D",
+        "text": "2 2 a b a b + +"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 14,
+    "question_text": "Simplify: \u0000 \u0000\u0000 \u0000 \u0000 \u0000\u0000 \u0000 \u0000 \u0000\u0000 \u0000 2x + y x -1 ÷ 1- x + y x + y",
+    "options": [
+      {
+        "key": "A",
+        "text": "x x y +"
+      },
+      {
+        "key": "B",
+        "text": "y x y +"
+      },
+      {
+        "key": "C",
+        "text": "y x"
+      },
+      {
+        "key": "D",
+        "text": "x y"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 6,
+    "position": 15,
+    "question_text": "The square root of a2 - 2a +1 is _",
+    "options": [
+      {
+        "key": "A",
+        "text": "\u0000 (a+1)"
+      },
+      {
+        "key": "B",
+        "text": "\u0000(a-1)"
+      },
+      {
+        "key": "C",
+        "text": "a-1"
+      },
+      {
+        "key": "D",
+        "text": "a+ 1"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 6,
+    "position": 16,
+    "question_text": "What should be added to complete the square of x4 + 64?",
+    "options": [
+      {
+        "key": "A",
+        "text": "8x2"
+      },
+      {
+        "key": "B",
+        "text": "-8x2"
+      },
+      {
+        "key": "C",
+        "text": "16x2"
+      },
+      {
+        "key": "D",
+        "text": "4x2"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 6,
+    "position": 17,
+    "question_text": "The square root of 4 4 1 x + + 2 x is __",
+    "options": [
+      {
+        "key": "A",
+        "text": "1 x x \u0000 \u0000 \u0000 + \u0000 \u0000 \u0000 \u0000"
+      },
+      {
+        "key": "B",
+        "text": "2 2 1 x x \u0000 \u0000 \u0000 + \u0000 \u0000 \u0000 \u0000"
+      },
+      {
+        "key": "C",
+        "text": "1 x x \u0000 \u0000 \u0000 - \u0000 \u0000 \u0000 \u0000"
+      },
+      {
+        "key": "D",
+        "text": "2 2 1 x x \u0000 \u0000 \u0000 - \u0000 \u0000 \u0000 \u0000"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 6,
+    "position": 18,
+    "question_text": "The square root of 4x2-12x+9 is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "\u0000(2x - 3)"
+      },
+      {
+        "key": "B",
+        "text": "\u0000(2x + 3)"
+      },
+      {
+        "key": "C",
+        "text": "(2x + 3)2"
+      },
+      {
+        "key": "D",
+        "text": "(2x - 3)2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 19,
+    "question_text": "L.C.M = ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "p(x) q(x) H.C.F x"
+      },
+      {
+        "key": "B",
+        "text": "p(x) q(x) L.C.M x"
+      },
+      {
+        "key": "C",
+        "text": "p(x) q(x) H.C.F x"
+      },
+      {
+        "key": "D",
+        "text": "q(x) p(x) H.C.F x"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 20,
+    "question_text": "H.C.F. = ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "p(x) q(x) L.C.M x"
+      },
+      {
+        "key": "B",
+        "text": "p(x) q(x) H.C.F x"
+      },
+      {
+        "key": "C",
+        "text": "p(x) q(x) L.C.M x"
+      },
+      {
+        "key": "D",
+        "text": "L.C.M p(x) q(x) x"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 21,
+    "question_text": "L.C.M x H.C.F =......",
+    "options": [
+      {
+        "key": "A",
+        "text": "p(x) q(x) x"
+      },
+      {
+        "key": "B",
+        "text": "p(x) H.C.F x"
+      },
+      {
+        "key": "C",
+        "text": "q(x) L.C.M x"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 6,
+    "position": 22,
+    "question_text": "Any unknown expression may be found if ____ of them are known by using the relation L.C.M x H.C.F = p(x) x q(x)",
+    "options": [
+      {
+        "key": "A",
+        "text": "Two"
+      },
+      {
+        "key": "B",
+        "text": "Three"
+      },
+      {
+        "key": "C",
+        "text": "Four"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 6,
+    "position": 23,
+    "question_text": "The H.C.F of 2 2 x -4, x +4x +4 and 2 2x + x-6 is: L.C.M x H.C.F = p(x) x q(x)",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 x-"
+      },
+      {
+        "key": "B",
+        "text": "2 x +"
+      },
+      {
+        "key": "C",
+        "text": "( ) 2 3 x -"
+      },
+      {
+        "key": "D",
+        "text": "( )( )( ) 2 2 2 3 x x x - + -"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 6,
+    "position": 24,
+    "question_text": "2 2 2 2 2 a + b a -ab ÷ a -b a - 2ab + b",
+    "options": [
+      {
+        "key": "A",
+        "text": "a b"
+      },
+      {
+        "key": "B",
+        "text": "b a"
+      },
+      {
+        "key": "C",
+        "text": "1 a"
+      },
+      {
+        "key": "D",
+        "text": "a"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 6,
+    "position": 25,
+    "question_text": "If a + b A = a -b , then 1 A is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "a b a b - +"
+      },
+      {
+        "key": "B",
+        "text": "a b a b + -"
+      },
+      {
+        "key": "C",
+        "text": "a b a b - -"
+      },
+      {
+        "key": "D",
+        "text": "a b a b + +"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 1,
+    "question_text": "Which of the following is the solution of the inequality 3 - 4x ≤ 11?",
+    "options": [
+      {
+        "key": "A",
+        "text": "x ≥-8"
+      },
+      {
+        "key": "B",
+        "text": "x ≥-2"
+      },
+      {
+        "key": "C",
+        "text": "x ≥ 14 4 -"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 7,
+    "position": 2,
+    "question_text": "A statement involving any of the symbols <, > or ≤ or ≥ is called:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Equation"
+      },
+      {
+        "key": "B",
+        "text": "Identity"
+      },
+      {
+        "key": "C",
+        "text": "Inequality"
+      },
+      {
+        "key": "D",
+        "text": "Linear equation"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 7,
+    "position": 3,
+    "question_text": "x = ______ is a solution of the inequality -2 < x < 3 2",
+    "options": [
+      {
+        "key": "A",
+        "text": "-5"
+      },
+      {
+        "key": "B",
+        "text": "3"
+      },
+      {
+        "key": "C",
+        "text": "0"
+      },
+      {
+        "key": "D",
+        "text": "5 2"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 7,
+    "position": 4,
+    "question_text": "If x is no larger than 10, then:",
+    "options": [
+      {
+        "key": "A",
+        "text": "x 8 ≥"
+      },
+      {
+        "key": "B",
+        "text": "x 10 ≤"
+      },
+      {
+        "key": "C",
+        "text": "x < 10"
+      },
+      {
+        "key": "D",
+        "text": "x > 10"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 7,
+    "position": 5,
+    "question_text": "If the capacity c of an elevator is at most 1600 pounds, then_",
+    "options": [
+      {
+        "key": "A",
+        "text": "c < 1600"
+      },
+      {
+        "key": "B",
+        "text": "c 1600 ≥"
+      },
+      {
+        "key": "C",
+        "text": "c 1600 ≤"
+      },
+      {
+        "key": "D",
+        "text": "c > 1600"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 7,
+    "position": 6,
+    "question_text": "x=0 is a solution of the inequality:",
+    "options": [
+      {
+        "key": "A",
+        "text": "x > 0"
+      },
+      {
+        "key": "B",
+        "text": "3x + 5 < 0"
+      },
+      {
+        "key": "C",
+        "text": "x + 2 < 0"
+      },
+      {
+        "key": "D",
+        "text": "x - 2 < 0"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 7,
+    "position": 7,
+    "question_text": "The linear equation in one variable x is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "ax + b = 0"
+      },
+      {
+        "key": "B",
+        "text": "ax2 + bx + c = 0"
+      },
+      {
+        "key": "C",
+        "text": "ax + by + c = 0"
+      },
+      {
+        "key": "D",
+        "text": "ax2 + by2 + c = 0"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 8,
+    "question_text": "An inconsistent equation is that whose solution set is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Empty"
+      },
+      {
+        "key": "B",
+        "text": "Not empty"
+      },
+      {
+        "key": "C",
+        "text": "Zero"
+      },
+      {
+        "key": "D",
+        "text": "Positive"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 9,
+    "question_text": "x = a is equivalent to:",
+    "options": [
+      {
+        "key": "A",
+        "text": "x = a or x = -a"
+      },
+      {
+        "key": "B",
+        "text": "1 1 x or x a a - = ="
+      },
+      {
+        "key": "C",
+        "text": "1 x a or x a - = ="
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 10,
+    "question_text": "A linear inequality in one variable x is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "a x + b > 0, a ≠ 0"
+      },
+      {
+        "key": "B",
+        "text": "ax2 + bx + c < 0, a ≠ 0"
+      },
+      {
+        "key": "C",
+        "text": "ax +by + c > 0, a ≠ 0"
+      },
+      {
+        "key": "D",
+        "text": "ax2 + by2 + c < 0, a ≠ 0"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 11,
+    "question_text": "Law of Trichotomy is ... (a,b R) in",
+    "options": [
+      {
+        "key": "A",
+        "text": "a < b or a = b or a > b"
+      },
+      {
+        "key": "B",
+        "text": "a < b or a = b"
+      },
+      {
+        "key": "C",
+        "text": "a < b or a > b"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 12,
+    "question_text": "Transitive law is____",
+    "options": [
+      {
+        "key": "A",
+        "text": "a < b and b < c, then a < c"
+      },
+      {
+        "key": "B",
+        "text": "a > b and b < c, then a > c"
+      },
+      {
+        "key": "C",
+        "text": "a > b and b < c, then a = c"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 13,
+    "question_text": "If a > b, c > 0 then:",
+    "options": [
+      {
+        "key": "A",
+        "text": "a c < bc"
+      },
+      {
+        "key": "B",
+        "text": "ac > bc"
+      },
+      {
+        "key": "C",
+        "text": "ac = bc"
+      },
+      {
+        "key": "D",
+        "text": "ac ≤ bc"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 7,
+    "position": 14,
+    "question_text": "If a > b, c > 0 then:",
+    "options": [
+      {
+        "key": "A",
+        "text": "a b c c >"
+      },
+      {
+        "key": "B",
+        "text": "a b c c <"
+      },
+      {
+        "key": "C",
+        "text": "a b c c ="
+      },
+      {
+        "key": "D",
+        "text": "b b c c ≠"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 15,
+    "question_text": "If a > b, c < 0, then:",
+    "options": [
+      {
+        "key": "A",
+        "text": "a b c c <"
+      },
+      {
+        "key": "B",
+        "text": "a b c c >"
+      },
+      {
+        "key": "C",
+        "text": "a b c c ="
+      },
+      {
+        "key": "D",
+        "text": "a b c c ≤"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 16,
+    "question_text": "If a, b in R then: b ≠ 0",
+    "options": [
+      {
+        "key": "A",
+        "text": "a a b b ="
+      },
+      {
+        "key": "B",
+        "text": "a ab b ="
+      },
+      {
+        "key": "C",
+        "text": "a b a b + = +"
+      },
+      {
+        "key": "D",
+        "text": "a b a b - = -"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 17,
+    "question_text": "When the variable in an equation occurs under a radical, the equation is called a _____ equation.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Radical"
+      },
+      {
+        "key": "B",
+        "text": "Absolute value"
+      },
+      {
+        "key": "C",
+        "text": "Linear"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 18,
+    "question_text": "x =0 has only ___ solution.",
+    "options": [
+      {
+        "key": "A",
+        "text": "one"
+      },
+      {
+        "key": "B",
+        "text": "two"
+      },
+      {
+        "key": "C",
+        "text": "three"
+      },
+      {
+        "key": "D",
+        "text": "none of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 19,
+    "question_text": "The equation x = 2 is equivalent to:",
+    "options": [
+      {
+        "key": "A",
+        "text": "x 2or x 2 = =-"
+      },
+      {
+        "key": "B",
+        "text": "x = -2 or x = -2"
+      },
+      {
+        "key": "C",
+        "text": "x = 2 or x = 1 2"
+      },
+      {
+        "key": "D",
+        "text": "x = 2 or x = 1 2 -"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 20,
+    "question_text": "An __ is equation that is satisfied by every number for which both sides are defined:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Identity"
+      },
+      {
+        "key": "B",
+        "text": "Conditional"
+      },
+      {
+        "key": "C",
+        "text": "Inconsistent"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 21,
+    "question_text": "An__ equation is an equation whose solution set is the empty set:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Identity"
+      },
+      {
+        "key": "B",
+        "text": "Conditional"
+      },
+      {
+        "key": "C",
+        "text": "Inconsistent"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 7,
+    "position": 22,
+    "question_text": "A _ equation is an equation that is satisfied by atleast one number but is not an identity:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Identity"
+      },
+      {
+        "key": "B",
+        "text": "Conditional"
+      },
+      {
+        "key": "C",
+        "text": "Inconsistent"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 7,
+    "position": 23,
+    "question_text": "x + 4 = 4 + x is _ equation:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Identity"
+      },
+      {
+        "key": "B",
+        "text": "Conditional"
+      },
+      {
+        "key": "C",
+        "text": "Inconsistent"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 24,
+    "question_text": "2x + 1 = 9 is ___ equation:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Identity"
+      },
+      {
+        "key": "B",
+        "text": "Conditional"
+      },
+      {
+        "key": "C",
+        "text": "Inconsistent"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 7,
+    "position": 25,
+    "question_text": "x = x + 5 is ___ equation:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Identity"
+      },
+      {
+        "key": "B",
+        "text": "Conditional"
+      },
+      {
+        "key": "C",
+        "text": "Inconsistent"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 7,
+    "position": 26,
+    "question_text": "Equations having exactly the same solution are called ___ equations.",
+    "options": [
+      {
+        "key": "A",
+        "text": "equivalent"
+      },
+      {
+        "key": "B",
+        "text": "Linear"
+      },
+      {
+        "key": "C",
+        "text": "Inconsistent"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 7,
+    "position": 27,
+    "question_text": "A solution that does not satisfy the original equation is called ____ solution:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Extraneous"
+      },
+      {
+        "key": "B",
+        "text": "Root"
+      },
+      {
+        "key": "C",
+        "text": "General"
+      },
+      {
+        "key": "D",
+        "text": "Proper"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 1,
+    "question_text": "If (x-1, y+1) = (0, 0), then (x, y) is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "(1, -1)"
+      },
+      {
+        "key": "B",
+        "text": "(-1, 1)"
+      },
+      {
+        "key": "C",
+        "text": "(1, 1)"
+      },
+      {
+        "key": "D",
+        "text": "(-1, -1)"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 2,
+    "question_text": "If (x, 0) = (0, y), then (x, y) is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "(0, 1)"
+      },
+      {
+        "key": "B",
+        "text": "(1, 0)"
+      },
+      {
+        "key": "C",
+        "text": "(0, 0)"
+      },
+      {
+        "key": "D",
+        "text": "(1, 1)"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 8,
+    "position": 3,
+    "question_text": "Point (2 -3) lies in quadrant:",
+    "options": [
+      {
+        "key": "A",
+        "text": "I"
+      },
+      {
+        "key": "B",
+        "text": "II"
+      },
+      {
+        "key": "C",
+        "text": "III"
+      },
+      {
+        "key": "D",
+        "text": "IV"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 8,
+    "position": 4,
+    "question_text": "Point (-3, -3) lies in quadrant:",
+    "options": [
+      {
+        "key": "A",
+        "text": "I"
+      },
+      {
+        "key": "B",
+        "text": "II"
+      },
+      {
+        "key": "C",
+        "text": "III"
+      },
+      {
+        "key": "D",
+        "text": "IV"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 8,
+    "position": 5,
+    "question_text": "If y = 2x + 1, x = 2 then y is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "2"
+      },
+      {
+        "key": "B",
+        "text": "3"
+      },
+      {
+        "key": "C",
+        "text": "4"
+      },
+      {
+        "key": "D",
+        "text": "5"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 8,
+    "position": 6,
+    "question_text": "Which ordered pair satisfy the equation y = 2x:",
+    "options": [
+      {
+        "key": "A",
+        "text": "(1, 2)"
+      },
+      {
+        "key": "B",
+        "text": "(2, 1)"
+      },
+      {
+        "key": "C",
+        "text": "(2, 2)"
+      },
+      {
+        "key": "D",
+        "text": "(0, 1)"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 7,
+    "question_text": "The real numbers x, y of the ordered pair (x, y) are called _____ of point P(x,y) in a plane.",
+    "options": [
+      {
+        "key": "A",
+        "text": "co-ordinates"
+      },
+      {
+        "key": "B",
+        "text": "x co-ordinates"
+      },
+      {
+        "key": "D",
+        "text": "ordinate"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 8,
+    "question_text": "Cartesian plane is divided into __ quadrants.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Two"
+      },
+      {
+        "key": "B",
+        "text": "Three"
+      },
+      {
+        "key": "C",
+        "text": "Four"
+      },
+      {
+        "key": "D",
+        "text": "Five"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 8,
+    "position": 9,
+    "question_text": "The point of intersection of two coordinate axes is called:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Origin"
+      },
+      {
+        "key": "B",
+        "text": "Centre"
+      },
+      {
+        "key": "C",
+        "text": "X-coordinate"
+      },
+      {
+        "key": "D",
+        "text": "y-coordinate"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 10,
+    "question_text": "The x-coordinate of a point is called__",
+    "options": [
+      {
+        "key": "A",
+        "text": "Origin"
+      },
+      {
+        "key": "B",
+        "text": "abcissa"
+      },
+      {
+        "key": "C",
+        "text": "y-coordinate"
+      },
+      {
+        "key": "D",
+        "text": "Ordinate"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 8,
+    "position": 11,
+    "question_text": "The y-coordinate of a point is called:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Origin"
+      },
+      {
+        "key": "B",
+        "text": "x-coordinate"
+      },
+      {
+        "key": "C",
+        "text": "y-coordinate"
+      },
+      {
+        "key": "D",
+        "text": "ordinate"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 8,
+    "position": 12,
+    "question_text": "The set of points which lie on the same line are called ___ points.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Collinear"
+      },
+      {
+        "key": "B",
+        "text": "Similar"
+      },
+      {
+        "key": "C",
+        "text": "Common"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 13,
+    "question_text": "The plane formed by two straight lines perpendicular to each other is called:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Cartesian plane"
+      },
+      {
+        "key": "B",
+        "text": "Coordinate axes"
+      },
+      {
+        "key": "C",
+        "text": "Plane"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 14,
+    "question_text": "An ordered pair is a pair of elements in which elements are written in specific:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Order"
+      },
+      {
+        "key": "B",
+        "text": "Array"
+      },
+      {
+        "key": "C",
+        "text": "Point"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 15,
+    "question_text": "Point ( ) 1,2 - lies in quadrant.",
+    "options": [
+      {
+        "key": "A",
+        "text": "I"
+      },
+      {
+        "key": "B",
+        "text": "II"
+      },
+      {
+        "key": "C",
+        "text": "III"
+      },
+      {
+        "key": "D",
+        "text": "IV"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 8,
+    "position": 16,
+    "question_text": "Point ( ) 1,1 lies in quadrant.",
+    "options": [
+      {
+        "key": "A",
+        "text": "I"
+      },
+      {
+        "key": "B",
+        "text": "II"
+      },
+      {
+        "key": "C",
+        "text": "III"
+      },
+      {
+        "key": "D",
+        "text": "IV"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 17,
+    "question_text": "Point ( ) 1, 3 - lies in quadrant.",
+    "options": [
+      {
+        "key": "A",
+        "text": "I"
+      },
+      {
+        "key": "B",
+        "text": "II"
+      },
+      {
+        "key": "C",
+        "text": "III"
+      },
+      {
+        "key": "D",
+        "text": "IV"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 8,
+    "position": 18,
+    "question_text": "Which of the following points is on the origin?",
+    "options": [
+      {
+        "key": "A",
+        "text": "( ) 0,0"
+      },
+      {
+        "key": "B",
+        "text": "( ) 2, 3 - -"
+      },
+      {
+        "key": "C",
+        "text": "( ) 0,2"
+      },
+      {
+        "key": "D",
+        "text": "( ) 4,0"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 8,
+    "position": 19,
+    "question_text": "Which of the following lines is parallel to x-axis?",
+    "options": [
+      {
+        "key": "A",
+        "text": "0 x ="
+      },
+      {
+        "key": "B",
+        "text": "3 x = -"
+      },
+      {
+        "key": "C",
+        "text": "3 x ="
+      },
+      {
+        "key": "D",
+        "text": "3 y = -"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 8,
+    "position": 20,
+    "question_text": "Which of the following lines is parallel to y-axis?",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 y x ="
+      },
+      {
+        "key": "B",
+        "text": "3 x = -"
+      },
+      {
+        "key": "C",
+        "text": "3 y ="
+      },
+      {
+        "key": "D",
+        "text": "4 1 y x = +"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 9,
+    "position": 1,
+    "question_text": "Distance between points (0, 0) and (1, 1) is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "0"
+      },
+      {
+        "key": "B",
+        "text": "1"
+      },
+      {
+        "key": "C",
+        "text": "2"
+      },
+      {
+        "key": "D",
+        "text": "2"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 9,
+    "position": 2,
+    "question_text": "Distance between the points (1, 0) and (0, 1) is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "0"
+      },
+      {
+        "key": "B",
+        "text": "1"
+      },
+      {
+        "key": "C",
+        "text": "2"
+      },
+      {
+        "key": "D",
+        "text": "2"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 9,
+    "position": 3,
+    "question_text": "Mid-point of the points (2, 2) and (0,0) is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "(1, 1)"
+      },
+      {
+        "key": "B",
+        "text": "(1, 0)"
+      },
+      {
+        "key": "C",
+        "text": "(0, 1)"
+      },
+      {
+        "key": "D",
+        "text": "(-1, -1)"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 9,
+    "position": 4,
+    "question_text": "Mid-point of the points (2, -2) and (-2, 2) is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "(2, 2)"
+      },
+      {
+        "key": "B",
+        "text": "(-2, -2)"
+      },
+      {
+        "key": "C",
+        "text": "(0, 0)"
+      },
+      {
+        "key": "D",
+        "text": "(1, 1)"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 9,
+    "position": 5,
+    "question_text": "A triangle having all sides equal is called:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Isosceles"
+      },
+      {
+        "key": "B",
+        "text": "Scalene"
+      },
+      {
+        "key": "C",
+        "text": "Equilateral"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 9,
+    "position": 6,
+    "question_text": "A triangle having all sides different is called:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Isosceles"
+      },
+      {
+        "key": "B",
+        "text": "Scalene"
+      },
+      {
+        "key": "C",
+        "text": "Equilateral"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 9,
+    "position": 7,
+    "question_text": "The points P, Q and R are collinear if:",
+    "options": [
+      {
+        "key": "A",
+        "text": "PQ QR PR + ="
+      },
+      {
+        "key": "B",
+        "text": "PQ QR PR - ="
+      },
+      {
+        "key": "C",
+        "text": "PQ QR 0 + ="
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 9,
+    "position": 8,
+    "question_text": "The distance between two points P(x1, y1) and Q (x2, y2) in the coordinate plane is: d > 0",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 2 2 1 2 1 d (x x ) (y y ) = - + -"
+      },
+      {
+        "key": "B",
+        "text": "2 2 1 2 1 2 d (x x ) (y y ) = - - -"
+      },
+      {
+        "key": "C",
+        "text": "2 2 2 1 2 1 d (x x ) (y y ) = - - -"
+      },
+      {
+        "key": "D",
+        "text": "2 2 1 2 1 2 d (x x ) (y y ) = + - +"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 9,
+    "position": 9,
+    "question_text": "A triangle having two sides equal is called:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Isosceles"
+      },
+      {
+        "key": "B",
+        "text": "Scalene"
+      },
+      {
+        "key": "C",
+        "text": "Equilateral"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 9,
+    "position": 10,
+    "question_text": "A right angled triangle is that in which one of the angles has measure equal to:",
+    "options": [
+      {
+        "key": "A",
+        "text": "80o"
+      },
+      {
+        "key": "B",
+        "text": "90o"
+      },
+      {
+        "key": "C",
+        "text": "45o"
+      },
+      {
+        "key": "D",
+        "text": "60o"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 9,
+    "position": 11,
+    "question_text": "In a right angled triangle ABC, where m \u0000ACB = 900.",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 2 2 AB BC CA = +"
+      },
+      {
+        "key": "B",
+        "text": "2 2 2 AB BC CA = -"
+      },
+      {
+        "key": "C",
+        "text": "2 2 2 AB BC CA + >"
+      },
+      {
+        "key": "D",
+        "text": "2 2 2 AB BC CA - >"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 9,
+    "position": 12,
+    "question_text": "In a ΔABC, if AB = BC = CA , the triangle will be:",
+    "options": [
+      {
+        "key": "A",
+        "text": "isosceles"
+      },
+      {
+        "key": "B",
+        "text": "scalene"
+      },
+      {
+        "key": "C",
+        "text": "equilateral"
+      },
+      {
+        "key": "D",
+        "text": "right-angled"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 9,
+    "position": 13,
+    "question_text": "If three or more than three points lie on the same line then points are called ______.",
+    "options": [
+      {
+        "key": "A",
+        "text": "non-collinear"
+      },
+      {
+        "key": "B",
+        "text": "collinear"
+      },
+      {
+        "key": "C",
+        "text": "parallel"
+      },
+      {
+        "key": "D",
+        "text": "perpendicular"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 9,
+    "position": 14,
+    "question_text": "A ______ has two end points. 09309076",
+    "options": [
+      {
+        "key": "A",
+        "text": "line"
+      },
+      {
+        "key": "B",
+        "text": "line segment"
+      },
+      {
+        "key": "C",
+        "text": "ray"
+      },
+      {
+        "key": "D",
+        "text": "triangle"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 9,
+    "position": 15,
+    "question_text": "A line segment has __ midpoint. 09309077",
+    "options": [
+      {
+        "key": "A",
+        "text": "one"
+      },
+      {
+        "key": "B",
+        "text": "two"
+      },
+      {
+        "key": "C",
+        "text": "three"
+      },
+      {
+        "key": "D",
+        "text": "four"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 9,
+    "position": 16,
+    "question_text": "Each side of triangle has ____ collinear vertices. 09309078",
+    "options": [
+      {
+        "key": "A",
+        "text": "one"
+      },
+      {
+        "key": "B",
+        "text": "two"
+      },
+      {
+        "key": "C",
+        "text": "three"
+      },
+      {
+        "key": "D",
+        "text": "four"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 10,
+    "position": 1,
+    "question_text": "______ triangle is an equiangular triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "A scalene"
+      },
+      {
+        "key": "B",
+        "text": "An isosceles"
+      },
+      {
+        "key": "C",
+        "text": "An equilateral"
+      },
+      {
+        "key": "D",
+        "text": "A right angled"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 10,
+    "position": 2,
+    "question_text": "A _____ has two end points",
+    "options": [
+      {
+        "key": "A",
+        "text": "line"
+      },
+      {
+        "key": "B",
+        "text": "line segment"
+      },
+      {
+        "key": "C",
+        "text": "ray"
+      },
+      {
+        "key": "D",
+        "text": "angle"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 10,
+    "position": 3,
+    "question_text": "Three points are said to be collinear, if they lie on the same:",
+    "options": [
+      {
+        "key": "A",
+        "text": "plane"
+      },
+      {
+        "key": "B",
+        "text": "line"
+      },
+      {
+        "key": "C",
+        "text": "interior"
+      },
+      {
+        "key": "D",
+        "text": "area"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 10,
+    "position": 4,
+    "question_text": "Two lines can intersect at:",
+    "options": [
+      {
+        "key": "A",
+        "text": "one point"
+      },
+      {
+        "key": "B",
+        "text": "two points"
+      },
+      {
+        "key": "C",
+        "text": "no point"
+      },
+      {
+        "key": "D",
+        "text": "infinite point"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 10,
+    "position": 5,
+    "question_text": "Two ______ lines cannot intersect each other:",
+    "options": [
+      {
+        "key": "A",
+        "text": "perpendicular"
+      },
+      {
+        "key": "B",
+        "text": "parallel"
+      },
+      {
+        "key": "C",
+        "text": "non-parallel"
+      },
+      {
+        "key": "D",
+        "text": "coplanar"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 10,
+    "position": 6,
+    "question_text": "All the medians of _____ triangle are equal in measure.",
+    "options": [
+      {
+        "key": "A",
+        "text": "a scalene"
+      },
+      {
+        "key": "B",
+        "text": "an isosceles"
+      },
+      {
+        "key": "C",
+        "text": "an equilateral"
+      },
+      {
+        "key": "D",
+        "text": "a right angled"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 10,
+    "position": 7,
+    "question_text": "If two angles of a triangle are congruent then the sides opposite to them are",
+    "options": [
+      {
+        "key": "A",
+        "text": "congruent"
+      },
+      {
+        "key": "B",
+        "text": "equal"
+      },
+      {
+        "key": "C",
+        "text": "non congruent"
+      },
+      {
+        "key": "D",
+        "text": "similar"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 10,
+    "position": 8,
+    "question_text": "Symbol for congruent is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "\u0000\u0000→"
+      },
+      {
+        "key": "B",
+        "text": "N"
+      },
+      {
+        "key": "C",
+        "text": "\u0000"
+      },
+      {
+        "key": "D",
+        "text": "="
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 10,
+    "position": 9,
+    "question_text": "Symbol for correspondence is",
+    "options": [
+      {
+        "key": "A",
+        "text": "\u0000\u0000→"
+      },
+      {
+        "key": "B",
+        "text": "N"
+      },
+      {
+        "key": "C",
+        "text": "\u0000"
+      },
+      {
+        "key": "D",
+        "text": "="
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 10,
+    "position": 10,
+    "question_text": "How many end points has a ray?",
+    "options": [
+      {
+        "key": "A",
+        "text": "1"
+      },
+      {
+        "key": "B",
+        "text": "2"
+      },
+      {
+        "key": "C",
+        "text": "3"
+      },
+      {
+        "key": "D",
+        "text": "4"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 10,
+    "position": 11,
+    "question_text": "Symbolically two congruent triangles ABC and PQR are written as:",
+    "options": [
+      {
+        "key": "A",
+        "text": "ABC PQR \u0000 = \u0000"
+      },
+      {
+        "key": "B",
+        "text": "ABC PQR \u0000 \u0000"
+      },
+      {
+        "key": "C",
+        "text": "ABC PQR \u0000 \u0000\u0000"
+      },
+      {
+        "key": "D",
+        "text": "ABC PQR \u0000 ≠\u0000"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 10,
+    "position": 12,
+    "question_text": "Which of the following is postulate?",
+    "options": [
+      {
+        "key": "A",
+        "text": ". . . . S S S S S S \u0000"
+      },
+      {
+        "key": "B",
+        "text": ". . . . S A A S A A \u0000"
+      },
+      {
+        "key": "C",
+        "text": ". . H S H S \u0000"
+      },
+      {
+        "key": "D",
+        "text": ". . S AS"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 10,
+    "position": 13,
+    "question_text": "If sum of measures of two angles is 180o then angles are ____ angles.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Complementary"
+      },
+      {
+        "key": "B",
+        "text": "Supplementary"
+      },
+      {
+        "key": "C",
+        "text": "Equal"
+      },
+      {
+        "key": "D",
+        "text": "Right"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 10,
+    "position": 14,
+    "question_text": "If sum of measure of two angles is 90o then angles are _____ angles.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Complementary"
+      },
+      {
+        "key": "B",
+        "text": "Supplementary"
+      },
+      {
+        "key": "C",
+        "text": "Congruent"
+      },
+      {
+        "key": "D",
+        "text": "Acute"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 10,
+    "position": 16,
+    "question_text": "In equilateral triangle each angle is of ______.",
+    "options": [
+      {
+        "key": "A",
+        "text": "30o"
+      },
+      {
+        "key": "B",
+        "text": "60o"
+      },
+      {
+        "key": "C",
+        "text": "90o"
+      },
+      {
+        "key": "D",
+        "text": "180o"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 10,
+    "position": 17,
+    "question_text": "Corresponding sides of congruent triangles are:",
+    "options": [
+      {
+        "key": "A",
+        "text": "equal"
+      },
+      {
+        "key": "B",
+        "text": "different"
+      },
+      {
+        "key": "C",
+        "text": "perpendicular"
+      },
+      {
+        "key": "D",
+        "text": "parallel"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 10,
+    "position": 18,
+    "question_text": "Median bisecting the base angle of an isosceles triangle bisects the _____ angle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "base"
+      },
+      {
+        "key": "B",
+        "text": "vertical"
+      },
+      {
+        "key": "C",
+        "text": "right"
+      },
+      {
+        "key": "D",
+        "text": "acute"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 10,
+    "position": 19,
+    "question_text": "The median bisecting the base of an isosceles triangle is ___ to the base.",
+    "options": [
+      {
+        "key": "A",
+        "text": "parallel"
+      },
+      {
+        "key": "B",
+        "text": "perpendicular"
+      },
+      {
+        "key": "C",
+        "text": "collinear"
+      },
+      {
+        "key": "D",
+        "text": "adjacent"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 10,
+    "position": 20,
+    "question_text": "Corresponding angles of congruent triangles are:",
+    "options": [
+      {
+        "key": "A",
+        "text": "congruent"
+      },
+      {
+        "key": "B",
+        "text": "non-congruent"
+      },
+      {
+        "key": "C",
+        "text": "unequal"
+      },
+      {
+        "key": "D",
+        "text": "supplementary"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 10,
+    "position": 21,
+    "question_text": "Any two medians of an ____ triangle equal is measure.",
+    "options": [
+      {
+        "key": "A",
+        "text": "isosceles"
+      },
+      {
+        "key": "B",
+        "text": "equilateral"
+      },
+      {
+        "key": "C",
+        "text": "acute"
+      },
+      {
+        "key": "D",
+        "text": "obtuse"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 11,
+    "position": 1,
+    "question_text": "In a parallelogram opposite sides are...",
+    "options": [
+      {
+        "key": "A",
+        "text": "different"
+      },
+      {
+        "key": "B",
+        "text": "perpendicular"
+      },
+      {
+        "key": "C",
+        "text": "congruent"
+      },
+      {
+        "key": "D",
+        "text": "intersecting"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 11,
+    "position": 2,
+    "question_text": "In a parallelogram opposite angles are ................",
+    "options": [
+      {
+        "key": "A",
+        "text": "parallel"
+      },
+      {
+        "key": "B",
+        "text": "congruent"
+      },
+      {
+        "key": "C",
+        "text": "complementary"
+      },
+      {
+        "key": "D",
+        "text": "adjacent"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 11,
+    "position": 3,
+    "question_text": "Diagonals of a parallelogram ........ each other at a point",
+    "options": [
+      {
+        "key": "A",
+        "text": "perpendicular to"
+      },
+      {
+        "key": "B",
+        "text": "intersect"
+      },
+      {
+        "key": "C",
+        "text": "equal to"
+      },
+      {
+        "key": "D",
+        "text": "parallel to"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 11,
+    "position": 4,
+    "question_text": "Medians of triangle are..........",
+    "options": [
+      {
+        "key": "A",
+        "text": "equal"
+      },
+      {
+        "key": "B",
+        "text": "concurrent"
+      },
+      {
+        "key": "C",
+        "text": "congruent"
+      },
+      {
+        "key": "D",
+        "text": "parallel"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 11,
+    "position": 5,
+    "question_text": "Diagonal of a parallelogram divides the parallelogram into ....... triangles.",
+    "options": [
+      {
+        "key": "A",
+        "text": "two equal"
+      },
+      {
+        "key": "B",
+        "text": "two different"
+      },
+      {
+        "key": "C",
+        "text": "three different"
+      },
+      {
+        "key": "D",
+        "text": "three equal"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 11,
+    "position": 6,
+    "question_text": "In a parallelogram shown in fig. yo = ......",
+    "options": [
+      {
+        "key": "A",
+        "text": "115o"
+      },
+      {
+        "key": "B",
+        "text": "90o"
+      },
+      {
+        "key": "C",
+        "text": "75o"
+      },
+      {
+        "key": "D",
+        "text": "105o"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 11,
+    "position": 7,
+    "question_text": "In a parallelogram shown in fig. xo = ......",
+    "options": [
+      {
+        "key": "A",
+        "text": "115o"
+      },
+      {
+        "key": "B",
+        "text": "90o"
+      },
+      {
+        "key": "C",
+        "text": "75o"
+      },
+      {
+        "key": "D",
+        "text": "105o"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 11,
+    "position": 8,
+    "question_text": "In a parallelogram shown in fig. xo............",
+    "options": [
+      {
+        "key": "A",
+        "text": "55o"
+      },
+      {
+        "key": "B",
+        "text": "5o"
+      },
+      {
+        "key": "C",
+        "text": "44o"
+      },
+      {
+        "key": "D",
+        "text": "125o"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 11,
+    "position": 9,
+    "question_text": "In a parallelogram shown in fig. m=.........",
+    "options": [
+      {
+        "key": "A",
+        "text": "8"
+      },
+      {
+        "key": "B",
+        "text": "10"
+      },
+      {
+        "key": "C",
+        "text": "2"
+      },
+      {
+        "key": "D",
+        "text": "4"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 11,
+    "position": 10,
+    "question_text": "In \u0000ABC ED BC E and D are midpoints of the sides AB and AC respectively. Find the value of m DE .",
+    "options": [
+      {
+        "key": "A",
+        "text": "6cm"
+      },
+      {
+        "key": "B",
+        "text": "9cm"
+      },
+      {
+        "key": "C",
+        "text": "18cm"
+      },
+      {
+        "key": "D",
+        "text": "10cm"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 12,
+    "position": 1,
+    "question_text": "Bisection means to divide into ___ equal parts",
+    "options": [
+      {
+        "key": "A",
+        "text": "Two"
+      },
+      {
+        "key": "B",
+        "text": "Three"
+      },
+      {
+        "key": "C",
+        "text": "Four"
+      },
+      {
+        "key": "D",
+        "text": "Five"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 12,
+    "position": 2,
+    "question_text": "__ of line segment means to draw perpendicular which passes through the midpoint of line segment.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Right bisection"
+      },
+      {
+        "key": "B",
+        "text": "Bisection"
+      },
+      {
+        "key": "C",
+        "text": "Congruent"
+      },
+      {
+        "key": "D",
+        "text": "Mid-point"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 12,
+    "position": 3,
+    "question_text": "Any point on the _____ of a line segment is equidistant from its end points:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Right bisector"
+      },
+      {
+        "key": "B",
+        "text": "Median"
+      },
+      {
+        "key": "D",
+        "text": "Altitude"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 12,
+    "position": 4,
+    "question_text": "Any point equidistant from the end points of line segment is on the ____ of it:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Right bisector"
+      },
+      {
+        "key": "B",
+        "text": "Median"
+      },
+      {
+        "key": "D",
+        "text": "Altitude"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 12,
+    "position": 5,
+    "question_text": "The bisectors of the angles of a triangle are:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Concurrent"
+      },
+      {
+        "key": "B",
+        "text": "Congruent"
+      },
+      {
+        "key": "C",
+        "text": "Parallel"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 12,
+    "position": 6,
+    "question_text": "Bisection of an angle means to draw a ray to divide the given angle into ___ equal parts:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Four"
+      },
+      {
+        "key": "B",
+        "text": "Three"
+      },
+      {
+        "key": "C",
+        "text": "Two"
+      },
+      {
+        "key": "D",
+        "text": "Five"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 12,
+    "position": 7,
+    "question_text": "If CD \u0000\u0000→ is right bisector of line segment ABthen: (i) mOA=",
+    "options": [
+      {
+        "key": "A",
+        "text": "mOQ"
+      },
+      {
+        "key": "B",
+        "text": "mOB"
+      },
+      {
+        "key": "C",
+        "text": "mAQ"
+      },
+      {
+        "key": "D",
+        "text": "mBQ"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 12,
+    "position": 8,
+    "question_text": "If CD \u0000\u0000→ is right bisector of line segment AB , then mAQ =____",
+    "options": [
+      {
+        "key": "A",
+        "text": "mOA"
+      },
+      {
+        "key": "B",
+        "text": "mOB"
+      },
+      {
+        "key": "C",
+        "text": "mBQ"
+      },
+      {
+        "key": "D",
+        "text": "mOD"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 12,
+    "position": 9,
+    "question_text": "The right bisectors of the sides of an acute triangle intersects each other ___ the triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Inside"
+      },
+      {
+        "key": "B",
+        "text": "Outside"
+      },
+      {
+        "key": "C",
+        "text": "Midpoint"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 12,
+    "position": 10,
+    "question_text": "The right bisectors of the sides of a right triangle intersect each other on the ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "Vertex"
+      },
+      {
+        "key": "B",
+        "text": "Midpoint"
+      },
+      {
+        "key": "C",
+        "text": "Hypotenuse"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 12,
+    "position": 11,
+    "question_text": "The right bisectors of the sides of an obtuse triangle intersect each other ___ the triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Outside"
+      },
+      {
+        "key": "B",
+        "text": "Inside"
+      },
+      {
+        "key": "C",
+        "text": "Midpoint"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 12,
+    "position": 12,
+    "question_text": "The point of line segment through which the right bisector passes is called its _____ point.",
+    "options": [
+      {
+        "key": "A",
+        "text": "end"
+      },
+      {
+        "key": "B",
+        "text": "mid"
+      },
+      {
+        "key": "C",
+        "text": "non-collinear"
+      },
+      {
+        "key": "D",
+        "text": "trisection"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 12,
+    "position": 13,
+    "question_text": "The point of intersection of right bisectors of sides of a triangle is equidistant from the ____ of triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "sides"
+      },
+      {
+        "key": "B",
+        "text": "vertices"
+      },
+      {
+        "key": "C",
+        "text": "centre"
+      },
+      {
+        "key": "D",
+        "text": "angles"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 13,
+    "position": 1,
+    "question_text": "Which of the following sets of lengths can be the lengths of the sides of a triangle:",
+    "options": [
+      {
+        "key": "A",
+        "text": "2cm, 3cm, 5cm"
+      },
+      {
+        "key": "B",
+        "text": "3cm, 4cm, 5cm"
+      },
+      {
+        "key": "C",
+        "text": "2cm, 4cm, 7cm"
+      },
+      {
+        "key": "D",
+        "text": "1cm, 2cm, 3cm"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 13,
+    "position": 2,
+    "question_text": "Two sides of a triangle measure 10cm and 15cm. Which of the following measure is possible for the third side",
+    "options": [
+      {
+        "key": "A",
+        "text": "5cm"
+      },
+      {
+        "key": "B",
+        "text": "20cm"
+      },
+      {
+        "key": "C",
+        "text": "25cm"
+      },
+      {
+        "key": "D",
+        "text": "30cm"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 13,
+    "position": 3,
+    "question_text": "The angle opposite to the longer side is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Greater"
+      },
+      {
+        "key": "B",
+        "text": "Shorter"
+      },
+      {
+        "key": "C",
+        "text": "Equal"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 13,
+    "position": 4,
+    "question_text": "In right angle triangle greater angle of:",
+    "options": [
+      {
+        "key": "A",
+        "text": "60o"
+      },
+      {
+        "key": "B",
+        "text": "30o"
+      },
+      {
+        "key": "C",
+        "text": "75o"
+      },
+      {
+        "key": "D",
+        "text": "90o"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 13,
+    "position": 5,
+    "question_text": "In an isosceles right-angled triangle angles other than right angle are each of:",
+    "options": [
+      {
+        "key": "A",
+        "text": "40o"
+      },
+      {
+        "key": "B",
+        "text": "45o"
+      },
+      {
+        "key": "C",
+        "text": "50o"
+      },
+      {
+        "key": "D",
+        "text": "55o"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 13,
+    "position": 6,
+    "question_text": "A triangle having two congruent sides is called ___ triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Equilateral"
+      },
+      {
+        "key": "B",
+        "text": "Isosceles"
+      },
+      {
+        "key": "C",
+        "text": "Right"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 13,
+    "position": 7,
+    "question_text": "Perpendicular to line form an angle of __",
+    "options": [
+      {
+        "key": "A",
+        "text": "30o"
+      },
+      {
+        "key": "B",
+        "text": "60o"
+      },
+      {
+        "key": "C",
+        "text": "90o"
+      },
+      {
+        "key": "D",
+        "text": "120o"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 13,
+    "position": 8,
+    "question_text": "Sum of two sides of triangle is ___ than the third.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Greater"
+      },
+      {
+        "key": "B",
+        "text": "Smaller"
+      },
+      {
+        "key": "C",
+        "text": "Equal"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 13,
+    "position": 9,
+    "question_text": "The distance between a line and a point on it is ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "Zero"
+      },
+      {
+        "key": "B",
+        "text": "One"
+      },
+      {
+        "key": "C",
+        "text": "Equal"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 13,
+    "position": 10,
+    "question_text": "The difference of two sides of a triangle is ___ the third side.",
+    "options": [
+      {
+        "key": "A",
+        "text": "greater than"
+      },
+      {
+        "key": "B",
+        "text": "smaller than"
+      },
+      {
+        "key": "C",
+        "text": "equal to"
+      },
+      {
+        "key": "D",
+        "text": "congruent to"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 13,
+    "position": 11,
+    "question_text": "In a triangle, the side opposite to greater angle is_____.",
+    "options": [
+      {
+        "key": "A",
+        "text": "smaller"
+      },
+      {
+        "key": "B",
+        "text": "greater"
+      },
+      {
+        "key": "C",
+        "text": "equal"
+      },
+      {
+        "key": "D",
+        "text": "congruent"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 13,
+    "position": 12,
+    "question_text": "In a triangle the angles opposite to congruent sides are ____.",
+    "options": [
+      {
+        "key": "A",
+        "text": "congruent"
+      },
+      {
+        "key": "B",
+        "text": "concurrent"
+      },
+      {
+        "key": "C",
+        "text": "unequal"
+      },
+      {
+        "key": "D",
+        "text": "non- congruent"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 13,
+    "position": 13,
+    "question_text": "In a triangle, the side opposite to smaller angle is ____.",
+    "options": [
+      {
+        "key": "A",
+        "text": "smaller"
+      },
+      {
+        "key": "B",
+        "text": "greater"
+      },
+      {
+        "key": "C",
+        "text": "congruent"
+      },
+      {
+        "key": "D",
+        "text": "concurrent"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 13,
+    "position": 14,
+    "question_text": "An exterior angle of a triangle is ___ non-adjacent interior angle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "equal to"
+      },
+      {
+        "key": "B",
+        "text": "smaller than"
+      },
+      {
+        "key": "C",
+        "text": "greater than"
+      },
+      {
+        "key": "D",
+        "text": "congruent to"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 13,
+    "position": 15,
+    "question_text": "For a ΔABC, which of the following is true?",
+    "options": [
+      {
+        "key": "A",
+        "text": "mAB mBC mCA + <"
+      },
+      {
+        "key": "B",
+        "text": "mAB mBC mCA - >"
+      },
+      {
+        "key": "C",
+        "text": "mAB mBC mCA + >"
+      },
+      {
+        "key": "D",
+        "text": "mAB mBC | mCA + >"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 13,
+    "position": 16,
+    "question_text": "What is the supplement of a right angle?",
+    "options": [
+      {
+        "key": "A",
+        "text": "60o"
+      },
+      {
+        "key": "B",
+        "text": "90o"
+      },
+      {
+        "key": "C",
+        "text": "120o"
+      },
+      {
+        "key": "D",
+        "text": "180o"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 13,
+    "position": 17,
+    "question_text": "The sum of the measures of two sides of a triangle is greater than_____ the measure of the median which bisects the third side.",
+    "options": [
+      {
+        "key": "A",
+        "text": "twice"
+      },
+      {
+        "key": "B",
+        "text": "thrice"
+      },
+      {
+        "key": "C",
+        "text": "hypotenuse"
+      },
+      {
+        "key": "D",
+        "text": "angles"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 14,
+    "position": 1,
+    "question_text": "One and only one line can be drawn through ___ points.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Two"
+      },
+      {
+        "key": "B",
+        "text": "Three"
+      },
+      {
+        "key": "C",
+        "text": "Four"
+      },
+      {
+        "key": "D",
+        "text": "Five"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 14,
+    "position": 2,
+    "question_text": "The ratio between two alike quantities is defined as:",
+    "options": [
+      {
+        "key": "A",
+        "text": "a : b"
+      },
+      {
+        "key": "B",
+        "text": "b - a"
+      },
+      {
+        "key": "C",
+        "text": "a : b = c : d"
+      },
+      {
+        "key": "D",
+        "text": "a + b"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 14,
+    "position": 3,
+    "question_text": "If a line segment intersects the two sides of a triangle in the same ratio then it is parallel to the __ side.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Third"
+      },
+      {
+        "key": "B",
+        "text": "Fourth"
+      },
+      {
+        "key": "C",
+        "text": "Second"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 14,
+    "position": 4,
+    "question_text": "Two triangles are said to be similar if these are equiangular and their corresponding sides are",
+    "options": [
+      {
+        "key": "A",
+        "text": "Proportional"
+      },
+      {
+        "key": "B",
+        "text": "congruent"
+      },
+      {
+        "key": "C",
+        "text": "concurrent"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 14,
+    "position": 6,
+    "question_text": "A line segment has ______mid-point",
+    "options": [
+      {
+        "key": "A",
+        "text": "only one"
+      },
+      {
+        "key": "B",
+        "text": "only two"
+      },
+      {
+        "key": "C",
+        "text": "only three"
+      },
+      {
+        "key": "D",
+        "text": "infinite"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 14,
+    "position": 7,
+    "question_text": "Ratio has no",
+    "options": [
+      {
+        "key": "A",
+        "text": "value"
+      },
+      {
+        "key": "B",
+        "text": "symbol"
+      },
+      {
+        "key": "C",
+        "text": "unit"
+      },
+      {
+        "key": "D",
+        "text": "importance"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 14,
+    "position": 8,
+    "question_text": "Statement of equality of two ratios is called .......",
+    "options": [
+      {
+        "key": "A",
+        "text": "double ratio"
+      },
+      {
+        "key": "B",
+        "text": "simple ratios"
+      },
+      {
+        "key": "C",
+        "text": "proportion"
+      },
+      {
+        "key": "D",
+        "text": "Relation"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 14,
+    "position": 9,
+    "question_text": "The symbol used for similarity is......",
+    "options": [
+      {
+        "key": "A",
+        "text": "="
+      },
+      {
+        "key": "B",
+        "text": "\u0000 C."
+      },
+      {
+        "key": "D",
+        "text": "\u0000"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 14,
+    "position": 10,
+    "question_text": "The symbol used for congruency is .....",
+    "options": [
+      {
+        "key": "A",
+        "text": "="
+      },
+      {
+        "key": "B",
+        "text": "\u0000 C."
+      },
+      {
+        "key": "D",
+        "text": "\u0000"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 14,
+    "position": 11,
+    "question_text": "The symbol used for ratio is ....... A.",
+    "options": [
+      {
+        "key": "B",
+        "text": "\u0000"
+      },
+      {
+        "key": "C",
+        "text": "~ D."
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 14,
+    "position": 12,
+    "question_text": "The ratio between two alike quantities has no......",
+    "options": [
+      {
+        "key": "A",
+        "text": "value"
+      },
+      {
+        "key": "B",
+        "text": "symbol"
+      },
+      {
+        "key": "C",
+        "text": "unit"
+      },
+      {
+        "key": "D",
+        "text": "importance"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 14,
+    "position": 13,
+    "question_text": "The symbol used for line AB is ......",
+    "options": [
+      {
+        "key": "A",
+        "text": "AB"
+      },
+      {
+        "key": "B",
+        "text": "AB"
+      },
+      {
+        "key": "C",
+        "text": "AB \u0000\u0000→"
+      },
+      {
+        "key": "D",
+        "text": "AB \u0000\u0000→"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 14,
+    "position": 14,
+    "question_text": "The symbol used for ray AB is .......",
+    "options": [
+      {
+        "key": "A",
+        "text": "AB"
+      },
+      {
+        "key": "B",
+        "text": "AB"
+      },
+      {
+        "key": "C",
+        "text": "AB \u0000\u0000→"
+      },
+      {
+        "key": "D",
+        "text": "AB \u0000\u0000→"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 14,
+    "position": 15,
+    "question_text": "The symbol used for line segment AB is .......",
+    "options": [
+      {
+        "key": "A",
+        "text": "AB"
+      },
+      {
+        "key": "B",
+        "text": "AB"
+      },
+      {
+        "key": "C",
+        "text": "AB \u0000\u0000→"
+      },
+      {
+        "key": "D",
+        "text": "AB \u0000\u0000→"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 14,
+    "position": 16,
+    "question_text": "AB \u0000\u0000→ stands for ........",
+    "options": [
+      {
+        "key": "A",
+        "text": "line AB"
+      },
+      {
+        "key": "B",
+        "text": "Ray AB"
+      },
+      {
+        "key": "C",
+        "text": "line segment AB"
+      },
+      {
+        "key": "D",
+        "text": "points AB"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 14,
+    "position": 17,
+    "question_text": "Proportion is a equality of ...... ratios.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Two"
+      },
+      {
+        "key": "B",
+        "text": "Three"
+      },
+      {
+        "key": "C",
+        "text": "Four"
+      },
+      {
+        "key": "D",
+        "text": "Five"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 14,
+    "position": 18,
+    "question_text": "Similar triangles are of the same shape but ...... in sizes.",
+    "options": [
+      {
+        "key": "A",
+        "text": "The same"
+      },
+      {
+        "key": "B",
+        "text": "Different"
+      },
+      {
+        "key": "C",
+        "text": "Both"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 14,
+    "position": 19,
+    "question_text": "⊥ is the symbol of:",
+    "options": [
+      {
+        "key": "A",
+        "text": "equal"
+      },
+      {
+        "key": "B",
+        "text": "parallel"
+      },
+      {
+        "key": "C",
+        "text": "perpendicular"
+      },
+      {
+        "key": "D",
+        "text": "congruent"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 15,
+    "position": 1,
+    "question_text": "In a right angled triangle, the square of the length of hypotenuse is equal to the____ of the squares of the lengths of the other two sides.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Sum"
+      },
+      {
+        "key": "B",
+        "text": "Difference"
+      },
+      {
+        "key": "C",
+        "text": "Zero"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 15,
+    "position": 2,
+    "question_text": "If the square of one side of a triangle is equal to the sum of the squares of the other two sides then the triangle is a ____ triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Right angled"
+      },
+      {
+        "key": "B",
+        "text": "Acute angled"
+      },
+      {
+        "key": "C",
+        "text": "Obtuse angled"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 15,
+    "position": 3,
+    "question_text": "Let c be the longest of the sides a, b and c of a triangle. If a2 +b2 = c2, then the triangle is ___:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Right"
+      },
+      {
+        "key": "B",
+        "text": "Acute"
+      },
+      {
+        "key": "C",
+        "text": "Obtuse"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 15,
+    "position": 4,
+    "question_text": ".Let c be the longest of the sides a, b and c of a triangle. If a2 + b2> c2 then triangle is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Acute"
+      },
+      {
+        "key": "B",
+        "text": "Right"
+      },
+      {
+        "key": "C",
+        "text": "Obtuse"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 15,
+    "position": 5,
+    "question_text": "Let c be the longest of the sides a, b and c of a triangle. If a2+b2< c2, then the triangle is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Acute"
+      },
+      {
+        "key": "B",
+        "text": "Right"
+      },
+      {
+        "key": "C",
+        "text": "Obtuse"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 15,
+    "position": 6,
+    "question_text": "If 3cm and 4cm are two sides of a right angled triangle, then hypotenuse is;",
+    "options": [
+      {
+        "key": "A",
+        "text": "5cm"
+      },
+      {
+        "key": "B",
+        "text": "3cm"
+      },
+      {
+        "key": "C",
+        "text": "4cm"
+      },
+      {
+        "key": "D",
+        "text": "2cm"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 15,
+    "position": 7,
+    "question_text": "In right triangle ____ is a side opposite to right angle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Base"
+      },
+      {
+        "key": "B",
+        "text": "Perpendicular"
+      },
+      {
+        "key": "C",
+        "text": "Hypotenuse"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 15,
+    "position": 8,
+    "question_text": "In the fig.",
+    "options": [
+      {
+        "key": "A",
+        "text": "x = 6cm"
+      },
+      {
+        "key": "B",
+        "text": "x = 8cm"
+      },
+      {
+        "key": "C",
+        "text": "x = 10cm"
+      },
+      {
+        "key": "D",
+        "text": "x = 16cm"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 15,
+    "position": 9,
+    "question_text": "In the fig.",
+    "options": [
+      {
+        "key": "A",
+        "text": "x = 5cm"
+      },
+      {
+        "key": "B",
+        "text": "x = 8cm"
+      },
+      {
+        "key": "C",
+        "text": "x = 12cm"
+      },
+      {
+        "key": "D",
+        "text": "x = 18cm"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 15,
+    "position": 10,
+    "question_text": "In the fig.",
+    "options": [
+      {
+        "key": "A",
+        "text": "x = 2cm"
+      },
+      {
+        "key": "B",
+        "text": "x = 1cm"
+      },
+      {
+        "key": "C",
+        "text": "x= 2cm"
+      },
+      {
+        "key": "D",
+        "text": "x = 3cm"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 15,
+    "position": 11,
+    "question_text": "In right angled triangle greater angle is ______.",
+    "options": [
+      {
+        "key": "A",
+        "text": "30 o"
+      },
+      {
+        "key": "B",
+        "text": "60o"
+      },
+      {
+        "key": "C",
+        "text": "90 o"
+      },
+      {
+        "key": "D",
+        "text": "120o"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 15,
+    "position": 12,
+    "question_text": "In right angled triangle on angle is o 90 and other two angles are_____",
+    "options": [
+      {
+        "key": "A",
+        "text": "obtuse"
+      },
+      {
+        "key": "B",
+        "text": "acute"
+      },
+      {
+        "key": "C",
+        "text": "right"
+      },
+      {
+        "key": "D",
+        "text": "supplementary"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 15,
+    "position": 13,
+    "question_text": "If hypotenuse of an isosceles right angled triangle is 2 then each of other side is:",
+    "options": [
+      {
+        "key": "A",
+        "text": "1cm"
+      },
+      {
+        "key": "B",
+        "text": "2cm"
+      },
+      {
+        "key": "C",
+        "text": "3cm"
+      },
+      {
+        "key": "D",
+        "text": "4cm"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 15,
+    "position": 14,
+    "question_text": "In right angled triangle which side is the longest side?",
+    "options": [
+      {
+        "key": "A",
+        "text": "perpendicular"
+      },
+      {
+        "key": "B",
+        "text": "base"
+      },
+      {
+        "key": "C",
+        "text": "hypotenuse"
+      },
+      {
+        "key": "D",
+        "text": "none of these"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 15,
+    "position": 15,
+    "question_text": "In right angled triangle if 90o m B \u0000 = then which of the following is true?",
+    "options": [
+      {
+        "key": "A",
+        "text": "2 2 2 a b c + ="
+      },
+      {
+        "key": "B",
+        "text": "2 2 2 a c b + ="
+      },
+      {
+        "key": "C",
+        "text": "2 2 2 b c a + ="
+      },
+      {
+        "key": "D",
+        "text": "2 2 2 a c b - ="
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 15,
+    "position": 16,
+    "question_text": "In a Isosceles right angled triangle two acute angles are equal to:",
+    "options": [
+      {
+        "key": "A",
+        "text": "30o"
+      },
+      {
+        "key": "B",
+        "text": "45o"
+      },
+      {
+        "key": "C",
+        "text": "60 o"
+      },
+      {
+        "key": "D",
+        "text": "90o 6cm 10cm x x 13cm 5cm x 1cm 2 cm"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 16,
+    "position": 1,
+    "question_text": "The region enclosed by the bounding lines of a closed figure is called the __ of the figure:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Area"
+      },
+      {
+        "key": "B",
+        "text": "Circle"
+      },
+      {
+        "key": "C",
+        "text": "Boundary"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 16,
+    "position": 2,
+    "question_text": "Base × altitude =",
+    "options": [
+      {
+        "key": "A",
+        "text": "Area of parallelogram"
+      },
+      {
+        "key": "B",
+        "text": "Area of square"
+      },
+      {
+        "key": "C",
+        "text": "Area of Rectangular"
+      },
+      {
+        "key": "D",
+        "text": "Area of Triangle"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 16,
+    "position": 3,
+    "question_text": "The union of a rectangle and its interior is called:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Circle region"
+      },
+      {
+        "key": "B",
+        "text": "Rectangular region"
+      },
+      {
+        "key": "C",
+        "text": "Triangle region"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 16,
+    "position": 4,
+    "question_text": "If a is the side of a square, its area will be equal to...",
+    "options": [
+      {
+        "key": "A",
+        "text": "a square unit"
+      },
+      {
+        "key": "B",
+        "text": "a2 square units"
+      },
+      {
+        "key": "C",
+        "text": "a3 square units"
+      },
+      {
+        "key": "D",
+        "text": "a4 square units"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 16,
+    "position": 5,
+    "question_text": "The union of a triangle and its interior is called as:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Triangular region"
+      },
+      {
+        "key": "B",
+        "text": "Rectangular region"
+      },
+      {
+        "key": "C",
+        "text": "Circle region"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 16,
+    "position": 6,
+    "question_text": "Altitude of a triangle means perpendicular distance to base from its opposite___",
+    "options": [
+      {
+        "key": "A",
+        "text": "Vertex"
+      },
+      {
+        "key": "B",
+        "text": "Side"
+      },
+      {
+        "key": "C",
+        "text": "Midpoint"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 16,
+    "position": 7,
+    "question_text": "Area of given figure is.......",
+    "options": [
+      {
+        "key": "A",
+        "text": "18cm"
+      },
+      {
+        "key": "B",
+        "text": "9cm"
+      },
+      {
+        "key": "C",
+        "text": "18cm2"
+      },
+      {
+        "key": "D",
+        "text": "9cm2"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 16,
+    "position": 8,
+    "question_text": "Area of given figure is......",
+    "options": [
+      {
+        "key": "A",
+        "text": "4cm"
+      },
+      {
+        "key": "B",
+        "text": "8cm2"
+      },
+      {
+        "key": "C",
+        "text": "16cm"
+      },
+      {
+        "key": "D",
+        "text": "16cm2"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 16,
+    "position": 9,
+    "question_text": "Area of given figure is......",
+    "options": [
+      {
+        "key": "A",
+        "text": "4cm2"
+      },
+      {
+        "key": "B",
+        "text": "12cm2"
+      },
+      {
+        "key": "C",
+        "text": "32cm"
+      },
+      {
+        "key": "D",
+        "text": "32cm2"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 16,
+    "position": 10,
+    "question_text": "Area of given figure is....",
+    "options": [
+      {
+        "key": "A",
+        "text": "160cm2"
+      },
+      {
+        "key": "B",
+        "text": "80cm2"
+      },
+      {
+        "key": "C",
+        "text": "80cm"
+      },
+      {
+        "key": "D",
+        "text": "160cm"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 16,
+    "position": 11,
+    "question_text": "Area of triangle is ......",
+    "options": [
+      {
+        "key": "A",
+        "text": "A = 1 2 Base x Height"
+      },
+      {
+        "key": "B",
+        "text": "A = Base x Height"
+      },
+      {
+        "key": "C",
+        "text": "A = L x w"
+      },
+      {
+        "key": "D",
+        "text": "A = L2"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 16,
+    "position": 12,
+    "question_text": "Area of square is ......",
+    "options": [
+      {
+        "key": "A",
+        "text": "A = 1 2 Base x Height"
+      },
+      {
+        "key": "B",
+        "text": "A = Base x Height"
+      },
+      {
+        "key": "C",
+        "text": "A = L x w"
+      },
+      {
+        "key": "D",
+        "text": "A = L2"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 16,
+    "position": 13,
+    "question_text": "Area of rectangle is ......",
+    "options": [
+      {
+        "key": "A",
+        "text": "A = 1 2 Base x Height"
+      },
+      {
+        "key": "B",
+        "text": "A = Base x Height"
+      },
+      {
+        "key": "C",
+        "text": "A = L x w"
+      },
+      {
+        "key": "D",
+        "text": "A = L2"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 16,
+    "position": 14,
+    "question_text": "Area of parallelogram is ...",
+    "options": [
+      {
+        "key": "A",
+        "text": "A = 1 2 Base x Height"
+      },
+      {
+        "key": "B",
+        "text": "A = Base x Height"
+      },
+      {
+        "key": "C",
+        "text": "A = L x w"
+      },
+      {
+        "key": "D",
+        "text": "A = L2"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 16,
+    "position": 15,
+    "question_text": "If the length and breadth of a rectangle are ‘a’ and ‘b’ then its area will be:",
+    "options": [
+      {
+        "key": "A",
+        "text": "a + b"
+      },
+      {
+        "key": "B",
+        "text": "a×b"
+      },
+      {
+        "key": "C",
+        "text": "a b -"
+      },
+      {
+        "key": "D",
+        "text": "a = b"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 16,
+    "position": 16,
+    "question_text": "In most cases similar figures have _____ areas.",
+    "options": [
+      {
+        "key": "A",
+        "text": "same"
+      },
+      {
+        "key": "B",
+        "text": "different"
+      },
+      {
+        "key": "C",
+        "text": "equal"
+      },
+      {
+        "key": "D",
+        "text": "congruent"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 16,
+    "position": 17,
+    "question_text": "All congruent figures have _____ areas.",
+    "options": [
+      {
+        "key": "A",
+        "text": "same"
+      },
+      {
+        "key": "B",
+        "text": "different"
+      },
+      {
+        "key": "C",
+        "text": "zero"
+      },
+      {
+        "key": "D",
+        "text": "non-congruent"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 1,
+    "question_text": "A triangle having two sides congruent is called: ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "Scalene"
+      },
+      {
+        "key": "B",
+        "text": "Right angled"
+      },
+      {
+        "key": "C",
+        "text": "Equilateral"
+      },
+      {
+        "key": "D",
+        "text": "Isosceles"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 17,
+    "position": 2,
+    "question_text": "A quadrilateral having each angle equal to 90o is called ____",
+    "options": [
+      {
+        "key": "A",
+        "text": "Parallelogram"
+      },
+      {
+        "key": "B",
+        "text": "Rectangle"
+      },
+      {
+        "key": "C",
+        "text": "Trapezium"
+      },
+      {
+        "key": "D",
+        "text": "Rhombus"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 3,
+    "question_text": "The right bisectors of the three sides of a triangle are ___",
+    "options": [
+      {
+        "key": "A",
+        "text": "Congruent"
+      },
+      {
+        "key": "B",
+        "text": "Collinear"
+      },
+      {
+        "key": "C",
+        "text": "Concurrent"
+      },
+      {
+        "key": "D",
+        "text": "Parallel"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 17,
+    "position": 4,
+    "question_text": "The __ altitudes of an isosceles triangle are congruent:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Two"
+      },
+      {
+        "key": "B",
+        "text": "Three"
+      },
+      {
+        "key": "C",
+        "text": "Four"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 5,
+    "question_text": "A point equidistant from the end points of a line segment is on its __",
+    "options": [
+      {
+        "key": "A",
+        "text": "Bisector"
+      },
+      {
+        "key": "B",
+        "text": "Right bisector"
+      },
+      {
+        "key": "C",
+        "text": "Perpendicular"
+      },
+      {
+        "key": "D",
+        "text": "Median"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 6,
+    "question_text": "___ congruent triangles can be made by joining the mid points of the sides of a triangle:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Three"
+      },
+      {
+        "key": "B",
+        "text": "Four"
+      },
+      {
+        "key": "C",
+        "text": "Five"
+      },
+      {
+        "key": "D",
+        "text": "Two"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 7,
+    "question_text": "The diagonals of a parallelogram ___ each other:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Bisect"
+      },
+      {
+        "key": "B",
+        "text": "Trisect"
+      },
+      {
+        "key": "C",
+        "text": "Bisect at right angle"
+      },
+      {
+        "key": "D",
+        "text": "None of these"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 8,
+    "question_text": "The medians of a triangle cut each other in the ratio:",
+    "options": [
+      {
+        "key": "A",
+        "text": "4:1"
+      },
+      {
+        "key": "B",
+        "text": "3:1"
+      },
+      {
+        "key": "C",
+        "text": "2:1"
+      },
+      {
+        "key": "D",
+        "text": "1:1"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 17,
+    "position": 9,
+    "question_text": "One angle on the base of an isosceles triangle is 30o. What is the measure of its vertical angle:",
+    "options": [
+      {
+        "key": "A",
+        "text": "30o"
+      },
+      {
+        "key": "B",
+        "text": "60o"
+      },
+      {
+        "key": "C",
+        "text": "90o"
+      },
+      {
+        "key": "D",
+        "text": "120o"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 17,
+    "position": 10,
+    "question_text": "If the three altitudes of a triangle are congruent then the triangle is _",
+    "options": [
+      {
+        "key": "A",
+        "text": "Equilateral"
+      },
+      {
+        "key": "B",
+        "text": "Right angled"
+      },
+      {
+        "key": "C",
+        "text": "Isosceles"
+      },
+      {
+        "key": "D",
+        "text": "Acute angled"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 11,
+    "question_text": "If two medians of a triangle are congruent then the triangle will be:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Isosceles"
+      },
+      {
+        "key": "B",
+        "text": "Equilateral"
+      },
+      {
+        "key": "C",
+        "text": "Right angled"
+      },
+      {
+        "key": "D",
+        "text": "Acute angled"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 12,
+    "question_text": "A line segment joining a vertex of a triangle to the midpoint of its opposite side is called a ___ of the triangle:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Altitude"
+      },
+      {
+        "key": "B",
+        "text": "Median"
+      },
+      {
+        "key": "C",
+        "text": "Angle bisector"
+      },
+      {
+        "key": "D",
+        "text": "Right bisector"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 13,
+    "question_text": "A line segment from a vertex of triangle perpendicular to the line containing the opposite side, is called an __ of the triangle:",
+    "options": [
+      {
+        "key": "A",
+        "text": "Altitude"
+      },
+      {
+        "key": "B",
+        "text": "Median"
+      },
+      {
+        "key": "C",
+        "text": "Angle bisector"
+      },
+      {
+        "key": "D",
+        "text": "Right bisector"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 14,
+    "question_text": "The point of concurrency of the three altitudes of a \u0000 is called its __",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ortho centre"
+      },
+      {
+        "key": "B",
+        "text": "In centre"
+      },
+      {
+        "key": "C",
+        "text": "Circumcentre"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 15,
+    "question_text": "The internal bisectors of the angles of a triangle meet at a point called the _____ of the triangle:",
+    "options": [
+      {
+        "key": "A",
+        "text": "In centre"
+      },
+      {
+        "key": "B",
+        "text": "Ortho centre"
+      },
+      {
+        "key": "C",
+        "text": "Circumcentre"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 16,
+    "question_text": "The point of concurrency of the three perpendicular bisectors of the sides of a triangle is called the ____ of the triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Circumcentre"
+      },
+      {
+        "key": "B",
+        "text": "In centre"
+      },
+      {
+        "key": "C",
+        "text": "Ortho centre"
+      },
+      {
+        "key": "D",
+        "text": "None"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 17,
+    "question_text": "Point of concurrency of three medians of a triangle is called.",
+    "options": [
+      {
+        "key": "A",
+        "text": "In centre three"
+      },
+      {
+        "key": "B",
+        "text": "Ortho centre"
+      },
+      {
+        "key": "C",
+        "text": "Centroid"
+      },
+      {
+        "key": "D",
+        "text": "Circumcentre"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 17,
+    "position": 18,
+    "question_text": "Sum of interior angles of a triangle is ......",
+    "options": [
+      {
+        "key": "A",
+        "text": "60o"
+      },
+      {
+        "key": "B",
+        "text": "120o"
+      },
+      {
+        "key": "C",
+        "text": "180o"
+      },
+      {
+        "key": "D",
+        "text": "240o"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 17,
+    "position": 19,
+    "question_text": "The side opposite to right angle in right angled triangle is called....",
+    "options": [
+      {
+        "key": "A",
+        "text": "Base"
+      },
+      {
+        "key": "B",
+        "text": "Perpendicular"
+      },
+      {
+        "key": "C",
+        "text": "Hypotenuse"
+      },
+      {
+        "key": "D",
+        "text": "Altitude"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 17,
+    "position": 20,
+    "question_text": "The altitudes of a right angled triangle are concurrent at the .....",
+    "options": [
+      {
+        "key": "A",
+        "text": "Midpoint of hypotenuse"
+      },
+      {
+        "key": "B",
+        "text": "Vertex of right angle"
+      },
+      {
+        "key": "C",
+        "text": "Midpoint of base"
+      },
+      {
+        "key": "D",
+        "text": "Vertical angle"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 21,
+    "question_text": "The triangles are said to be ..... if they are equiangular.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Congruent"
+      },
+      {
+        "key": "B",
+        "text": "Similar"
+      },
+      {
+        "key": "C",
+        "text": "Equal"
+      },
+      {
+        "key": "D",
+        "text": "Scalene"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 22,
+    "question_text": "All the ..... right bisectors of sides of triangle are concurrent.",
+    "options": [
+      {
+        "key": "A",
+        "text": "One"
+      },
+      {
+        "key": "B",
+        "text": "Two"
+      },
+      {
+        "key": "C",
+        "text": "Three"
+      },
+      {
+        "key": "D",
+        "text": "Four"
+      }
+    ],
+    "correct_answer": "C"
+  },
+  {
+    "chapter": 17,
+    "position": 23,
+    "question_text": "All the three bisectors of angles of triangle are......",
+    "options": [
+      {
+        "key": "A",
+        "text": "Congruent"
+      },
+      {
+        "key": "B",
+        "text": "Concurrent"
+      },
+      {
+        "key": "C",
+        "text": "Parallel"
+      },
+      {
+        "key": "D",
+        "text": "Perpendicular"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 24,
+    "question_text": "All the three medians of a triangle are........",
+    "options": [
+      {
+        "key": "A",
+        "text": "Congruent"
+      },
+      {
+        "key": "B",
+        "text": "Concurrent"
+      },
+      {
+        "key": "C",
+        "text": "Parallel"
+      },
+      {
+        "key": "D",
+        "text": "Perpendicular"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 25,
+    "question_text": "All the three altitudes of a triangle are.........",
+    "options": [
+      {
+        "key": "A",
+        "text": "Congruent"
+      },
+      {
+        "key": "B",
+        "text": "Concurrent"
+      },
+      {
+        "key": "C",
+        "text": "Parallel"
+      },
+      {
+        "key": "D",
+        "text": "Perpendicular"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 26,
+    "question_text": "In-centre is the point of concurrency of three..... of triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "Right bisectors"
+      },
+      {
+        "key": "B",
+        "text": "Angle bisectors"
+      },
+      {
+        "key": "C",
+        "text": "Altitudes"
+      },
+      {
+        "key": "D",
+        "text": "Medians"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 27,
+    "question_text": "Circumcentre is point of concurrency of three of three..... of triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "right bisectors"
+      },
+      {
+        "key": "B",
+        "text": "angle bisectors"
+      },
+      {
+        "key": "C",
+        "text": "altitudes"
+      },
+      {
+        "key": "D",
+        "text": "medians"
+      }
+    ],
+    "correct_answer": "A"
+  },
+  {
+    "chapter": 17,
+    "position": 28,
+    "question_text": "Centroid is the point of concurrency of three..... of triangle.",
+    "options": [
+      {
+        "key": "A",
+        "text": "right bisectors"
+      },
+      {
+        "key": "B",
+        "text": "angle bisectors"
+      },
+      {
+        "key": "C",
+        "text": "altitudes"
+      },
+      {
+        "key": "D",
+        "text": "medians"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 17,
+    "position": 29,
+    "question_text": "Three or more than three lines passing through the same point are called ...... Lines.",
+    "options": [
+      {
+        "key": "A",
+        "text": "congruent"
+      },
+      {
+        "key": "B",
+        "text": "concurrent"
+      },
+      {
+        "key": "C",
+        "text": "parallel"
+      },
+      {
+        "key": "D",
+        "text": "perpendicular"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 30,
+    "question_text": "The common point of three or more than three lines is called......",
+    "options": [
+      {
+        "key": "A",
+        "text": "central point"
+      },
+      {
+        "key": "B",
+        "text": "point of concurrency"
+      },
+      {
+        "key": "C",
+        "text": "vertex"
+      },
+      {
+        "key": "D",
+        "text": "centroid"
+      }
+    ],
+    "correct_answer": "B"
+  },
+  {
+    "chapter": 17,
+    "position": 31,
+    "question_text": "In right-angled triangle if one angle is 30o, then other angle will be.....:",
+    "options": [
+      {
+        "key": "A",
+        "text": "15o"
+      },
+      {
+        "key": "B",
+        "text": "30o"
+      },
+      {
+        "key": "C",
+        "text": "45o"
+      },
+      {
+        "key": "D",
+        "text": "60o"
+      }
+    ],
+    "correct_answer": "D"
+  },
+  {
+    "chapter": 17,
+    "position": 32,
+    "question_text": "In right-angled triangle if one angle is 60o, then other angle will be.....:",
+    "options": [
+      {
+        "key": "A",
+        "text": "15o"
+      },
+      {
+        "key": "B",
+        "text": "30o"
+      },
+      {
+        "key": "C",
+        "text": "45o"
+      },
+      {
+        "key": "D",
+        "text": "6"
+      }
+    ],
+    "correct_answer": "B"
+  }
+]

@@ -1,0 +1,60 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "MCQ Mentor" [ref=e5] [cursor=pointer]:
+          - /url: /dashboard
+        - navigation [ref=e6]:
+          - link "Dashboard" [ref=e7] [cursor=pointer]:
+            - /url: /dashboard
+          - link "Materials" [ref=e8] [cursor=pointer]:
+            - /url: /materials
+          - link "Mistakes" [ref=e9] [cursor=pointer]:
+            - /url: /mistakes
+          - link "Settings" [ref=e10] [cursor=pointer]:
+            - /url: /settings
+      - generic [ref=e11]:
+        - button "Toggle theme" [ref=e12]:
+          - img
+        - button "Sign out" [ref=e14]
+  - main [ref=e350]:
+    - generic [ref=e351]:
+      - generic [ref=e352]:
+        - generic [ref=e353]:
+          - generic [ref=e354]: Question 25 of 25
+          - generic [ref=e355]: 100%
+        - progressbar [ref=e356]
+      - generic [ref=e359]:
+        - paragraph [ref=e360]: "If a + b A = a -b , then 1 A is:"
+        - radiogroup [ref=e361]:
+          - generic [ref=e362]:
+            - radio "A. a b a b - +" [checked] [ref=e380]:
+              - img [ref=e381]
+            - generic [ref=e364] [cursor=pointer]:
+              - generic [ref=e365]: A.
+              - text: a b a b - +
+          - generic [ref=e366]:
+            - radio "B. a b a b + -" [ref=e383]
+            - generic [ref=e368] [cursor=pointer]:
+              - generic [ref=e369]: B.
+              - text: a b a b + -
+          - generic [ref=e370]:
+            - radio "C. a b a b - -" [ref=e384]
+            - generic [ref=e372] [cursor=pointer]:
+              - generic [ref=e373]: C.
+              - text: a b a b - -
+          - generic [ref=e374]:
+            - radio "D. a b a b + +" [ref=e385]
+            - generic [ref=e376] [cursor=pointer]:
+              - generic [ref=e377]: D.
+              - text: a b a b + +
+      - alert [ref=e388]:
+        - generic [ref=e389]: Could not submit
+        - generic [ref=e390]: Failed to fetch
+      - generic [ref=e378]:
+        - button "Previous" [ref=e386]
+        - button "Submit quiz" [ref=e387]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e337] [cursor=pointer]:
+    - img [ref=e338]
+  - alert [ref=e341]

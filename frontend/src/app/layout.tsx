@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppNav } from "@/components/app-nav";
+import { SiteFooter } from "@/components/site-footer";
 
 import "./globals.css";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AppNav />
           <div className="flex-1">{children}</div>
+          <SiteFooter />
           <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>

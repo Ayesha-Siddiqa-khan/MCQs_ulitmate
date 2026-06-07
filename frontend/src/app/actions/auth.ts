@@ -9,10 +9,7 @@ import { redirect } from "next/navigation";
 
 import { getApiBase } from "@/lib/env";
 
-export type AuthResult = { error?: string } | undefined;
-
-const COOKIE_MAX_AGE_ACCESS = 60 * 60;
-const COOKIE_MAX_AGE_REFRESH = 60 * 60 * 24 * 7;
+export type AuthResult = { error?: string; success?: string; retryAfterSeconds?: number } | undefined;
 
 async function callAuth(
   path: string,
@@ -117,10 +114,13 @@ export async function signUpAction(formData: FormData): Promise<AuthResult> {
   if (password.length < 8) return { error: "Password must be at least 8 characters." };
 
   const { user, error } = await callAuth("/auth/signup", { email, password });
-  if (error) return { error };
-  if (!user) {
+  if (error) {
+    const retryAfterSeconds = error.toLowerCase().includes("signup email limit") ? 300 : undefined;
+    return { error, retryAfterSeconds };
+  }
+  if (!user?.id) {
     // No session: account created but email confirmation required.
-    return { error: "Account created. Check your email to confirm before signing in." };
+    return { success: "Account created. Check your email to confirm before signing in." };
   }
   redirect("/dashboard");
 }
@@ -142,7 +142,7 @@ export async function signOutAction(): Promise<void> {
     // best-effort: also clear locally
   }
   const jar = await cookies();
-  jar.delete("mcq_access_token", { path: "/" });
-  jar.delete("mcq_refresh_token", { path: "/" });
+  jar.delete("mcq_access_token");
+  jar.delete("mcq_refresh_token");
   redirect("/login");
 }

@@ -17,7 +17,7 @@ export interface ApiOptions {
 }
 
 export function getApiBase(): string {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
   if (!base) {
     const isProd = process.env.VERCEL === "1" || process.env.NODE_ENV === "production";
     throw new Error(
@@ -31,8 +31,31 @@ export function getApiBase(): string {
   return base.replace(/\/+$/, "");
 }
 
+export function buildApiUrl(path: string): string {
+  const base = getApiBase();
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+
+  if (base.startsWith("http://") || base.startsWith("https://")) {
+    return `${base}${cleanPath}`;
+  }
+
+  if (base.startsWith("/")) {
+    if (typeof window !== "undefined") {
+      return `${base}${cleanPath}`;
+    }
+    const origin = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000";
+    return `${origin}${base}${cleanPath}`;
+  }
+
+  throw new Error(
+    "Invalid NEXT_PUBLIC_API_BASE_URL. Use /api, http://localhost:8000, or https://your-domain.com/api.",
+  );
+}
+
 export function buildUrl(path: string, query?: ApiOptions["query"]): string {
-  const url = new URL(path, getApiBase() + "/");
+  const url = new URL(buildApiUrl(path), typeof window !== "undefined" ? window.location.origin : "http://localhost");
   if (query) {
     for (const [k, v] of Object.entries(query)) {
       if (v === undefined || v === null) continue;

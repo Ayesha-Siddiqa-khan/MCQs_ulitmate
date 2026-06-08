@@ -5,7 +5,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getApiBase } from "@/lib/env";
+import { buildApiUrl } from "@/lib/api-shared";
 
 export type AuthUser = { id: string; email: string | null };
 
@@ -17,7 +17,7 @@ async function backendGetMe(): Promise<AuthUser | null> {
     .join("; ");
   if (!cookieHeader) return null;
   try {
-    const res = await fetch(new URL("/auth/me", getApiBase() + "/"), {
+    const res = await fetch(buildApiUrl("/auth/me"), {
       method: "GET",
       headers: { Cookie: cookieHeader, Accept: "application/json" },
       cache: "no-store",

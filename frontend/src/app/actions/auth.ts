@@ -7,7 +7,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getApiBase } from "@/lib/env";
+import { buildApiUrl } from "@/lib/api-shared";
 
 export type AuthResult = { error?: string; success?: string; retryAfterSeconds?: number } | undefined;
 
@@ -17,7 +17,7 @@ async function callAuth(
 ): Promise<{ user: { id: string; email: string | null } | null; error: string | null }> {
   let res: Response;
   try {
-    res = await fetch(new URL(path, getApiBase() + "/"), {
+    res = await fetch(buildApiUrl(path), {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(body),
@@ -137,7 +137,7 @@ export async function signOutAction(): Promise<void> {
     .map((c) => `${c.name}=${c.value}`)
     .join("; ");
   try {
-    const res = await fetch(new URL("/auth/logout", getApiBase() + "/"), {
+    const res = await fetch(buildApiUrl("/auth/logout"), {
       method: "POST",
       headers: cookieHeader ? { Cookie: cookieHeader } : {},
       cache: "no-store",

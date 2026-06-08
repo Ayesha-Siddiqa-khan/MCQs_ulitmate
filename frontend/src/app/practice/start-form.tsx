@@ -99,10 +99,10 @@ export function PracticeStartForm() {
     startTransition(async () => {
       try {
         const resp = await api<StartPracticeResponse>("/mistakes/practice-session", {
-          json: { filter },
+          json: filter,
         });
         router.push(
-          `/quiz/${resp.quiz_attempt_id}?setId=${encodeURIComponent(resp.question_set_id)}`,
+          `/quiz/${resp.quiz_attempt_id}`,
         );
       } catch (e) {
         if (e instanceof ApiCallError && e.status === 404) {
@@ -121,8 +121,8 @@ export function PracticeStartForm() {
       <CardHeader>
         <CardTitle>Practice your mistakes</CardTitle>
         <CardDescription>
-          Pulls the questions you&apos;ve gotten wrong most often into a new quiz. The set is
-          ephemeral — your original mistake bank isn&apos;t touched.
+          Pulls the questions you&apos;ve gotten wrong most often into a new quiz. Mastery updates
+          after you submit the practice attempt.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">

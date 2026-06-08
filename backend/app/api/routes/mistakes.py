@@ -3,13 +3,14 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from supabase import Client
 
 from app.core.security import CurrentUserDep
 from app.db.supabase_client import get_user_client
-from app.schemas.common import QuestionSetMode, QuizMode
+from app.schemas.common import MasteryStatus, QuestionSetMode, QuizMode
 from app.schemas.mistakes import (
+    DeleteMistakesResponse,
     MistakeFilter,
     MistakeOut,
     MistakeRecommendation,
@@ -60,6 +61,60 @@ async def recommendations(
     return build_recommendations(res.data or [])
 
 
+@router.delete("/all", response_model=DeleteMistakesResponse)
+async def clear_all_mistakes(
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+) -> DeleteMistakesResponse:
+    rows = db.table("mistake_bank").select("id").eq("user_id", user.id).execute().data or []
+    if rows:
+        db.table("mistake_bank").delete().eq("user_id", user.id).execute()
+    return DeleteMistakesResponse(deleted=len(rows), status=None)
+
+
+@router.delete("", response_model=DeleteMistakesResponse)
+async def clear_mistakes_by_status(
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+    status: Annotated[MasteryStatus | None, Query()] = None,
+) -> DeleteMistakesResponse:
+    if status is None:
+        raise HTTPException(status_code=400, detail="status query parameter is required")
+    rows = (
+        db.table("mistake_bank")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("mastery_status", status.value)
+        .execute()
+        .data
+        or []
+    )
+    if rows:
+        db.table("mistake_bank").delete().eq("user_id", user.id).eq("mastery_status", status.value).execute()
+    return DeleteMistakesResponse(deleted=len(rows), status=status)
+
+
+@router.delete("/{mistake_id}", response_model=DeleteMistakesResponse)
+async def delete_mistake(
+    mistake_id: str,
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+) -> DeleteMistakesResponse:
+    row = (
+        db.table("mistake_bank")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("id", mistake_id)
+        .maybe_single()
+        .execute()
+        .data
+    )
+    if row is None:
+        raise HTTPException(status_code=404, detail="mistake not found")
+    db.table("mistake_bank").delete().eq("user_id", user.id).eq("id", mistake_id).execute()
+    return DeleteMistakesResponse(deleted=1, status=None)
+
+
 @router.post("/practice-session", response_model=StartPracticeResponse, status_code=201)
 async def start_mistake_practice(
     user: CurrentUserDep,
@@ -93,7 +148,9 @@ async def start_mistake_practice(
     if not rows:
         raise HTTPException(status_code=404, detail="no mistakes match this filter")
 
-    # Build an ephemeral question_set whose questions reference the existing ones.
+    # Build an ephemeral question_set for navigation, then attach the original
+    # mistake question IDs to the attempt. This keeps mastery updates tied to
+    # the real mistake_bank rows instead of cloned question IDs.
     qset = (
         db.table("question_sets")
         .insert(
@@ -108,31 +165,6 @@ async def start_mistake_practice(
         .data[0]
     )
 
-    # Clone the existing question rows into the new set so the quiz pipeline is uniform.
-    clones = []
-    for i, r in enumerate(rows):
-        q_src = r["question"]
-        clones.append(
-            {
-                "user_id": user.id,
-                "question_set_id": qset["id"],
-                "material_id": q_src.get("material_id"),
-                "position": i,
-                "question_text": q_src["question_text"],
-                "options_json": q_src.get("options_json") or [],
-                "correct_answer": q_src.get("correct_answer"),
-                "explanation": q_src.get("explanation"),
-                "key_points": q_src.get("key_points"),
-                "subject": q_src.get("subject"),
-                "chapter": q_src.get("chapter"),
-                "topic": q_src.get("topic"),
-                "difficulty": q_src.get("difficulty"),
-                "source_type": q_src.get("source_type") or "ai_generated",
-                "source_chunk": q_src.get("source_chunk"),
-            }
-        )
-    db.table("questions").insert(clones).execute()
-
     attempt = (
         db.table("quiz_attempts")
         .insert(
@@ -146,6 +178,22 @@ async def start_mistake_practice(
         .execute()
         .data[0]
     )
+
+    db.table("question_attempts").insert(
+        [
+            {
+                "user_id": user.id,
+                "quiz_attempt_id": attempt["id"],
+                "question_id": r["question"]["id"],
+                "selected_answer": None,
+                "correct_answer": r["question"].get("correct_answer"),
+                "is_correct": None,
+                "is_marked": False,
+                "time_spent_seconds": 0,
+            }
+            for r in rows
+        ]
+    ).execute()
 
     practice = (
         db.table("practice_sessions")

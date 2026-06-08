@@ -45,7 +45,7 @@ class SignupBody(BaseModel):
 
 
 class LoginBody(SignupBody):
-    pass
+    remember_me: bool = False
 
 
 class AuthResponse(BaseModel):
@@ -79,7 +79,11 @@ def _signup_error_response(exc: Exception) -> tuple[int, str]:
     return status.HTTP_400_BAD_REQUEST, "Could not create account."
 
 
-def _set_session_cookies(response: Response, session: dict[str, Any] | None) -> None:
+def _set_session_cookies(
+    response: Response,
+    session: dict[str, Any] | None,
+    remember_me: bool = True,
+) -> None:
     """Mirror the Supabase session onto HttpOnly cookies."""
     if not session:
         return
@@ -91,10 +95,12 @@ def _set_session_cookies(response: Response, session: dict[str, Any] | None) -> 
         "secure": False,  # set True behind HTTPS in production via env if you want
         "path": "/",
     }
+    access_options = {"max_age": 60 * 60} if remember_me else {}
+    refresh_options = {"max_age": 60 * 60 * 24 * 7} if remember_me else {}
     if access:
-        response.set_cookie(ACCESS_COOKIE, access, max_age=60 * 60, **common)
+        response.set_cookie(ACCESS_COOKIE, access, **access_options, **common)
     if refresh:
-        response.set_cookie(REFRESH_COOKIE, refresh, max_age=60 * 60 * 24 * 7, **common)
+        response.set_cookie(REFRESH_COOKIE, refresh, **refresh_options, **common)
 
 
 def _clear_session_cookies(response: Response) -> None:
@@ -145,7 +151,11 @@ async def login(
     if user is None or session is None:
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
-    _set_session_cookies(response, session.model_dump() if hasattr(session, "model_dump") else session)
+    _set_session_cookies(
+        response,
+        session.model_dump() if hasattr(session, "model_dump") else session,
+        remember_me=body.remember_me,
+    )
     return AuthResponse(id=user.id, email=user.email)
 
 

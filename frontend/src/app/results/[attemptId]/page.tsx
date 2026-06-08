@@ -16,9 +16,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { PageHeader } from "@/components/page-header";
+import { TemporarySessionActions } from "@/app/results/[attemptId]/temporary-actions";
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
-import { type QuizResult, type TopicBreakdown } from "@/lib/types";
+import { type QuizResult, type TopicBreakdown, type QuestionSet, type Material } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 function scoreTone(percentage: number): string {
@@ -50,12 +51,29 @@ export default async function ResultsPage({
   const { attemptId } = await params;
 
   let result: QuizResult | null = null;
+  let isTemporary = false;
+  let materialId: string | null = null;
   let error: string | null = null;
+
   try {
     result = await api<QuizResult>(`/quiz-attempts/${attemptId}/result`);
+
+    if (result?.question_set_id) {
+      try {
+        const qset = await api<QuestionSet>(`/question-sets/${result.question_set_id}`);
+        if (qset?.material_id) {
+          materialId = qset.material_id;
+          const material = await api<Material>(`/materials/${materialId}`);
+          isTemporary = material.storage_mode === "temporary";
+        }
+      } catch {
+        // Non-critical: just don't show temporary actions
+      }
+    }
   } catch (e) {
     error = (e as Error).message;
   }
+
   if (error) {
     return (
       <main className="mx-auto max-w-3xl space-y-4 px-4 py-8">
@@ -91,6 +109,10 @@ export default async function ResultsPage({
         icon={BarChart3}
       />
 
+      {isTemporary && materialId ? (
+        <TemporarySessionActions materialId={materialId} attemptId={attemptId} />
+      ) : null}
+
       <Card className={cn("border-2 bg-gradient-to-br", scoreBg(r.percentage))}>
         <CardHeader>
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -98,6 +120,9 @@ export default async function ResultsPage({
               <CardDescription>Overall score</CardDescription>
               <p className={cn("text-5xl font-bold tracking-tight", scoreTone(r.percentage))}>
                 {pct}%
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {r.score}/{r.total_questions} points
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -117,17 +142,17 @@ export default async function ResultsPage({
         </CardHeader>
         <CardContent>
           <Progress value={pct} className="h-3" />
-          {r.incorrect > 0 ? (
+          {r.incorrect > 0 && !isTemporary ? (
             <Button asChild className="mt-4">
               <Link href="/practice">
-                <Sparkles className="mr-2 h-4 w-4" /> Practice my mistakes
+                <Sparkles className="mr-2 h-4 w-4" /> Practice wrong questions again
               </Link>
             </Button>
-          ) : (
+          ) : !isTemporary ? (
             <Button asChild variant="outline" className="mt-4">
               <Link href="/materials">Back to materials</Link>
             </Button>
-          )}
+          ) : null}
         </CardContent>
       </Card>
 
@@ -220,13 +245,13 @@ export default async function ResultsPage({
                       <span className="text-muted-foreground">Your answer: </span>
                       {qr.selected_answer}
                     </p>
-                    {q?.explanation ? (
-                      <p>
-                        <span className="text-muted-foreground">Explanation: </span>
-                        {q.explanation}
-                      </p>
-                    ) : null}
                   </div>
+                ) : null}
+                {q?.explanation ? (
+                  <p className="rounded-md bg-background/70 p-3 text-sm">
+                    <span className="font-medium">Explanation: </span>
+                    <span className="text-muted-foreground">{q.explanation}</span>
+                  </p>
                 ) : null}
               </div>
             );

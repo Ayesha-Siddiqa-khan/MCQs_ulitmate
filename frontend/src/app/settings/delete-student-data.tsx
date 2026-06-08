@@ -61,21 +61,24 @@ export function DeleteStudentData() {
     <div className="space-y-4">
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          Remove this student&apos;s materials, extracted questions, quiz attempts, practice
-          sessions, and mistake history. The account and AI key stay in place.
+          Clear all uploaded materials, extracted text, generated question sets, questions, quiz
+          attempts, question answers, mistake records, practice sessions, and stored files. Your
+          account and saved AI key stay in place.
         </p>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant="destructive">
               <Trash2 className="mr-2 h-4 w-4" />
-              Delete old study data
+              Clear all study data
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Delete old study data?</DialogTitle>
+              <DialogTitle>Clear all study data?</DialogTitle>
               <DialogDescription>
-                This clears the current student&apos;s study data only. It cannot be undone.
+                This removes every material, extracted question, quiz attempt, mistake record,
+                practice session, and uploaded file for this student. It cannot be undone. The
+                account and AI key are not removed.
               </DialogDescription>
             </DialogHeader>
 
@@ -101,7 +104,7 @@ export function DeleteStudentData() {
                 Cancel
               </Button>
               <Button variant="destructive" onClick={onDelete} disabled={pending || confirm !== "DELETE"}>
-                {pending ? "Deleting..." : "Delete data"}
+                {pending ? "Clearing..." : "Clear all study data"}
               </Button>
             </DialogFooter>
           </DialogContent>

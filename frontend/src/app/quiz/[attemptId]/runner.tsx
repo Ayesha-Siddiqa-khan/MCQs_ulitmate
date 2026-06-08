@@ -14,9 +14,55 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { type Question, type QuizResult } from "@/lib/types";
+import { type QuestionPublic, type QuizResult } from "@/lib/types";
 
-export function QuizRunner({ attemptId, questions }: { attemptId: string; questions: Question[] }) {
+function describeSubmitError(error: unknown): string {
+  if (error instanceof ApiCallError) {
+    const detail = error.detail || "";
+    const lower = detail.toLowerCase();
+
+    if (error.status === 400 && lower.includes("answer all questions")) {
+      return "Some answers could not be saved. Please try submitting again.";
+    }
+    if (error.status === 401) {
+      return "Please sign in again before submitting your quiz.";
+    }
+    if (error.status === 403 || lower.includes("row-level security") || lower.includes("permission")) {
+      return "Your result could not be saved because database permissions rejected the request.";
+    }
+    if (error.status >= 500) {
+      return "Quiz submit service hit a server error while saving your result. Please try again.";
+    }
+
+    return detail || `Quiz submit failed with status ${error.status}.`;
+  }
+
+  if (error instanceof TypeError && /fetch|network|load/i.test(error.message)) {
+    return "Quiz submit service is not reachable. Please make sure the backend is running.";
+  }
+
+  return "Quiz could not be submitted. Please try again.";
+}
+
+function logSubmitFailure(
+  error: unknown,
+  payloadShape: { attemptId: string; totalQuestions: number; answeredCount: number },
+) {
+  if (process.env.NODE_ENV === "production") return;
+  const details =
+    error instanceof ApiCallError
+      ? { status: error.status, detail: error.detail }
+      : { message: error instanceof Error ? error.message : String(error) };
+  console.error("[quiz-submit]", { ...payloadShape, ...details });
+}
+
+export function QuizRunner({
+  attemptId,
+  questions,
+}: {
+  attemptId: string;
+  questions: QuestionPublic[];
+}) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -33,6 +79,29 @@ export function QuizRunner({ attemptId, questions }: { attemptId: string; questi
     () => questions.filter((q) => (answers[q.id] ?? "").trim().length > 0).length,
     [questions, answers],
   );
+  const navItems = useMemo(() => {
+    if (total <= 60) {
+      return Array.from({ length: total }, (_, i) => ({ type: "button" as const, index: i }));
+    }
+
+    const visible = new Set<number>([0, total - 1, index]);
+    for (let i = Math.max(0, index - 2); i <= Math.min(total - 1, index + 2); i += 1) {
+      visible.add(i);
+    }
+
+    const sorted = Array.from(visible).sort((a, b) => a - b);
+    const items: Array<{ type: "button"; index: number } | { type: "ellipsis"; key: string }> =
+      [];
+    let previous = -1;
+    for (const currentIndex of sorted) {
+      if (previous >= 0 && currentIndex - previous > 1) {
+        items.push({ type: "ellipsis", key: `${previous}-${currentIndex}` });
+      }
+      items.push({ type: "button", index: currentIndex });
+      previous = currentIndex;
+    }
+    return items;
+  }, [index, total]);
 
   function setAnswer(qid: string, val: string) {
     setAnswers((prev) => ({ ...prev, [qid]: val }));
@@ -47,16 +116,18 @@ export function QuizRunner({ attemptId, questions }: { attemptId: string; questi
 
   function submit() {
     setError(null);
+    const payload = {
+      answers: questions.map((q) => ({
+        question_id: q.id,
+        selected_answer: (answers[q.id] ?? "").trim() || null,
+      })),
+    };
+
     startTransition(async () => {
       try {
         const r = await api<QuizResult>(`/quiz-attempts/${attemptId}/submit`, {
           method: "POST",
-          json: {
-            answers: questions.map((q) => ({
-              question_id: q.id,
-              selected_answer: answers[q.id] ?? null,
-            })),
-          },
+          json: payload,
         });
         router.replace(`/results/${r.attempt_id}`);
       } catch (e) {
@@ -64,7 +135,12 @@ export function QuizRunner({ attemptId, questions }: { attemptId: string; questi
           router.replace(`/results/${attemptId}`);
           return;
         }
-        setError((e as Error).message);
+        logSubmitFailure(e, {
+          attemptId,
+          totalQuestions: total,
+          answeredCount,
+        });
+        setError(describeSubmitError(e));
       }
     });
   }
@@ -87,9 +163,10 @@ export function QuizRunner({ attemptId, questions }: { attemptId: string; questi
             Question {index + 1} <span className="text-muted-foreground">of {total}</span>
           </span>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
+          <span className="inline-flex items-center gap-1">
               <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> {answeredCount} answered
             </span>
+            {answeredCount < total ? <span>{total - answeredCount} skipped</span> : null}
             <span>{progress}%</span>
           </div>
         </div>
@@ -178,7 +255,20 @@ export function QuizRunner({ attemptId, questions }: { attemptId: string; questi
           <ArrowLeft className="h-4 w-4" /> Previous
         </Button>
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-          {Array.from({ length: total }).map((_, i) => {
+          {navItems.map((item) => {
+            if (item.type === "ellipsis") {
+              return (
+                <span
+                  key={item.key}
+                  aria-hidden="true"
+                  className="inline-flex h-7 w-7 items-center justify-center text-xs"
+                >
+                  ...
+                </span>
+              );
+            }
+
+            const i = item.index;
             const qid = questions[i].id;
             const isCurrent = i === index;
             const isAnswered = (answers[qid] ?? "").trim().length > 0;

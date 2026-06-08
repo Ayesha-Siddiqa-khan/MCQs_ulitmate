@@ -51,3 +51,8 @@ class MistakeRecommendation(BaseModel):
     reason: str
     count: int
     filter: MistakeFilter
+
+
+class DeleteMistakesResponse(BaseModel):
+    deleted: int
+    status: MasteryStatus | None = None

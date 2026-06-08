@@ -30,6 +30,7 @@ class MaterialOut(BaseModel):
     topic: str | None = None
     exam_type: str | None = None
     status: MaterialStatus
+    storage_mode: str = "saved"
     size_bytes: int | None = None
     page_count: int | None = None
     notes: str | None = None
@@ -42,3 +43,37 @@ class ExtractTextResponse(BaseModel):
     text: str
     page_count: int | None = None
     warning: str | None = None  # e.g. "This file may require OCR"
+
+
+class ExtractPreviewResponse(BaseModel):
+    material_id: str
+    total_detected: int
+    with_answers: int
+    without_answers: int
+    with_explanations: int
+    duplicates: int
+    confidence: str  # "high", "medium", "low", "none"
+    warnings: list[str] = []
+
+
+class MaterialUsageResponse(BaseModel):
+    used: int
+    limit: int
+    remaining: int
+
+
+class DeleteMaterialResponse(BaseModel):
+    material_id: str
+    deleted: dict[str, int]
+    storage_paths_removed: int = 0
+    warning: str | None = None
+
+
+class SaveTemporaryRequest(BaseModel):
+    save_mode: str = "save_material"  # "save_material", "save_mistakes_only", "discard"
+
+
+class SaveTemporaryResponse(BaseModel):
+    material_id: str
+    action: str  # "saved", "mistakes_saved", "discarded"
+    message: str

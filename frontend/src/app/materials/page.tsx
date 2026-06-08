@@ -5,16 +5,19 @@ import { MaterialsBrowser } from "@/app/materials/materials-browser";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
-import { type Material } from "@/lib/types";
+import { type Material, type MaterialUsage } from "@/lib/types";
 
 export default async function MaterialsPage() {
   await requireUser();
   let materials: Material[] = [];
+  let usage: MaterialUsage = { used: 0, limit: 5, remaining: 5 };
   let error: string | null = null;
   try {
     materials = await api<Material[]>("/materials");
+    usage = await api<MaterialUsage>("/materials/usage");
   } catch (e) {
     error = (e as Error).message;
+    usage = { used: materials.length, limit: 5, remaining: Math.max(0, 5 - materials.length) };
   }
 
   return (
@@ -33,7 +36,7 @@ export default async function MaterialsPage() {
         </Card>
       ) : null}
 
-      <MaterialsBrowser materials={materials} />
+      <MaterialsBrowser materials={materials} usage={usage} />
     </main>
   );
 }

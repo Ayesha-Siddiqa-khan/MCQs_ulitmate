@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.routes import auth as auth_routes
+from app.api.routes import config as config_routes
 from app.api.routes import dashboard, materials, mistakes, question_sets, quiz_attempts
 from app.api.routes import settings as settings_routes
 from app.core.config import get_settings
@@ -36,6 +37,8 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(Exception)
     async def _unhandled(request: Request, exc: Exception):
+        if isinstance(exc, HTTPException):
+            return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
         log.exception("unhandled error on %s %s", request.method, request.url)
         return JSONResponse(status_code=500, content={"detail": "internal server error"})
 
@@ -49,6 +52,7 @@ def create_app() -> FastAPI:
 
     app.include_router(auth_routes.router)
     app.include_router(settings_routes.router)
+    app.include_router(config_routes.router)
     app.include_router(materials.router)
     app.include_router(question_sets.router)
     app.include_router(quiz_attempts.router)

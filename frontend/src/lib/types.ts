@@ -16,6 +16,8 @@ export type MaterialFileType =
 
 export type MaterialStatus = "uploaded" | "extracted" | "failed" | "manual";
 
+export type StorageMode = "saved" | "temporary";
+
 export type QuestionSetMode = "extract_existing" | "generate_mcq" | "generate_short";
 
 export type QuestionSource = "extracted" | "ai_generated" | "manual";
@@ -41,6 +43,7 @@ export interface Material {
   topic: string | null;
   exam_type: string | null;
   status: MaterialStatus;
+  storage_mode: StorageMode;
   size_bytes: number | null;
   page_count: number | null;
   notes: string | null;
@@ -53,6 +56,46 @@ export interface ExtractTextResponse {
   text: string;
   page_count: number | null;
   warning: string | null;
+}
+
+export interface MaterialUsage {
+  used: number;
+  limit: number;
+  remaining: number;
+}
+
+export interface DeleteMaterialResponse {
+  material_id: string;
+  deleted: Record<string, number>;
+  storage_paths_removed: number;
+  warning: string | null;
+}
+
+export interface ExtractPreviewResponse {
+  material_id: string;
+  total_detected: number;
+  with_answers: number;
+  without_answers: number;
+  with_explanations: number;
+  duplicates: number;
+  confidence: string;
+  warnings: string[];
+}
+
+export interface UploadLimits {
+  max_upload_mb: number;
+  max_materials_per_user: number;
+  allowed_extensions: string[];
+}
+
+export interface SaveTemporaryRequest {
+  save_mode: "save_material" | "save_mistakes_only" | "discard";
+}
+
+export interface SaveTemporaryResponse {
+  material_id: string;
+  action: string;
+  message: string;
 }
 
 export interface Question {
@@ -78,6 +121,10 @@ export interface QuestionPublic {
   position: number;
   question_text: string;
   options: Option[];
+  subject: string | null;
+  chapter: string | null;
+  topic: string | null;
+  difficulty: Difficulty | null;
 }
 
 export interface QuestionSet {
@@ -184,6 +231,11 @@ export interface MistakeRecommendation {
   filter: MistakeFilter;
 }
 
+export interface DeleteMistakesResponse {
+  deleted: number;
+  status: MasteryStatus | null;
+}
+
 export interface StartPracticeResponse {
   practice_session_id: string;
   quiz_attempt_id: string;
@@ -195,6 +247,16 @@ export interface StartQuizResponse {
   attempt_id: string;
   question_set_id: string;
   mode: QuizMode;
+  started_at: string;
+  questions: QuestionPublic[];
+}
+
+export interface QuizAttemptDetail {
+  attempt_id: string;
+  question_set_id: string;
+  mode: QuizMode;
+  total_questions: number;
+  is_submitted: boolean;
   started_at: string;
   questions: QuestionPublic[];
 }

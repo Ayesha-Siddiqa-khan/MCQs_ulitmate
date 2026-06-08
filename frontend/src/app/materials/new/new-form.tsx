@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { FileText, Type } from "lucide-react";
+import { FileText, Type, Save, Zap } from "lucide-react";
 
 import { api, apiUpload } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
@@ -22,22 +22,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { type Material } from "@/lib/types";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { type Material, type MaterialUsage, type UploadLimits } from "@/lib/types";
 
-const fileSchema = z.object({
-  title: z.string().min(1, "Title is required").max(200),
-  file: z
-    .custom<File>((v) => v instanceof File, "Pick a file")
-    .refine((f) => f.size <= 20 * 1024 * 1024, "Max 20 MB")
-    .refine(
-      (f) =>
-        [
-          "application/pdf",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ].includes(f.type),
-      "Only PDF or DOCX",
-    ),
-});
+const ACCEPTED_MIME = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/plain",
+  "text/markdown",
+  "text/csv",
+  "application/json",
+].join(",");
+
+const ACCEPTED_EXTENSIONS = ".pdf,.docx,.txt,.md,.csv,.json";
+
+function buildFileSchema(maxMb: number) {
+  return z.object({
+    title: z.string().min(1, "Title is required").max(200),
+    file: z
+      .custom<File>((v) => v instanceof File, "Pick a file")
+      .refine((f) => f.size <= maxMb * 1024 * 1024, `Max ${maxMb} MB`),
+  });
+}
 
 const pasteSchema = z.object({
   title: z.string().min(1, "Title is required").max(200),
@@ -47,14 +54,26 @@ const pasteSchema = z.object({
   topic: z.string().max(100).optional().or(z.literal("")),
 });
 
-type FileValues = z.infer<typeof fileSchema>;
 type PasteValues = z.infer<typeof pasteSchema>;
 
-export function MaterialNewForm() {
+export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
   const router = useRouter();
   const [tab, setTab] = useState<"file" | "paste">("file");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [storageMode, setStorageMode] = useState<"saved" | "temporary">("saved");
+  const [limits, setLimits] = useState<UploadLimits | null>(null);
+
+  useEffect(() => {
+    api<UploadLimits>("/config/upload-limits").then(setLimits).catch(() => {
+      setLimits({ max_upload_mb: 50, max_materials_per_user: 5, allowed_extensions: ["pdf","docx","txt","md","csv","json"] });
+    });
+  }, []);
+
+  const maxMb = limits?.max_upload_mb ?? 50;
+  const fileSchema = buildFileSchema(maxMb);
+
+  type FileValues = z.infer<typeof fileSchema>;
 
   const fileForm = useForm<FileValues>({
     resolver: zodResolver(fileSchema),
@@ -66,10 +85,15 @@ export function MaterialNewForm() {
   });
 
   function onFileSubmit(values: FileValues) {
+    if (storageMode === "saved" && usage.used >= usage.limit) {
+      setError("You have reached the 5-material limit. Practice without saving or delete an old material.");
+      return;
+    }
     setError(null);
     const fd = new FormData();
     fd.set("title", values.title);
     fd.set("file", values.file);
+    fd.set("storage_mode", storageMode);
     startTransition(async () => {
       try {
         const m = await apiUpload<Material>("/materials/upload", fd);
@@ -81,11 +105,15 @@ export function MaterialNewForm() {
   }
 
   function onPasteSubmit(values: PasteValues) {
+    if (storageMode === "saved" && usage.used >= usage.limit) {
+      setError("You have reached the 5-material limit. Practice without saving or delete an old material.");
+      return;
+    }
     setError(null);
     const { title, content, subject, chapter, topic } = values;
     startTransition(async () => {
       try {
-        const m = await api<Material>("/materials/paste-text", {
+        const m = await api<Material>(`/materials/paste-text?storage_mode=${storageMode}`, {
           json: {
             title,
             text: content,
@@ -101,8 +129,49 @@ export function MaterialNewForm() {
     });
   }
 
+  const atLimit = usage.used >= usage.limit;
+
   return (
     <Tabs value={tab} onValueChange={(v) => setTab(v as "file" | "paste")}>
+      <div className="mb-3 space-y-2">
+        <p className="text-sm text-muted-foreground">
+          {usage.used} of {usage.limit} saved materials used. {usage.remaining} slot
+          {usage.remaining === 1 ? "" : "s"} available.
+        </p>
+        {atLimit && (
+          <p className="text-xs text-amber-600 dark:text-amber-400">
+            You can still practice without saving, or delete an old saved material.
+          </p>
+        )}
+      </div>
+
+      <div className="mb-4">
+        <Label className="text-sm font-medium">Storage mode</Label>
+        <RadioGroup
+          value={storageMode}
+          onValueChange={(v) => setStorageMode(v as "saved" | "temporary")}
+          className="mt-2 flex gap-4"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="saved" id="mode-saved" />
+            <Label htmlFor="mode-saved" className="cursor-pointer font-normal flex items-center gap-1.5">
+              <Save className="h-3.5 w-3.5" /> Save to library
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="temporary" id="mode-temp" />
+            <Label htmlFor="mode-temp" className="cursor-pointer font-normal flex items-center gap-1.5">
+              <Zap className="h-3.5 w-3.5" /> Practice without saving
+            </Label>
+          </div>
+        </RadioGroup>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {storageMode === "saved"
+            ? "Material is saved to your library and counts toward your limit."
+            : "Material is processed temporarily. You can save or discard after practice."}
+        </p>
+      </div>
+
       <TabsList>
         <TabsTrigger value="file">
           <FileText className="h-4 w-4 mr-2" /> Upload file
@@ -144,20 +213,22 @@ export function MaterialNewForm() {
                   <FormControl>
                     <Input
                       type="file"
-                      accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      accept={ACCEPTED_EXTENSIONS}
                       onChange={(e) => field.onChange(e.target.files?.[0])}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
                     />
                   </FormControl>
-                  <FormDescription>PDF or DOCX, up to 20 MB.</FormDescription>
+                  <FormDescription>
+                    PDF, DOCX, TXT, MD, CSV, or JSON. Up to {maxMb} MB.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" disabled={pending}>
-              {pending ? "Uploading..." : "Upload"}
+              {pending ? "Uploading..." : storageMode === "temporary" ? "Upload & practice" : "Upload"}
             </Button>
           </form>
         </Form>
@@ -234,7 +305,7 @@ export function MaterialNewForm() {
               )}
             />
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? "Saving..." : storageMode === "temporary" ? "Save & practice" : "Save"}
             </Button>
           </form>
         </Form>

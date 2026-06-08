@@ -13,14 +13,22 @@ export async function api<T = unknown>(path: string, opts: ApiOptions = {}): Pro
     body = opts.formData;
   }
 
-  const res = await fetch(buildUrl(path, opts.query), {
-    method: opts.method ?? (body ? "POST" : "GET"),
-    headers,
-    body,
-    signal: opts.signal,
-    credentials: "include",
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetch(buildUrl(path, opts.query), {
+      method: opts.method ?? (body ? "POST" : "GET"),
+      headers,
+      body,
+      signal: opts.signal,
+      credentials: "include",
+      cache: "no-store",
+    });
+  } catch (err) {
+    if (err instanceof TypeError && err.message === "Failed to fetch") {
+      throw new ApiCallError(0, "Backend server is not reachable. Please make sure FastAPI is running on port 8000.");
+    }
+    throw err;
+  }
 
   if (!res.ok) {
     throw new ApiCallError(res.status, await parseErrorBody(res));
@@ -30,12 +38,20 @@ export async function api<T = unknown>(path: string, opts: ApiOptions = {}): Pro
 }
 
 export async function apiUpload<T = unknown>(path: string, form: FormData): Promise<T> {
-  const res = await fetch(buildUrl(path), {
-    method: "POST",
-    body: form,
-    credentials: "include",
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetch(buildUrl(path), {
+      method: "POST",
+      body: form,
+      credentials: "include",
+      cache: "no-store",
+    });
+  } catch (err) {
+    if (err instanceof TypeError && err.message === "Failed to fetch") {
+      throw new ApiCallError(0, "Backend server is not reachable. Please make sure FastAPI is running on port 8000.");
+    }
+    throw err;
+  }
   if (!res.ok) {
     throw new ApiCallError(res.status, await parseErrorBody(res));
   }

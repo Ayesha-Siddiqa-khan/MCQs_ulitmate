@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LogIn, Sparkles } from "lucide-react";
 
@@ -11,13 +10,13 @@ export default async function LoginPage() {
   if (user) redirect("/dashboard");
 
   return (
-    <main className="mx-auto max-w-md px-4 py-12 sm:px-6">
+    <main className="mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-md flex-col justify-center px-4 py-10 sm:px-6">
       <div className="mb-6 flex justify-center">
-        <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-purple-600 text-primary-foreground shadow-lg">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-purple-600 text-primary-foreground shadow-lg">
           <Sparkles className="h-6 w-6" />
         </div>
       </div>
-      <Card className="border-2">
+      <Card className="border-2 bg-gradient-to-br from-card to-muted/20 shadow-xl shadow-black/5">
         <CardHeader className="space-y-1">
           <CardTitle className="flex items-center gap-2 text-2xl">
             <LogIn className="h-5 w-5" /> Log in
@@ -28,12 +27,6 @@ export default async function LoginPage() {
           <LoginForm />
         </CardContent>
       </Card>
-      <p className="mt-4 text-center text-sm text-muted-foreground">
-        New here?{" "}
-        <Link href="/signup" className="font-medium text-foreground underline-offset-4 hover:underline">
-          Create an account
-        </Link>
-      </p>
     </main>
   );
 }

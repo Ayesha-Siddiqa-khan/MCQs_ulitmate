@@ -60,6 +60,10 @@ class Settings(BaseSettings):
     # ---- Encryption (Fernet-compatible key, optional). If empty, derived from JWT secret.
     encryption_key: str = Field(default="", validation_alias="ENCRYPTION_KEY")
 
+    # ---- Upload limits -------------------------------------------------------
+    max_upload_mb: int = Field(default=50, validation_alias="MAX_UPLOAD_MB")
+    max_materials_per_user: int = Field(default=5, validation_alias="MAX_MATERIALS_PER_USER")
+
     # ---- Fallback AI keys (only used if a student hasn't configured their own) ----
     openai_api_key: str = Field(default="", validation_alias="OPENAI_API_KEY")
     anthropic_api_key: str = Field(default="", validation_alias="ANTHROPIC_API_KEY")

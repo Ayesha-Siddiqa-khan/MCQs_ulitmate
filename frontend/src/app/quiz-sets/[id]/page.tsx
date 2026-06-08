@@ -44,8 +44,16 @@ export default async function QuizSetPage({
   }
   if (!qs) notFound();
 
+  const previewQuestions = qs.questions.slice(0, 10);
+  const hiddenPreviewCount = Math.max(0, qs.questions.length - previewQuestions.length);
+  const setupQuestions = qs.questions.map((q) => ({
+    id: q.id,
+    chapter: q.chapter,
+    topic: q.topic,
+  }));
+
   return (
-    <main className="mx-auto max-w-3xl space-y-6 px-4 py-8 sm:px-6">
+    <main className="mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6">
       <Button asChild variant="ghost" size="sm" className="-ml-2 w-fit">
         <Link href="/materials">
           <ArrowLeft className="h-4 w-4" /> Materials
@@ -65,22 +73,23 @@ export default async function QuizSetPage({
         }
       />
 
-      <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-purple-500/5">
+      <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/5 via-background to-purple-500/5">
         <CardHeader>
           <div className="flex items-start gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <FileQuestion className="h-5 w-5" />
             </div>
             <div className="flex-1">
-              <CardTitle>Ready to start?</CardTitle>
+              <CardTitle>Set up your quiz</CardTitle>
               <CardDescription>
-                Your answers are graded when you submit. Wrong answers go to your mistake bank.
+                Choose how many questions to practice. Answers are graded after submission, and
+                wrong answers go to your mistake bank.
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <StartAttemptButton setId={qs.id} />
+          <StartAttemptButton setId={qs.id} questions={setupQuestions} />
         </CardContent>
       </Card>
 
@@ -97,7 +106,7 @@ export default async function QuizSetPage({
               This set has no questions yet.
             </p>
           ) : (
-            qs.questions.map((q, i) => (
+            previewQuestions.map((q, i) => (
               <div key={q.id} className="rounded-lg border-2 p-4 space-y-2">
                 <div className="flex items-start justify-between gap-3">
                   <p className="font-medium">
@@ -121,6 +130,12 @@ export default async function QuizSetPage({
               </div>
             ))
           )}
+          {hiddenPreviewCount > 0 ? (
+            <p className="rounded-lg border border-dashed p-3 text-center text-sm text-muted-foreground">
+              Showing the first {previewQuestions.length} questions. The setup panel can load any
+              amount from the full {qs.questions.length} question set.
+            </p>
+          ) : null}
         </CardContent>
       </Card>
     </main>

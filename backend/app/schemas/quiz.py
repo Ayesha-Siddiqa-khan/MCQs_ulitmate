@@ -12,12 +12,25 @@ from app.schemas.questions import QuestionOut, QuestionPublic
 class StartQuizRequest(BaseModel):
     question_set_id: str
     mode: QuizMode = QuizMode.practice
+    question_count: int | None = Field(default=None, ge=1)
+    chapter: str | None = None
+    topic: str | None = None
 
 
 class StartQuizResponse(BaseModel):
     attempt_id: str
     question_set_id: str
     mode: QuizMode
+    questions: list[QuestionPublic]
+    started_at: datetime
+
+
+class QuizAttemptDetail(BaseModel):
+    attempt_id: str
+    question_set_id: str
+    mode: QuizMode
+    total_questions: int
+    is_submitted: bool
     questions: list[QuestionPublic]
     started_at: datetime
 

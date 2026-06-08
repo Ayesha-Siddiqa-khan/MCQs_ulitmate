@@ -10,7 +10,16 @@ from supabase import Client
 from app.core.config import Settings, get_settings
 from app.core.security import CurrentUserDep
 from app.db.supabase_client import get_user_client
-from app.schemas.materials import ExtractTextResponse, MaterialOut, PasteTextRequest
+from app.schemas.materials import (
+    DeleteMaterialResponse,
+    ExtractPreviewResponse,
+    ExtractTextResponse,
+    MaterialOut,
+    MaterialUsageResponse,
+    PasteTextRequest,
+    SaveTemporaryRequest,
+    SaveTemporaryResponse,
+)
 from app.services.extraction import (
     extract_csv,
     extract_docx,
@@ -19,11 +28,22 @@ from app.services.extraction import (
     extract_pdf,
     extract_text,
 )
+from app.services.study_data_cleanup import delete_material_tree
 
 router = APIRouter(prefix="/materials", tags=["materials"])
 
 _ALLOWED = {"pdf", "txt", "md", "docx", "csv", "json"}
-_MAX_BYTES = 50 * 1024 * 1024
+
+
+def _max_bytes(settings: Settings) -> int:
+    return settings.max_upload_mb * 1024 * 1024
+
+
+def _material_limit_message(settings: Settings) -> str:
+    return (
+        f"You have reached the {settings.max_materials_per_user}-material limit. "
+        "Delete an older material before uploading a new one."
+    )
 
 
 def _ext_of(name: str) -> str:
@@ -32,6 +52,31 @@ def _ext_of(name: str) -> str:
 
 def _file_type_from_ext(ext: str) -> str:
     return ext if ext in _ALLOWED else "txt"
+
+
+def _material_count(db: Client, user_id: str) -> int:
+    rows = db.table("learning_materials").select("id").eq("user_id", user_id).execute().data or []
+    return len(rows)
+
+
+def _enforce_material_limit(db: Client, user_id: str, settings: Settings) -> None:
+    if _material_count(db, user_id) >= settings.max_materials_per_user:
+        raise HTTPException(status_code=409, detail=_material_limit_message(settings))
+
+
+def _remove_storage_paths(db: Client, settings: Settings, paths: list[str]) -> tuple[int, str | None]:
+    removed = 0
+    warning: str | None = None
+    if not paths:
+        return removed, warning
+    try:
+        for start in range(0, len(paths), 100):
+            batch = paths[start : start + 100]
+            db.storage.from_(settings.supabase_storage_bucket).remove(batch)
+            removed += len(batch)
+    except Exception as exc:
+        warning = f"Database rows were deleted, but some stored files may remain: {exc}"
+    return removed, warning
 
 
 @router.post("/upload", response_model=MaterialOut, status_code=201)
@@ -45,17 +90,27 @@ async def upload_material(
     chapter: Annotated[str | None, Form()] = None,
     topic: Annotated[str | None, Form()] = None,
     exam_type: Annotated[str | None, Form()] = None,
+    storage_mode: Annotated[str, Form()] = "saved",
 ) -> MaterialOut:
+    max_bytes = _max_bytes(settings)
+
     data = await file.read()
     if len(data) == 0:
         raise HTTPException(status_code=400, detail="empty file")
-    if len(data) > _MAX_BYTES:
-        raise HTTPException(status_code=413, detail="file is larger than 50 MB")
+    if len(data) > max_bytes:
+        raise HTTPException(
+            status_code=413,
+            detail=f"file is larger than {settings.max_upload_mb} MB",
+        )
 
     filename = file.filename or "upload.bin"
     ext = _ext_of(filename)
     if ext not in _ALLOWED:
         raise HTTPException(status_code=415, detail=f"unsupported file type: .{ext}")
+
+    is_temporary = storage_mode == "temporary"
+    if not is_temporary:
+        _enforce_material_limit(db, user.id, settings)
 
     file_type = _file_type_from_ext(ext)
     insert = (
@@ -72,6 +127,7 @@ async def upload_material(
                 "exam_type": exam_type,
                 "size_bytes": len(data),
                 "status": "uploaded",
+                "storage_mode": "temporary" if is_temporary else "saved",
             }
         )
         .execute()
@@ -102,8 +158,14 @@ async def upload_material(
 async def paste_text(
     user: CurrentUserDep,
     db: Annotated[Client, Depends(get_user_client)],
+    settings: Annotated[Settings, Depends(get_settings)],
     payload: PasteTextRequest,
+    storage_mode: str = "saved",
 ) -> MaterialOut:
+    is_temporary = storage_mode == "temporary"
+    if not is_temporary:
+        _enforce_material_limit(db, user.id, settings)
+
     insert = (
         db.table("learning_materials")
         .insert(
@@ -119,6 +181,7 @@ async def paste_text(
                 "notes": payload.notes,
                 "size_bytes": len(payload.text.encode("utf-8")),
                 "status": "extracted",
+                "storage_mode": "temporary" if is_temporary else "saved",
             }
         )
         .execute()
@@ -142,6 +205,11 @@ def _extract_for(file_type: str, data: bytes) -> tuple[str, str | None, int | No
     if file_type == "md":
         return extract_markdown(data), None, None
     return extract_text(data), None, None
+
+
+def _clean_extracted_text(text: str) -> str:
+    # Postgres text fields cannot store NUL bytes; some PDF extractors emit them.
+    return text.replace("\x00", "")
 
 
 @router.post("/{material_id}/extract-text", response_model=ExtractTextResponse)
@@ -175,12 +243,78 @@ async def extract_material_text(
         raise HTTPException(status_code=502, detail=f"storage download failed: {exc}") from exc
 
     text, warning, page_count = _extract_for(row["file_type"], data)
+    cleaned_text = _clean_extracted_text(text)
+    if cleaned_text != text:
+        cleanup_warning = "Removed unsupported NUL characters from extracted text."
+        warning = f"{warning} {cleanup_warning}" if warning else cleanup_warning
+        text = cleaned_text
     status = "extracted" if text and text.strip() else "failed"
     db.table("learning_materials").update(
         {"extracted_text": text, "status": status, "page_count": page_count}
     ).eq("id", material_id).execute()
 
     return ExtractTextResponse(material_id=material_id, text=text, page_count=page_count, warning=warning)
+
+
+@router.post("/{material_id}/extract-preview", response_model=ExtractPreviewResponse)
+async def extract_preview(
+    material_id: str,
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> ExtractPreviewResponse:
+    """Return MCQ detection stats without persisting a question set."""
+    from app.services.extraction.mcq_parser import preview_mcqs
+
+    row = (
+        db.table("learning_materials")
+        .select("*")
+        .eq("id", material_id)
+        .maybe_single()
+        .execute()
+    ).data
+    if row is None:
+        raise HTTPException(status_code=404, detail="material not found")
+
+    text = (row.get("extracted_text") or "").strip()
+    if not text:
+        raise HTTPException(
+            status_code=400,
+            detail="material has no extracted text yet. Run extract-text first.",
+        )
+
+    stats = preview_mcqs(text)
+
+    confidence = "high"
+    warnings: list[str] = []
+    if stats.total_detected == 0:
+        confidence = "none"
+        warnings.append("No MCQs detected. The file may have an unusual format.")
+    elif stats.without_answers > 0:
+        confidence = "medium"
+        warnings.append(
+            f"{stats.without_answers} question(s) have no detected answer. "
+            "You may need to provide answers manually or use AI generation."
+        )
+    if stats.duplicates > 0:
+        confidence = "low" if confidence != "none" else confidence
+        warnings.append(f"{stats.duplicates} duplicate question(s) detected.")
+    if stats.total_detected > 0 and stats.with_answers == 0:
+        confidence = "low"
+        warnings.append(
+            "No answer key found. Questions were detected but answers are missing."
+        )
+
+    return ExtractPreviewResponse(
+        material_id=material_id,
+        total_detected=stats.total_detected,
+        with_answers=stats.with_answers,
+        without_answers=stats.without_answers,
+        with_explanations=stats.with_explanations,
+        duplicates=stats.duplicates,
+        confidence=confidence,
+        warnings=warnings,
+    )
 
 
 @router.get("", response_model=list[MaterialOut])
@@ -195,6 +329,21 @@ async def list_materials(
         .execute()
     )
     return [MaterialOut(**row) for row in (res.data or [])]
+
+
+@router.get("/usage", response_model=MaterialUsageResponse)
+async def material_usage(
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> MaterialUsageResponse:
+    used = _material_count(db, user.id)
+    limit = settings.max_materials_per_user
+    return MaterialUsageResponse(
+        used=used,
+        limit=limit,
+        remaining=max(0, limit - used),
+    )
 
 
 @router.get("/{material_id}", response_model=MaterialOut)
@@ -215,27 +364,76 @@ async def get_material(
     return MaterialOut(**res.data)
 
 
-@router.delete("/{material_id}", status_code=204)
+@router.delete("/{material_id}", response_model=DeleteMaterialResponse)
 async def delete_material(
     material_id: str,
     user: CurrentUserDep,
     db: Annotated[Client, Depends(get_user_client)],
     settings: Annotated[Settings, Depends(get_settings)],
-) -> None:
+) -> DeleteMaterialResponse:
+    cleanup = delete_material_tree(db, user.id, material_id)
+    if cleanup is None:
+        raise HTTPException(status_code=404, detail="material not found")
+    removed, warning = _remove_storage_paths(db, settings, cleanup.storage_paths)
+    return DeleteMaterialResponse(
+        material_id=material_id,
+        deleted=cleanup.deleted,
+        storage_paths_removed=removed,
+        warning=warning,
+    )
+
+
+@router.post("/{material_id}/save-temporary", response_model=SaveTemporaryResponse)
+async def save_temporary_material(
+    material_id: str,
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+    settings: Annotated[Settings, Depends(get_settings)],
+    payload: SaveTemporaryRequest,
+) -> SaveTemporaryResponse:
+    """Convert a temporary material to saved, or save only mistakes."""
     row = (
         db.table("learning_materials")
-        .select("storage_path")
+        .select("*")
         .eq("id", material_id)
+        .eq("user_id", user.id)
         .maybe_single()
         .execute()
     ).data
-    if not row:
-        return None
-    sp = row.get("storage_path")
-    if sp:
-        try:
-            db.storage.from_(settings.supabase_storage_bucket).remove([sp])
-        except Exception:
-            pass  # don't block deletion if storage cleanup fails
-    db.table("learning_materials").delete().eq("id", material_id).execute()
-    return None
+    if row is None:
+        raise HTTPException(status_code=404, detail="material not found")
+
+    if row.get("storage_mode") != "temporary":
+        raise HTTPException(status_code=400, detail="material is not temporary")
+
+    if payload.save_mode == "save_material":
+        # Check material limit before saving
+        _enforce_material_limit(db, user.id, settings)
+        db.table("learning_materials").update(
+            {"storage_mode": "saved"}
+        ).eq("id", material_id).execute()
+        return SaveTemporaryResponse(
+            material_id=material_id,
+            action="saved",
+            message="Material and results saved to your library.",
+        )
+
+    if payload.save_mode == "save_mistakes_only":
+        # Keep the material temporary but save mistake records
+        # The mistakes are already in mistake_bank from quiz submission
+        return SaveTemporaryResponse(
+            material_id=material_id,
+            action="mistakes_saved",
+            message="Mistakes saved. Material will be discarded.",
+        )
+
+    # discard
+    cleanup = delete_material_tree(db, user.id, material_id)
+    if cleanup is None:
+        raise HTTPException(status_code=404, detail="material not found")
+    removed, warning = _remove_storage_paths(db, settings, cleanup.storage_paths)
+    return SaveTemporaryResponse(
+        material_id=material_id,
+        action="discarded",
+        message="Temporary session discarded. All data removed.",
+    )

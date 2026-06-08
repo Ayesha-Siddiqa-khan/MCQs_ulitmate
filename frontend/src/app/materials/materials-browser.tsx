@@ -2,18 +2,36 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronRight, File, FileText, Plus, Search, Upload } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { ChevronRight, File, FileText, Plus, Search, Trash2, Upload } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/empty-state";
+import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
-import type { Material, MaterialFileType, MaterialStatus } from "@/lib/types";
+import type {
+  DeleteMaterialResponse,
+  Material,
+  MaterialFileType,
+  MaterialStatus,
+  MaterialUsage,
+} from "@/lib/types";
 
 interface MaterialsBrowserProps {
   materials: Material[];
+  usage: MaterialUsage;
 }
 
 const STATUS_COLORS: Record<MaterialStatus, string> = {
@@ -49,51 +67,97 @@ function typeTone(type: MaterialFileType): string {
 }
 
 function formatDate(value: string | null): string {
-  if (!value) return "—";
+  if (!value) return "-";
   const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "—";
+  if (Number.isNaN(d.getTime())) return "-";
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
 function formatSize(bytes: number | null): string {
-  if (!bytes) return "—";
+  if (!bytes) return "-";
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export function MaterialsBrowser({ materials }: MaterialsBrowserProps) {
+export function MaterialsBrowser({ materials, usage }: MaterialsBrowserProps) {
+  const router = useRouter();
+  const [items, setItems] = useState(materials);
+  const [usageState, setUsageState] = useState(usage);
   const [query, setQuery] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<Material | null>(null);
+  const [deletePending, setDeletePending] = useState(false);
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return materials;
+    if (!query.trim()) return items;
     const q = query.toLowerCase();
-    return materials.filter(
+    return items.filter(
       (m) =>
         m.title.toLowerCase().includes(q) ||
         m.file_type.toLowerCase().includes(q) ||
         (m.subject?.toLowerCase().includes(q) ?? false) ||
         (m.chapter?.toLowerCase().includes(q) ?? false),
     );
-  }, [materials, query]);
+  }, [items, query]);
+
+  const atLimit = usageState.used >= usageState.limit;
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    setDeletePending(true);
+    try {
+      const result = await api<DeleteMaterialResponse>(`/materials/${deleteTarget.id}`, {
+        method: "DELETE",
+      });
+      setItems((current) => current.filter((item) => item.id !== deleteTarget.id));
+      setUsageState((current) => ({
+        ...current,
+        used: Math.max(0, current.used - 1),
+        remaining: Math.min(current.limit, current.remaining + 1),
+      }));
+      setDeleteTarget(null);
+      toast.success("Material deleted", {
+        description: `${result.deleted.learning_materials ?? 1} material removed with related study data.`,
+      });
+      router.refresh();
+    } catch (error) {
+      toast.error("Could not delete material", {
+        description: (error as Error).message,
+      });
+    } finally {
+      setDeletePending(false);
+    }
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search materials..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-9"
-          />
+        <div className="space-y-2">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search materials..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <p className={cn("text-sm", atLimit ? "text-destructive" : "text-muted-foreground")}>
+            {usageState.used} of {usageState.limit} materials used
+            {atLimit ? ". Delete an older material before uploading a new one." : "."}
+          </p>
         </div>
-        <Button asChild size="lg" className="gap-2">
-          <Link href="/materials/new">
-            <Plus className="h-4 w-4" /> New material
-          </Link>
-        </Button>
+        {atLimit ? (
+          <Button size="lg" className="gap-2" disabled>
+            <Plus className="h-4 w-4" /> Limit reached
+          </Button>
+        ) : (
+          <Button asChild size="lg" className="gap-2">
+            <Link href="/materials/new">
+              <Plus className="h-4 w-4" /> New material
+            </Link>
+          </Button>
+        )}
       </div>
 
       {filtered.length === 0 ? (
@@ -102,36 +166,37 @@ export function MaterialsBrowser({ materials }: MaterialsBrowserProps) {
           title={query ? "No materials match your search" : "No materials yet"}
           description={
             query
-              ? `Try a different search term, or add a new material.`
+              ? "Try a different search term, or add a new material."
               : "Upload your first study material to get started. PDF, DOCX, or just paste text."
           }
           action={
-            <Button asChild size="lg" className="gap-2">
-              <Link href="/materials/new">
-                <Plus className="h-4 w-4" /> Add material
-              </Link>
-            </Button>
+            atLimit ? undefined : (
+              <Button asChild size="lg" className="gap-2">
+                <Link href="/materials/new">
+                  <Plus className="h-4 w-4" /> Add material
+                </Link>
+              </Button>
+            )
           }
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((m) => (
-            <Link key={m.id} href={`/materials/${m.id}`} className="group block">
-              <Card
-                className={cn(
-                  "h-full border-2 transition-all duration-300 group-hover:scale-[1.01] group-hover:border-primary/50 group-hover:shadow-lg",
-                )}
-              >
-                <CardContent className="p-5 space-y-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div
-                      className={cn(
-                        "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-sm font-semibold",
-                        typeTone(m.file_type),
-                      )}
-                    >
-                      {TYPE_ICON[m.file_type]}
-                    </div>
+            <Card
+              key={m.id}
+              className="group h-full border-2 transition-all duration-300 hover:scale-[1.01] hover:border-primary/50 hover:shadow-lg"
+            >
+              <CardContent className="space-y-3 p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div
+                    className={cn(
+                      "flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br text-sm font-semibold",
+                      typeTone(m.file_type),
+                    )}
+                  >
+                    {TYPE_ICON[m.file_type]}
+                  </div>
+                  <div className="flex items-center gap-2">
                     <Badge
                       className={cn(
                         "border-transparent px-2 py-0.5 text-[10px] uppercase tracking-wide",
@@ -140,17 +205,26 @@ export function MaterialsBrowser({ materials }: MaterialsBrowserProps) {
                     >
                       {m.status}
                     </Badge>
+                    <button
+                      type="button"
+                      onClick={() => setDeleteTarget(m)}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-md border text-muted-foreground transition-colors hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive"
+                      aria-label={`Delete ${m.title}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   </div>
+                </div>
+
+                <Link href={`/materials/${m.id}`} className="block space-y-3">
                   <div className="space-y-1">
-                    <h3 className="text-base font-semibold leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                    <h3 className="line-clamp-2 text-base font-semibold leading-snug transition-colors group-hover:text-primary">
                       {m.title}
                     </h3>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-                      <span className="rounded bg-muted px-2 py-0.5 uppercase">
-                        {m.file_type}
-                      </span>
+                      <span className="rounded bg-muted px-2 py-0.5 uppercase">{m.file_type}</span>
                       <span>{formatSize(m.size_bytes)}</span>
-                      <span>·</span>
+                      <span>-</span>
                       <span>{formatDate(m.created_at)}</span>
                     </div>
                   </div>
@@ -161,10 +235,10 @@ export function MaterialsBrowser({ materials }: MaterialsBrowserProps) {
                       ) : m.page_count ? (
                         `${m.page_count} pages`
                       ) : (
-                        "—"
+                        "-"
                       )}
                     </span>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
                   </div>
                   {m.status === "extracted" || m.status === "manual" ? (
                     <div className="flex items-center gap-2 rounded-lg bg-accent p-2 text-xs">
@@ -178,12 +252,33 @@ export function MaterialsBrowser({ materials }: MaterialsBrowserProps) {
                       <span>Try re-uploading or retrying extraction.</span>
                     </div>
                   ) : null}
-                </CardContent>
-              </Card>
-            </Link>
+                </Link>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
+
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete this material?</DialogTitle>
+            <DialogDescription>
+              This will remove the uploaded file, extracted text, generated question sets, quiz
+              attempts, and related mistake records for {deleteTarget?.title}. This action cannot
+              be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={deletePending}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete} disabled={deletePending}>
+              {deletePending ? "Deleting..." : "Delete material"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

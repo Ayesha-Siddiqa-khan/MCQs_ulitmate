@@ -11,18 +11,9 @@ from app.core.security import CurrentUserDep, encrypt_secret
 from app.db.supabase_client import get_user_client
 from app.schemas.common import AIProvider, Difficulty
 from app.schemas.settings import DeleteStudentDataResponse, UpdateSettingsRequest, UserSettingsOut
+from app.services.study_data_cleanup import delete_all_study_data
 
 router = APIRouter(prefix="/settings", tags=["settings"])
-
-_STUDENT_DATA_TABLES = (
-    "practice_sessions",
-    "mistake_bank",
-    "question_attempts",
-    "quiz_attempts",
-    "questions",
-    "question_sets",
-    "learning_materials",
-)
 
 
 def _row_to_out(row: dict | None) -> UserSettingsOut:
@@ -94,36 +85,21 @@ async def delete_student_data(
     db: Annotated[Client, Depends(get_user_client)],
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> DeleteStudentDataResponse:
-    materials = (
-        db.table("learning_materials")
-        .select("id, storage_path")
-        .eq("user_id", user.id)
-        .execute()
-        .data
-        or []
-    )
-    storage_paths = [row["storage_path"] for row in materials if row.get("storage_path")]
+    cleanup = delete_all_study_data(db, user.id)
 
     storage_removed = 0
     warning: str | None = None
-    if storage_paths:
+    if cleanup.storage_paths:
         try:
-            for start in range(0, len(storage_paths), 100):
-                batch = storage_paths[start : start + 100]
+            for start in range(0, len(cleanup.storage_paths), 100):
+                batch = cleanup.storage_paths[start : start + 100]
                 db.storage.from_(settings.supabase_storage_bucket).remove(batch)
                 storage_removed += len(batch)
         except Exception as exc:
             warning = f"Database rows were deleted, but some stored files may remain: {exc}"
 
-    deleted: dict[str, int] = {}
-    for table in _STUDENT_DATA_TABLES:
-        rows = db.table(table).select("id").eq("user_id", user.id).execute().data or []
-        deleted[table] = len(rows)
-        if rows:
-            db.table(table).delete().eq("user_id", user.id).execute()
-
     return DeleteStudentDataResponse(
-        deleted=deleted,
+        deleted=cleanup.deleted,
         storage_paths_removed=storage_removed,
         warning=warning,
     )

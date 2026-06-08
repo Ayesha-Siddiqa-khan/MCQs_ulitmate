@@ -50,8 +50,8 @@ export default async function SettingsPage() {
             <div className="flex-1">
               <CardTitle className="text-destructive">Student data</CardTitle>
               <CardDescription>
-                Clear old uploaded materials, generated question sets, quiz attempts, and mistake
-                history for this signed-in student.
+                Clear all study records and uploaded files for this signed-in student. The account
+                and AI key stay in place.
               </CardDescription>
             </div>
           </div>

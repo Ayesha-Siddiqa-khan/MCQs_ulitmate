@@ -39,14 +39,15 @@ def update_mistake_bank(
     if is_correct is None:
         return
 
-    existing = (
+    existing_res = (
         db.table("mistake_bank")
         .select("*")
         .eq("user_id", user_id)
         .eq("question_id", question_id)
         .maybe_single()
         .execute()
-    ).data
+    )
+    existing = existing_res.data if existing_res is not None else None
 
     now = _now_iso()
 

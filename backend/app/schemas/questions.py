@@ -48,6 +48,10 @@ class QuestionPublic(BaseModel):
     position: int
     question_text: str
     options: list[Option] = []
+    subject: str | None = None
+    chapter: str | None = None
+    topic: str | None = None
+    difficulty: Difficulty | None = None
 
 
 class QuestionSetOut(BaseModel):

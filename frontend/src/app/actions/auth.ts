@@ -13,7 +13,7 @@ export type AuthResult = { error?: string; success?: string; retryAfterSeconds?:
 
 async function callAuth(
   path: string,
-  body: { email: string; password: string },
+  body: { email: string; password: string; remember_me?: boolean },
 ): Promise<{ user: { id: string; email: string | null } | null; error: string | null }> {
   let res: Response;
   try {
@@ -99,9 +99,14 @@ async function mirrorSetCookie(res: Response): Promise<void> {
 export async function signInAction(formData: FormData): Promise<AuthResult> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
+  const rememberMe = String(formData.get("remember_me") ?? "") === "true";
   if (!email || !password) return { error: "Email and password are required." };
 
-  const { user, error } = await callAuth("/auth/login", { email, password });
+  const { user, error } = await callAuth("/auth/login", {
+    email,
+    password,
+    remember_me: rememberMe,
+  });
   if (error) return { error };
   if (!user) return { error: "Invalid email or password." };
   redirect("/dashboard");

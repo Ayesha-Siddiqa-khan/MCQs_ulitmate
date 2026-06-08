@@ -238,14 +238,70 @@ D
 -
 """.strip()
     qs = extract_existing_mcqs(text)
-    assert len(qs) == 3
-    assert [q.chapter for q in qs] == ["Chapter 1", "Chapter 1", "Chapter 2 - Algebra"]
-    assert [q.correct_answer for q in qs] == ["B", "C", "D"]
+    assert len(qs) == 4
+    assert [q.chapter for q in qs] == ["Chapter 1", "Chapter 1", "Chapter 2 - Algebra", "Chapter 2 - Algebra"]
+    assert [q.correct_answer for q in qs] == ["B", "C", "D", None]
 
 
 def test_mcq_parser_drops_garbage() -> None:
     text = "just a paragraph with no questions at all."
     assert extract_existing_mcqs(text) == []
+
+
+def test_mcq_parser_detects_answer_sheet_heading() -> None:
+    text = """
+1. What is 2+2?
+A. 3
+B. 4
+C. 5
+D. 6
+
+2. What is 3+3?
+A. 5
+B. 6
+C. 7
+D. 8
+
+Answer Sheet
+1. B
+2. B
+""".strip()
+    qs = extract_existing_mcqs(text)
+    assert len(qs) == 2
+    assert qs[0].correct_answer == "B"
+    assert qs[1].correct_answer == "B"
+
+
+def test_mcq_parser_detects_answers_heading() -> None:
+    text = """
+1. Capital of France?
+A. London
+B. Paris
+C. Berlin
+D. Madrid
+
+Answers
+1. B
+""".strip()
+    qs = extract_existing_mcqs(text)
+    assert len(qs) == 1
+    assert qs[0].correct_answer == "B"
+
+
+def test_mcq_parser_detects_correct_answers_heading() -> None:
+    text = """
+1. Color of sky?
+A. Green
+B. Red
+C. Blue
+D. Yellow
+
+Correct Answers
+1. C
+""".strip()
+    qs = extract_existing_mcqs(text)
+    assert len(qs) == 1
+    assert qs[0].correct_answer == "C"
 
 
 def test_signup_error_response_handles_invalid_email() -> None:

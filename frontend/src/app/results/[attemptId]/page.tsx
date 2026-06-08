@@ -191,6 +191,7 @@ export default async function ResultsPage({
         <CardContent className="space-y-3">
           {r.questions.map((qr, i) => {
             const isRight = qr.is_correct === true;
+            const isUngraded = qr.is_correct === null;
             const q = qr.question;
             return (
               <div
@@ -199,19 +200,25 @@ export default async function ResultsPage({
                   "rounded-lg border-2 p-4 space-y-2",
                   isRight
                     ? "border-green-500/40 bg-green-500/5"
-                    : "border-red-500/30 bg-red-500/5",
+                    : isUngraded
+                      ? "border-muted bg-muted/30"
+                      : "border-red-500/30 bg-red-500/5",
                 )}
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="font-medium">
                     {i + 1}. {q?.question_text ?? "(question unavailable)"}
                   </p>
-                  {qr.is_correct === null ? (
-                    <Badge variant="outline">unanswered</Badge>
+                  {isUngraded ? (
+                    <Badge variant="outline" className="text-muted-foreground">
+                      no answer key
+                    </Badge>
                   ) : isRight ? (
                     <Badge className="bg-green-500 text-white hover:bg-green-500/90">
                       correct
                     </Badge>
+                  ) : qr.is_correct === null ? (
+                    <Badge variant="outline">unanswered</Badge>
                   ) : (
                     <Badge variant="destructive">wrong</Badge>
                   )}
@@ -220,16 +227,18 @@ export default async function ResultsPage({
                   <ul className="text-sm space-y-1 pl-4 list-disc">
                     {q.options.map((o) => {
                       const isUser = qr.selected_answer === o.key;
-                      const isCorrect = q.correct_answer === o.key;
+                      const isCorrect = q.correct_answer !== null && q.correct_answer === o.key;
                       return (
                         <li
                           key={o.key}
                           className={cn(
                             isCorrect
                               ? "text-emerald-600 dark:text-emerald-400 font-medium"
-                              : isUser
+                              : isUser && !isUngraded
                                 ? "text-destructive"
-                                : "text-muted-foreground",
+                                : isUser
+                                  ? "text-muted-foreground font-medium"
+                                  : "text-muted-foreground",
                           )}
                         >
                           <span className="font-mono mr-1">{o.key}.</span> {o.text}

@@ -2,7 +2,17 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { FileQuestion, Sparkles, Type, Eye, AlertTriangle, CheckCircle2 } from "lucide-react";
+import {
+  FileQuestion,
+  Sparkles,
+  Type,
+  Eye,
+  AlertTriangle,
+  CheckCircle2,
+  Pencil,
+  Play,
+  Info,
+} from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -30,12 +40,14 @@ import { api } from "@/lib/api-client";
 import {
   type Difficulty,
   type Material,
+  type Question,
   type QuestionSet,
-  type QuestionSetDetail,
+  type ExtractExistingMCQsResponse,
   type ExtractPreviewResponse,
 } from "@/lib/types";
 
 const difficultyOptions: Difficulty[] = ["easy", "medium", "hard"];
+const ANSWER_KEYS = ["A", "B", "C", "D"] as const;
 
 function confidenceColor(confidence: string): string {
   if (confidence === "high") return "bg-green-500 text-white hover:bg-green-500/90";
@@ -53,6 +65,12 @@ export function MaterialActions({ material }: { material: Material }) {
   const [pending, startTransition] = useTransition();
   const [preview, setPreview] = useState<ExtractPreviewResponse | null>(null);
   const [previewPending, startPreviewTransition] = useTransition();
+
+  // Unsolved MCQ state
+  const [extractedResult, setExtractedResult] = useState<ExtractExistingMCQsResponse | null>(null);
+  const [answersOpen, setAnswersOpen] = useState(false);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [savingAnswers, setSavingAnswers] = useState(false);
 
   const hasExtractedText = material.status === "extracted" || material.status === "manual";
   const canExtractText = material.status === "uploaded" || material.status === "failed";
@@ -87,19 +105,63 @@ export function MaterialActions({ material }: { material: Material }) {
 
   function onExtractExisting() {
     setError(null);
+    setExtractedResult(null);
     startTransition(async () => {
       try {
-        const qs = await api<QuestionSetDetail>("/question-sets/extract-existing-mcqs", {
+        const qs = await api<ExtractExistingMCQsResponse>("/question-sets/extract-existing-mcqs", {
           json: {
             material_id: material.id,
             title: `${material.title} - extracted practice`,
           },
         });
+        setExtractedResult(qs);
+        if (qs.answers_missing > 0) {
+          // Show the unsolved MCQ banner — don't navigate yet
+          return;
+        }
         router.push(`/quiz-sets/${qs.id}`);
       } catch (e) {
         setError((e as Error).message);
       }
     });
+  }
+
+  function onStartPracticeWithoutAnswers() {
+    if (extractedResult) {
+      router.push(`/quiz-sets/${extractedResult.id}`);
+    }
+  }
+
+  function onOpenAnswerEditor() {
+    if (!extractedResult) return;
+    const initial: Record<string, string> = {};
+    for (const q of extractedResult.questions) {
+      initial[q.id] = q.correct_answer ?? "";
+    }
+    setAnswers(initial);
+    setAnswersOpen(true);
+  }
+
+  async function onSaveAnswers() {
+    if (!extractedResult) return;
+    setSavingAnswers(true);
+    setError(null);
+    try {
+      const answerMap: Record<string, string | null> = {};
+      for (const [qid, ans] of Object.entries(answers)) {
+        answerMap[qid] = ans || null;
+      }
+      await api(`/question-sets/${extractedResult.id}/answers`, {
+        method: "POST",
+        json: { answers: answerMap },
+      });
+      setAnswersOpen(false);
+      router.push(`/quiz-sets/${extractedResult.id}`);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setSavingAnswers(false);
+    }
   }
 
   function onGenerate() {
@@ -142,7 +204,7 @@ export function MaterialActions({ material }: { material: Material }) {
 
         <Button variant="outline" onClick={onExtractExisting} disabled={!hasExtractedText || pending}>
           <FileQuestion className="mr-2 h-4 w-4" />
-          {pending ? "Reading MCQs..." : "Extract solved MCQs"}
+          {pending ? "Reading MCQs..." : "Extract MCQs"}
         </Button>
 
         <Dialog open={open} onOpenChange={setOpen}>
@@ -156,8 +218,8 @@ export function MaterialActions({ material }: { material: Material }) {
             <DialogHeader>
               <DialogTitle>Generate questions</DialogTitle>
               <DialogDescription>
-                Uses your saved AI key from Settings. For solved MCQ PDFs, use Extract solved MCQs
-                instead so the app reads the original questions and answer key.
+                Uses your saved AI key from Settings. For MCQ PDFs, use Extract MCQs
+                instead so the app reads the original questions.
               </DialogDescription>
             </DialogHeader>
 
@@ -206,11 +268,11 @@ export function MaterialActions({ material }: { material: Material }) {
 
       {!hasExtractedText ? (
         <p className="text-sm text-muted-foreground">
-          Extract text first, then use Extract solved MCQs for PDFs that already contain questions
-          and an answer key.
+          Extract text first, then use Extract MCQs for PDFs that already contain questions.
         </p>
       ) : null}
 
+      {/* Preview MCQs card */}
       {preview ? (
         <Card className="border-2">
           <CardHeader className="pb-3">
@@ -260,16 +322,107 @@ export function MaterialActions({ material }: { material: Material }) {
                   <FileQuestion className="mr-2 h-3.5 w-3.5" />
                   Extract & start practice
                 </Button>
-                {preview.without_answers === 0 && (
-                  <Button size="sm" variant="outline" onClick={onExtractExisting} disabled={pending}>
-                    Review questions first
-                  </Button>
-                )}
               </div>
             )}
           </CardContent>
         </Card>
       ) : null}
+
+      {/* Unsolved MCQs banner */}
+      {extractedResult && extractedResult.answers_missing > 0 ? (
+        <Card className="border-2 border-orange-400/50 bg-orange-500/5">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Info className="h-4 w-4 text-orange-500" />
+              MCQs found, but no answer key detected
+            </CardTitle>
+            <CardDescription>
+              We found {extractedResult.total_questions} question(s) with{" "}
+              {extractedResult.answers_detected} answer(s).{" "}
+              {extractedResult.answers_missing} question(s) are missing answers.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              You can still practice without answer checking, or add answers manually
+              to enable auto-grading.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" onClick={onStartPracticeWithoutAnswers}>
+                <Play className="mr-2 h-3.5 w-3.5" />
+                Practice without checking answers
+              </Button>
+              <Button size="sm" variant="outline" onClick={onOpenAnswerEditor}>
+                <Pencil className="mr-2 h-3.5 w-3.5" />
+                Add answers manually
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => router.push(`/quiz-sets/${extractedResult.id}`)}
+              >
+                View questions
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {/* Manual answer entry dialog */}
+      <Dialog open={answersOpen} onOpenChange={setAnswersOpen}>
+        <DialogContent className="max-h-[80vh] overflow-y-auto max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Add answers manually</DialogTitle>
+            <DialogDescription>
+              Select the correct answer (A-D) for each question. Leave blank to skip.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            {extractedResult?.questions.map((q, i) => (
+              <div key={q.id} className="flex items-start gap-3 rounded-lg border p-3">
+                <span className="text-sm font-medium text-muted-foreground shrink-0 mt-0.5">
+                  {i + 1}.
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium leading-snug">{q.question_text}</p>
+                  {q.options.length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {q.options.map((o) => `${o.key}) ${o.text}`).join(" | ")}
+                    </p>
+                  )}
+                </div>
+                <Select
+                  value={answers[q.id] ?? ""}
+                  onValueChange={(v) => {
+                    const val = v === "__skip__" ? "" : v;
+                    setAnswers((prev) => ({ ...prev, [q.id]: val }));
+                  }}
+                >
+                  <SelectTrigger className="w-20 shrink-0">
+                    <SelectValue placeholder="?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__skip__">Skip</SelectItem>
+                    {ANSWER_KEYS.map((k) => (
+                      <SelectItem key={k} value={k}>
+                        {k}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAnswersOpen(false)} disabled={savingAnswers}>
+              Cancel
+            </Button>
+            <Button onClick={onSaveAnswers} disabled={savingAnswers}>
+              {savingAnswers ? "Saving..." : "Save answers & start practice"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {error ? (
         <Alert variant="destructive">

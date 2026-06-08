@@ -24,6 +24,25 @@ class ExtractExistingMCQsRequest(BaseModel):
     title: str | None = None
 
 
+class ExtractExistingMCQsResponse(BaseModel):
+    """Response for extract-existing-mcqs endpoint."""
+    id: str
+    material_id: str | None = None
+    title: str
+    mode: QuestionSetMode
+    total_questions: int
+    difficulty: Difficulty | None = None
+    subject: str | None = None
+    chapter: str | None = None
+    topic: str | None = None
+    created_at: datetime | None = None
+    questions: list[QuestionOut] = []
+    # Answer coverage metadata
+    answers_detected: int = 0
+    answers_missing: int = 0
+    can_auto_grade: bool = False
+
+
 class QuestionOut(BaseModel):
     id: str
     question_set_id: str

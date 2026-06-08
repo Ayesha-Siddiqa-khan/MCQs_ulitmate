@@ -28,7 +28,9 @@ _ANSWER_LINE = re.compile(
     r"^\s*(?:Answer|Ans|Correct(?:\s+Answer)?)\s*[:\-]?\s*\(?([A-Da-d])\)?\s*\.?\s*$",
     re.IGNORECASE,
 )
-_ANSWER_KEY_HEADING = re.compile(r"(?im)^\s*(?:complete\s+)?answer\s+key\b.*$")
+_ANSWER_KEY_HEADING = re.compile(
+    r"(?im)^\s*(?:complete\s+)?(?:answer(?:\s+(?:key|sheet|section|list))\b|correct\s+answers?\b|solution\s+key\b|answers\b|answer\s*$)"
+)
 _ANSWER_KEY_ENTRY = re.compile(r"^\s*(\d{1,3})[.)]\s*\(?([A-Da-d])\)?[).:\-]?\s*(.*)$")
 _ANSWER_KEY_VERTICAL_NUMBER = re.compile(r"^\d{1,3}$")
 _ANSWER_KEY_VERTICAL_ANSWER = re.compile(r"^[A-Da-d]$")
@@ -54,6 +56,11 @@ class _AnswerKeyItem:
 
 
 def extract_existing_mcqs(text: str) -> list[GeneratedQuestion]:
+    """Extract MCQs from text. Returns questions with or without answers.
+
+    Questions without an answer key are returned with correct_answer=None
+    so the caller can offer practice-without-grading or manual answer entry.
+    """
     if not text or not text.strip():
         return []
 
@@ -65,8 +72,6 @@ def extract_existing_mcqs(text: str) -> list[GeneratedQuestion]:
     for parsed in parsed_questions:
         key_item = answer_key.get((_chapter_key(parsed.chapter), parsed.number)) or answer_key.get((None, parsed.number))
         correct_answer = parsed.correct_answer or (key_item.answer if key_item else None)
-        if correct_answer is None:
-            continue
         questions.append(
             GeneratedQuestion(
                 question_text=parsed.question_text,
@@ -77,6 +82,29 @@ def extract_existing_mcqs(text: str) -> list[GeneratedQuestion]:
             )
         )
     return questions
+
+
+@dataclass
+class ExtractionResult:
+    """Extraction output with questions and answer-coverage stats."""
+    questions: list[GeneratedQuestion]
+    total: int
+    with_answers: int
+    without_answers: int
+    has_answer_key: bool
+
+
+def extract_existing_mcqs_with_stats(text: str) -> ExtractionResult:
+    """Extract MCQs and return stats about answer coverage."""
+    questions = extract_existing_mcqs(text)
+    with_answers = sum(1 for q in questions if q.correct_answer is not None)
+    return ExtractionResult(
+        questions=questions,
+        total=len(questions),
+        with_answers=with_answers,
+        without_answers=len(questions) - with_answers,
+        has_answer_key=with_answers > 0,
+    )
 
 
 @dataclass

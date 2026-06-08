@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from supabase import Client
 
 from app.core.config import Settings, get_settings
@@ -12,13 +13,14 @@ from app.db.supabase_client import get_user_client
 from app.schemas.common import GeneratedQuestion, QuestionSetMode, QuestionSource
 from app.schemas.questions import (
     ExtractExistingMCQsRequest,
+    ExtractExistingMCQsResponse,
     GenerateMCQRequest,
     Option,
     QuestionOut,
     QuestionSetDetail,
     QuestionSetOut,
 )
-from app.services.extraction.mcq_parser import extract_existing_mcqs
+from app.services.extraction.mcq_parser import extract_existing_mcqs_with_stats
 from app.services.generation.mcq_generator import generate_mcqs
 from app.services.generation.provider_factory import resolve_provider
 from app.services.generation.providers import ProviderError
@@ -104,20 +106,19 @@ def _persist_set(
     return qset, inserted
 
 
-@router.post("/extract-existing-mcqs", response_model=QuestionSetDetail, status_code=201)
+@router.post("/extract-existing-mcqs", response_model=ExtractExistingMCQsResponse, status_code=201)
 async def extract_existing(
     user: CurrentUserDep,
     db: Annotated[Client, Depends(get_user_client)],
     payload: ExtractExistingMCQsRequest,
-) -> QuestionSetDetail:
+) -> ExtractExistingMCQsResponse:
     material, text = _load_material_text(db, payload.material_id)
-    questions = extract_existing_mcqs(text)
-    if not questions:
+    result = extract_existing_mcqs_with_stats(text)
+    if not result.questions:
         raise HTTPException(
             status_code=422,
             detail=(
-                "No solved MCQs detected. Use a PDF/text file with numbered questions, A-D "
-                "options, and either inline answers or an answer key section at the end."
+                "No MCQs detected. The file must contain numbered questions with A-D options."
             ),
         )
     title = payload.title or f"Extracted MCQs - {material['title']}"
@@ -128,15 +129,18 @@ async def extract_existing(
         title=title,
         mode=QuestionSetMode.extract_existing,
         difficulty=None,
-        questions=questions,
+        questions=result.questions,
         source_type=QuestionSource.extracted,
         subject=material.get("subject"),
         chapter=material.get("chapter"),
         topic=material.get("topic"),
     )
-    return QuestionSetDetail(
+    return ExtractExistingMCQsResponse(
         **qset,
         questions=[_row_to_question(r) for r in inserted],
+        answers_detected=result.with_answers,
+        answers_missing=result.without_answers,
+        can_auto_grade=result.has_answer_key,
     )
 
 
@@ -228,3 +232,88 @@ def _row_to_question(row: dict) -> QuestionOut:
         source_type=row.get("source_type") or "ai_generated",
         created_at=row.get("created_at"),
     )
+
+
+# --- Answer editing for unsolved MCQs ---
+
+
+class UpdateAnswerRequest(BaseModel):
+    correct_answer: str | None = None
+    explanation: str | None = None
+
+
+class BulkUpdateAnswersRequest(BaseModel):
+    answers: dict[str, str | None]  # question_id -> correct_answer (A/B/C/D or null)
+
+
+@router.patch("/{set_id}/questions/{question_id}", response_model=QuestionOut)
+async def update_question_answer(
+    set_id: str,
+    question_id: str,
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+    payload: UpdateAnswerRequest,
+) -> QuestionOut:
+    """Update correct_answer for a single question (manual answer entry)."""
+    qrow = (
+        db.table("questions")
+        .select("*")
+        .eq("id", question_id)
+        .eq("question_set_id", set_id)
+        .maybe_single()
+        .execute()
+    ).data
+    if qrow is None:
+        raise HTTPException(status_code=404, detail="question not found")
+
+    update: dict = {}
+    if payload.correct_answer is not None:
+        if payload.correct_answer.upper() not in {"A", "B", "C", "D"}:
+            raise HTTPException(status_code=422, detail="correct_answer must be A, B, C, or D")
+        update["correct_answer"] = payload.correct_answer.upper()
+    if payload.explanation is not None:
+        update["explanation"] = payload.explanation
+
+    if update:
+        db.table("questions").update(update).eq("id", question_id).execute()
+        qrow.update(update)
+
+    return _row_to_question(qrow)
+
+
+@router.post("/{set_id}/answers", response_model=QuestionSetDetail)
+async def bulk_update_answers(
+    set_id: str,
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+    payload: BulkUpdateAnswersRequest,
+) -> QuestionSetDetail:
+    """Bulk update correct_answer for multiple questions (manual answer entry)."""
+    qset = (
+        db.table("question_sets")
+        .select("*")
+        .eq("id", set_id)
+        .maybe_single()
+        .execute()
+    ).data
+    if qset is None:
+        raise HTTPException(status_code=404, detail="question set not found")
+
+    for qid, answer in payload.answers.items():
+        if answer is not None and answer.upper() not in {"A", "B", "C", "D"}:
+            raise HTTPException(
+                status_code=422,
+                detail=f"invalid answer '{answer}' for question {qid}. Must be A, B, C, or D.",
+            )
+        db.table("questions").update(
+            {"correct_answer": answer.upper() if answer else None}
+        ).eq("id", qid).eq("question_set_id", set_id).execute()
+
+    qs = (
+        db.table("questions")
+        .select("*")
+        .eq("question_set_id", set_id)
+        .order("position")
+        .execute()
+    ).data or []
+    return QuestionSetDetail(**qset, questions=[_row_to_question(q) for q in qs])

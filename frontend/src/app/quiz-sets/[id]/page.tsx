@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, BookOpen, FileQuestion } from "lucide-react";
 
 import { StartAttemptButton } from "@/app/quiz-sets/[id]/start-button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,6 +52,7 @@ export default async function QuizSetPage({
     chapter: q.chapter,
     topic: q.topic,
   }));
+  const hasAnyAnswers = qs.questions.some((q) => q.correct_answer !== null);
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6">
@@ -73,6 +75,21 @@ export default async function QuizSetPage({
         }
       />
 
+      {!hasAnyAnswers ? (
+        <Alert>
+          <AlertTitle>No answer key detected</AlertTitle>
+          <AlertDescription>
+            This question set was extracted without answers. You can still practice,
+            but answers won&apos;t be graded.{" "}
+            {qs.material_id ? (
+              <Link href={`/materials/${qs.material_id}`} className="underline font-medium">
+                Go to material page to add answers manually.
+              </Link>
+            ) : null}
+          </AlertDescription>
+        </Alert>
+      ) : null}
+
       <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/5 via-background to-purple-500/5">
         <CardHeader>
           <div className="flex items-start gap-3">
@@ -82,8 +99,9 @@ export default async function QuizSetPage({
             <div className="flex-1">
               <CardTitle>Set up your quiz</CardTitle>
               <CardDescription>
-                Choose how many questions to practice. Answers are graded after submission, and
-                wrong answers go to your mistake bank.
+                {hasAnyAnswers
+                  ? "Choose how many questions to practice. Answers are graded after submission, and wrong answers go to your mistake bank."
+                  : "This set has no answer key. You can practice, but answers won't be graded. Go to the material page to add answers manually."}
               </CardDescription>
             </div>
           </div>

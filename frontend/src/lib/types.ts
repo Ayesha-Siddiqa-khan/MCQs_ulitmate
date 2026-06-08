@@ -82,6 +82,13 @@ export interface ExtractPreviewResponse {
   warnings: string[];
 }
 
+export interface ExtractExistingMCQsResponse extends QuestionSet {
+  questions: Question[];
+  answers_detected: number;
+  answers_missing: number;
+  can_auto_grade: boolean;
+}
+
 export interface UploadLimits {
   max_upload_mb: number;
   max_materials_per_user: number;

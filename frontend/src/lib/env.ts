@@ -7,9 +7,13 @@
 export function getApiBase(): string {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!base) {
+    const isProd = process.env.VERCEL === "1" || process.env.NODE_ENV === "production";
     throw new Error(
-      "Missing NEXT_PUBLIC_API_BASE_URL. Set it in frontend/.env.local " +
-        "(e.g. NEXT_PUBLIC_API_BASE_URL=http://localhost:8000).",
+      isProd
+        ? "Missing NEXT_PUBLIC_API_BASE_URL. Add it in Vercel Dashboard → Settings → Environment Variables " +
+            "(set to /api for same-project backend)."
+        : "Missing NEXT_PUBLIC_API_BASE_URL. Set it in frontend/.env.local " +
+            "(e.g. NEXT_PUBLIC_API_BASE_URL=http://localhost:8000).",
     );
   }
   return base.replace(/\/+$/, "");

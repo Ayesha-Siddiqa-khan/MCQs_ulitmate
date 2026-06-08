@@ -121,8 +121,18 @@ export default async function DashboardPage() {
         <Card className="border-2 border-destructive/40 bg-destructive/5">
           <CardContent className="pt-6 text-sm text-destructive">
             <p>
-              Could not reach the API: <span className="font-mono">{apiError}</span>. Make sure
-              the backend is running and <code>NEXT_PUBLIC_API_BASE_URL</code> is set in your env.
+              Could not reach the API: <span className="font-mono">{apiError}</span>.{" "}
+              {process.env.VERCEL === "1" ? (
+                <>
+                  Check that <code>NEXT_PUBLIC_API_BASE_URL</code> is set to{" "}
+                  <code>/api</code> in Vercel Dashboard → Settings → Environment Variables.
+                </>
+              ) : (
+                <>
+                  Make sure the backend is running and <code>NEXT_PUBLIC_API_BASE_URL</code> is
+                  set in <code>frontend/.env.local</code>.
+                </>
+              )}
             </p>
           </CardContent>
         </Card>

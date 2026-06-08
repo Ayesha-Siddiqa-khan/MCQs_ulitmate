@@ -8,3 +8,4 @@ npm run dev
 #   backend\.env        = private secrets (Supabase service role, JWT secret, AI fallbacks, ...)
 #   frontend\.env.local = public NEXT_PUBLIC_* values only (Supabase URL, anon key, API base URL)
 #   Do NOT put service-role / AI / JWT / DB keys in frontend\.env.local.
+#

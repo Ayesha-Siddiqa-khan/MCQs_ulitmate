@@ -88,3 +88,6 @@ logs/
 coverage/
 .coverage
 htmlcov/
+
+.vercel
+.env*

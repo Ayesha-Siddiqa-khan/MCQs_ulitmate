@@ -12,7 +12,7 @@ export default async function LoginPage() {
   return (
     <main className="mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-md flex-col justify-center px-4 py-10 sm:px-6">
       <div className="mb-6 flex justify-center">
-        <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-purple-600 text-primary-foreground shadow-lg">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg">
           <Sparkles className="h-6 w-6" />
         </div>
       </div>

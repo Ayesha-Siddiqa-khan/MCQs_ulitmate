@@ -13,7 +13,7 @@ export default async function SignUpPage() {
   return (
     <main className="mx-auto max-w-md px-4 py-12 sm:px-6">
       <div className="mb-6 flex justify-center">
-        <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-purple-600 text-primary-foreground shadow-lg">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg">
           <Sparkles className="h-6 w-6" />
         </div>
       </div>
@@ -30,12 +30,6 @@ export default async function SignUpPage() {
           <SignUpForm />
         </CardContent>
       </Card>
-      <p className="mt-4 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
-        <Link href="/login" className="font-medium text-foreground underline-offset-4 hover:underline">
-          Log in
-        </Link>
-      </p>
     </main>
   );
 }

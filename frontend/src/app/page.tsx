@@ -28,7 +28,7 @@ const features = [
     icon: FileQuestion,
     title: "Choose a focused quiz",
     body: "Practice all questions, a quick 10, a longer set, or a custom amount.",
-    tone: "from-purple-500/20 to-fuchsia-500/5 text-purple-500",
+    tone: "from-primary/20 to-primary/5 text-primary",
   },
   {
     icon: Brain,

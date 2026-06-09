@@ -43,7 +43,7 @@ export function NavBar({ user }: { user: AuthUser | null }) {
           className="flex items-center gap-2"
           aria-label="MCQ Mentor home"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-purple-600 text-primary-foreground shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-sm">
             <BookOpen className="h-5 w-5" />
           </div>
           <span className="text-lg font-semibold tracking-tight hidden sm:inline-block">

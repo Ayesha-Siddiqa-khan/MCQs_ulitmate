@@ -104,7 +104,7 @@ export default async function DashboardPage() {
           label: "Mastered",
           value: summary.mastered_mistakes ?? 0,
           icon: Award,
-          color: "text-purple-500",
+          color: "text-emerald-500",
           href: "/mistakes",
         },
       ]
@@ -139,7 +139,7 @@ export default async function DashboardPage() {
       ) : null}
 
       {!settings?.has_api_key ? (
-        <Card className="border-l-4 border-l-blue-500 border-2 bg-gradient-to-r from-blue-500/10 to-transparent">
+        <Card className="border-2 border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-transparent">
           <CardHeader>
             <div className="flex items-start gap-3">
               <Info className="h-5 w-5 text-blue-500 mt-0.5" />
@@ -161,7 +161,7 @@ export default async function DashboardPage() {
       ) : null}
 
       {summary?.continue_practice_attempt_id ? (
-        <Card className="border-2 border-primary/40 bg-gradient-to-r from-primary/10 to-purple-500/5">
+        <Card className="border-2 border-primary/40 bg-gradient-to-r from-primary/10 to-primary/5">
           <CardHeader>
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">

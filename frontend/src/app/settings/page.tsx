@@ -6,11 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/page-header";
 import { fetchSettings } from "@/app/actions/settings";
-import { getCurrentUser } from "@/lib/auth";
 import { type UserSettings } from "@/lib/types";
 
 export default async function SettingsPage() {
-  await getCurrentUser();
   const settings: UserSettings | null = await fetchSettings();
 
   return (
@@ -24,7 +22,7 @@ export default async function SettingsPage() {
       <Card className="border-2">
         <CardHeader>
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500/20 to-blue-500/20 text-purple-500">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 text-primary">
               <Sparkles className="h-5 w-5" />
             </div>
             <div className="flex-1">

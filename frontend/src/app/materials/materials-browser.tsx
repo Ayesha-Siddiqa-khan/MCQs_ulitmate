@@ -61,7 +61,7 @@ function typeTone(type: MaterialFileType): string {
     case "pasted":
     case "txt":
     case "md":
-      return "from-purple-500/20 to-purple-500/5";
+      return "from-primary/20 to-primary/5";
     default:
       return "from-muted to-muted/40";
   }

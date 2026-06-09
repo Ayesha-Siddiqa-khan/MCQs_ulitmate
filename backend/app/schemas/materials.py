@@ -38,6 +38,32 @@ class MaterialOut(BaseModel):
     updated_at: datetime | None = None
 
 
+class MaterialListOut(BaseModel):
+    """Lightweight material representation for list endpoints (no extracted_text)."""
+    id: str
+    title: str
+    original_file_name: str | None = None
+    file_type: MaterialFileType
+    subject: str | None = None
+    chapter: str | None = None
+    topic: str | None = None
+    exam_type: str | None = None
+    status: MaterialStatus
+    storage_mode: str = "saved"
+    size_bytes: int | None = None
+    page_count: int | None = None
+    created_at: datetime | None = None
+
+
+class PaginatedMaterials(BaseModel):
+    """Paginated list of materials."""
+    items: list[MaterialListOut]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+
+
 class ExtractTextResponse(BaseModel):
     material_id: str
     text: str

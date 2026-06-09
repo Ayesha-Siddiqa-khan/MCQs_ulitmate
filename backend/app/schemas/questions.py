@@ -88,3 +88,12 @@ class QuestionSetOut(BaseModel):
 
 class QuestionSetDetail(QuestionSetOut):
     questions: list[QuestionOut] = []
+
+
+class PaginatedQuestionSets(BaseModel):
+    """Paginated list of question sets."""
+    items: list[QuestionSetOut]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int

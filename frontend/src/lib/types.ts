@@ -214,6 +214,62 @@ export interface Mistake {
   question: Question | null;
 }
 
+export interface MistakeListItem {
+  id: string;
+  question_id: string;
+  wrong_count: number;
+  correct_after_wrong_count: number;
+  mastery_status: MasteryStatus;
+  last_practiced_at: string | null;
+  created_at: string | null;
+  question_text: string | null;
+  subject: string | null;
+  chapter: string | null;
+  topic: string | null;
+  difficulty: string | null;
+}
+
+export interface PaginatedMistakes {
+  items: MistakeListItem[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+  counts: Record<string, number>;
+}
+
+export interface PaginatedMaterials {
+  items: MaterialListItem[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
+export interface MaterialListItem {
+  id: string;
+  title: string;
+  original_file_name: string | null;
+  file_type: MaterialFileType;
+  subject: string | null;
+  chapter: string | null;
+  topic: string | null;
+  exam_type: string | null;
+  status: MaterialStatus;
+  storage_mode: StorageMode;
+  size_bytes: number | null;
+  page_count: number | null;
+  created_at: string | null;
+}
+
+export interface PaginatedQuestionSets {
+  items: QuestionSet[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
 export interface MistakeFilter {
   subject?: string | null;
   chapter?: string | null;

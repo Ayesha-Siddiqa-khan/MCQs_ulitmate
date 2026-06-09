@@ -38,7 +38,7 @@ import {
 import { containerVariants, itemVariants } from "@/components/motion-presets";
 import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
-import type { DeleteMistakesResponse, MasteryStatus, Mistake } from "@/lib/types";
+import type { DeleteMistakesResponse, MasteryStatus, MistakeListItem, PaginatedMistakes } from "@/lib/types";
 
 const STATUS_ORDER: MasteryStatus[] = [
   "new_mistake",
@@ -48,11 +48,11 @@ const STATUS_ORDER: MasteryStatus[] = [
 ];
 
 interface MistakesBrowserProps {
-  mistakes: Mistake[];
+  mistakes: PaginatedMistakes;
 }
 
 type ClearTarget =
-  | { type: "one"; mistake: Mistake }
+  | { type: "one"; mistake: MistakeListItem }
   | { type: "status"; status: MasteryStatus; count: number }
   | { type: "all"; count: number };
 
@@ -65,21 +65,19 @@ function formatDate(value: string | null): string {
 
 export function MistakesBrowser({ mistakes }: MistakesBrowserProps) {
   const router = useRouter();
-  const [items, setItems] = useState(mistakes);
+  const [items, setItems] = useState(mistakes.items);
   const [active, setActive] = useState<MasteryStatus | "all">("all");
   const [clearTarget, setClearTarget] = useState<ClearTarget | null>(null);
   const [pending, setPending] = useState(false);
 
   const counts = useMemo(() => {
-    const acc: Record<MasteryStatus, number> = {
-      new_mistake: 0,
-      needs_practice: 0,
-      improving: 0,
-      mastered: 0,
+    return {
+      new_mistake: mistakes.counts.new_mistake || 0,
+      needs_practice: mistakes.counts.needs_practice || 0,
+      improving: mistakes.counts.improving || 0,
+      mastered: mistakes.counts.mastered || 0,
     };
-    for (const m of items) acc[m.mastery_status] += 1;
-    return acc;
-  }, [items]);
+  }, [mistakes.counts]);
 
   const filtered = useMemo(() => {
     if (active === "all") return items;
@@ -87,7 +85,7 @@ export function MistakesBrowser({ mistakes }: MistakesBrowserProps) {
   }, [items, active]);
 
   const grouped = useMemo(() => {
-    const map: Record<MasteryStatus, Mistake[]> = {
+    const map: Record<MasteryStatus, MistakeListItem[]> = {
       new_mistake: [],
       needs_practice: [],
       improving: [],
@@ -323,28 +321,27 @@ function Pill({
   );
 }
 
-function MistakeRow({ mistake, onDelete }: { mistake: Mistake; onDelete: () => void }) {
-  const q = mistake.question;
+function MistakeRow({ mistake, onDelete }: { mistake: MistakeListItem; onDelete: () => void }) {
   return (
     <div className="rounded-lg border-2 p-4 transition-colors hover:border-primary/40 hover:bg-accent/50">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1 space-y-1">
-          <p className="font-medium">{q?.question_text ?? "(question unavailable)"}</p>
+          <p className="font-medium">{mistake.question_text ?? "(question unavailable)"}</p>
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <MasteryBadge status={mistake.mastery_status} />
             <span>{mistake.wrong_count} wrong</span>
             <span>-</span>
             <span>{mistake.correct_after_wrong_count} correct after wrong</span>
-            {q?.subject ? (
+            {mistake.subject ? (
               <>
                 <span>-</span>
-                <span>{q.subject}</span>
+                <span>{mistake.subject}</span>
               </>
             ) : null}
-            {q?.topic ? (
+            {mistake.topic ? (
               <>
                 <span>-</span>
-                <span>{q.topic}</span>
+                <span>{mistake.topic}</span>
               </>
             ) : null}
             {mistake.last_practiced_at ? (

@@ -9,14 +9,21 @@ import {
 } from "@/app/mistakes/mistakes-browser";
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
-import { type Mistake } from "@/lib/types";
+import { type PaginatedMistakes } from "@/lib/types";
 
 export default async function MistakesPage() {
   await requireUser();
-  let mistakes: Mistake[] = [];
+  let mistakes: PaginatedMistakes = {
+    items: [],
+    total: 0,
+    page: 1,
+    page_size: 20,
+    total_pages: 1,
+    counts: { new_mistake: 0, needs_practice: 0, improving: 0, mastered: 0, total: 0 },
+  };
   let error: string | null = null;
   try {
-    mistakes = await api<Mistake[]>("/mistakes");
+    mistakes = await api<PaginatedMistakes>("/mistakes");
   } catch (e) {
     error = (e as Error).message;
   }
@@ -37,9 +44,9 @@ export default async function MistakesPage() {
         </Card>
       ) : null}
 
-      {mistakes.length > 0 ? <MistakesPracticeCTA /> : null}
+      {mistakes.total > 0 ? <MistakesPracticeCTA /> : null}
 
-      {mistakes.length === 0 && !error ? (
+      {mistakes.total === 0 && !error ? (
         <MistakesEmpty />
       ) : (
         <MistakesBrowser mistakes={mistakes} />

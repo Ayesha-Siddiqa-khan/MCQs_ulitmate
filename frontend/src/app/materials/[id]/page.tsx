@@ -10,7 +10,7 @@ import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
-import { type Material, type MaterialStatus, type QuestionSet } from "@/lib/types";
+import { type Material, type MaterialStatus, type PaginatedQuestionSets, type QuestionSet } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const STATUS_TONE: Record<MaterialStatus, string> = {
@@ -54,8 +54,8 @@ export default async function MaterialDetailPage({
   try {
     material = await api<Material>(`/materials/${id}`);
     try {
-      const all = await api<QuestionSet[]>("/question-sets");
-      sets = (all ?? []).filter((s) => s.material_id === id);
+      const allSets = await api<PaginatedQuestionSets>("/question-sets", { query: { page_size: 100 } });
+      sets = (allSets.items ?? []).filter((s) => s.material_id === id);
     } catch {
       sets = [];
     }
@@ -130,36 +130,7 @@ export default async function MaterialDetailPage({
 
       <MaterialActions material={material} />
 
-      <Card className="border-2">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-primary" />
-            Extracted text
-          </CardTitle>
-          <CardDescription>
-            {charCount > 0
-              ? `${charCount.toLocaleString()} characters · This is what we will feed to the AI when you generate questions.`
-              : "This is what we will feed to the AI when you generate questions."}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {material.extracted_text ? (
-            <pre className="max-h-96 overflow-auto rounded-lg bg-muted p-4 text-xs whitespace-pre-wrap font-mono">
-              {material.extracted_text}
-            </pre>
-          ) : (
-            <EmptyState
-              icon={FileText}
-              title="No text extracted yet"
-              description={
-                material.status === "uploaded"
-                  ? "Click Extract text above to run the extractor."
-                  : "The file has not been extracted. Try retrying the extraction."
-              }
-            />
-          )}
-        </CardContent>
-      </Card>
+      <ExtractedTextPreview text={material.extracted_text} charCount={charCount} status={material.status} />
 
       <Card className="border-2">
         <CardHeader>
@@ -204,5 +175,63 @@ export default async function MaterialDetailPage({
         </CardContent>
       </Card>
     </main>
+  );
+}
+
+function ExtractedTextPreview({
+  text,
+  charCount,
+  status,
+}: {
+  text: string | null;
+  charCount: number;
+  status: MaterialStatus;
+}) {
+  const isLargeText = charCount > 2000;
+
+  return (
+    <Card className="border-2">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <FileText className="h-5 w-5 text-primary" />
+          Extracted text
+        </CardTitle>
+        <CardDescription>
+          {charCount > 0
+            ? `${charCount.toLocaleString()} characters · This is what we will feed to the AI when you generate questions.`
+            : "This is what we will feed to the AI when you generate questions."}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {text ? (
+          <div className="space-y-2">
+            {isLargeText ? (
+              <details className="group">
+                <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
+                  Click to show extracted text ({charCount.toLocaleString()} characters)
+                </summary>
+                <pre className="mt-2 max-h-96 overflow-auto rounded-lg bg-muted p-4 text-xs whitespace-pre-wrap font-mono">
+                  {text}
+                </pre>
+              </details>
+            ) : (
+              <pre className="max-h-96 overflow-auto rounded-lg bg-muted p-4 text-xs whitespace-pre-wrap font-mono">
+                {text}
+              </pre>
+            )}
+          </div>
+        ) : (
+          <EmptyState
+            icon={FileText}
+            title="No text extracted yet"
+            description={
+              status === "uploaded"
+                ? "Click Extract text above to run the extractor."
+                : "The file has not been extracted. Try retrying the extraction."
+            }
+          />
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -1,7 +1,10 @@
 import { NavBar } from "@/components/nav-bar";
-import { getCurrentUser } from "@/lib/auth";
+import type { AuthUser } from "@/lib/auth";
 
-export async function AppNav() {
-  const user = await getCurrentUser();
+interface AppNavProps {
+  user: AuthUser | null;
+}
+
+export async function AppNav({ user }: AppNavProps) {
   return <NavBar user={user} />;
 }

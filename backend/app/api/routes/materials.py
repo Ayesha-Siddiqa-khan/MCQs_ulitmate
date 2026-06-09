@@ -14,8 +14,10 @@ from app.schemas.materials import (
     DeleteMaterialResponse,
     ExtractPreviewResponse,
     ExtractTextResponse,
+    MaterialListOut,
     MaterialOut,
     MaterialUsageResponse,
+    PaginatedMaterials,
     PasteTextRequest,
     SaveTemporaryRequest,
     SaveTemporaryResponse,
@@ -55,8 +57,13 @@ def _file_type_from_ext(ext: str) -> str:
 
 
 def _material_count(db: Client, user_id: str) -> int:
-    rows = db.table("learning_materials").select("id").eq("user_id", user_id).execute().data or []
-    return len(rows)
+    res = (
+        db.table("learning_materials")
+        .select("id", count="exact")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    return res.count or 0
 
 
 def _enforce_material_limit(db: Client, user_id: str, settings: Settings) -> None:
@@ -221,7 +228,7 @@ async def extract_material_text(
 ) -> ExtractTextResponse:
     row = (
         db.table("learning_materials")
-        .select("*")
+        .select("id, file_type, storage_path, extracted_text, status")
         .eq("id", material_id)
         .maybe_single()
         .execute()
@@ -268,7 +275,7 @@ async def extract_preview(
 
     row = (
         db.table("learning_materials")
-        .select("*")
+        .select("id, file_type, extracted_text")
         .eq("id", material_id)
         .maybe_single()
         .execute()
@@ -317,18 +324,44 @@ async def extract_preview(
     )
 
 
-@router.get("", response_model=list[MaterialOut])
+@router.get("", response_model=PaginatedMaterials)
 async def list_materials(
     user: CurrentUserDep,
     db: Annotated[Client, Depends(get_user_client)],
-) -> list[MaterialOut]:
-    res = (
+    page: int = 1,
+    page_size: int = 20,
+) -> PaginatedMaterials:
+    """List user's materials with pagination. Excludes extracted_text for performance."""
+    page = max(1, page)
+    page_size = max(1, min(100, page_size))
+    offset = (page - 1) * page_size
+
+    # Get total count
+    count_res = (
         db.table("learning_materials")
-        .select("*")
-        .order("created_at", desc=True)
+        .select("id", count="exact")
+        .eq("user_id", user.id)
         .execute()
     )
-    return [MaterialOut(**row) for row in (res.data or [])]
+    total = count_res.count or 0
+    total_pages = max(1, (total + page_size - 1) // page_size)
+
+    # Fetch page of materials WITHOUT extracted_text
+    res = (
+        db.table("learning_materials")
+        .select("id, title, original_file_name, file_type, subject, chapter, topic, exam_type, status, storage_mode, size_bytes, page_count, created_at")
+        .order("created_at", desc=True)
+        .range(offset, offset + page_size - 1)
+        .execute()
+    )
+    items = [MaterialListOut(**row) for row in (res.data or [])]
+    return PaginatedMaterials(
+        items=items,
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=total_pages,
+    )
 
 
 @router.get("/usage", response_model=MaterialUsageResponse)
@@ -354,7 +387,7 @@ async def get_material(
 ) -> MaterialOut:
     res = (
         db.table("learning_materials")
-        .select("*")
+        .select("id, title, original_file_name, file_type, storage_path, extracted_text, subject, chapter, topic, exam_type, status, storage_mode, size_bytes, page_count, notes, created_at, updated_at")
         .eq("id", material_id)
         .maybe_single()
         .execute()
@@ -394,7 +427,7 @@ async def save_temporary_material(
     """Convert a temporary material to saved, or save only mistakes."""
     row = (
         db.table("learning_materials")
-        .select("*")
+        .select("id, storage_mode")
         .eq("id", material_id)
         .eq("user_id", user.id)
         .maybe_single()

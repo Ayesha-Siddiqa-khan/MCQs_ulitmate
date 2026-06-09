@@ -56,3 +56,31 @@ class MistakeRecommendation(BaseModel):
 class DeleteMistakesResponse(BaseModel):
     deleted: int
     status: MasteryStatus | None = None
+
+
+class MistakeListOut(BaseModel):
+    """Lightweight mistake representation for list endpoints."""
+    id: str
+    question_id: str
+    wrong_count: int
+    correct_after_wrong_count: int
+    mastery_status: MasteryStatus
+    last_practiced_at: datetime | None
+    created_at: datetime | None
+    # Question summary (not full question object)
+    question_text: str | None = None
+    subject: str | None = None
+    chapter: str | None = None
+    topic: str | None = None
+    difficulty: str | None = None
+
+
+class PaginatedMistakes(BaseModel):
+    """Paginated list of mistakes."""
+    items: list[MistakeListOut]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+    # Summary counts
+    counts: dict[str, int]

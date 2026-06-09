@@ -16,6 +16,7 @@ from app.schemas.questions import (
     ExtractExistingMCQsResponse,
     GenerateMCQRequest,
     Option,
+    PaginatedQuestionSets,
     QuestionOut,
     QuestionSetDetail,
     QuestionSetOut,
@@ -32,7 +33,7 @@ router = APIRouter(prefix="/question-sets", tags=["question-sets"])
 def _load_material_text(db: Client, material_id: str) -> tuple[dict, str]:
     row = (
         db.table("learning_materials")
-        .select("*")
+        .select("id, title, extracted_text, subject, chapter, topic")
         .eq("id", material_id)
         .maybe_single()
         .execute()
@@ -178,13 +179,41 @@ async def generate(
     return QuestionSetDetail(**qset, questions=[_row_to_question(r) for r in inserted])
 
 
-@router.get("", response_model=list[QuestionSetOut])
+@router.get("", response_model=PaginatedQuestionSets)
 async def list_sets(
     user: CurrentUserDep,
     db: Annotated[Client, Depends(get_user_client)],
-) -> list[QuestionSetOut]:
-    res = db.table("question_sets").select("*").order("created_at", desc=True).execute()
-    return [QuestionSetOut(**r) for r in (res.data or [])]
+    page: int = 1,
+    page_size: int = 50,
+) -> PaginatedQuestionSets:
+    """List user's question sets with pagination."""
+    page = max(1, page)
+    page_size = max(1, min(100, page_size))
+    offset = (page - 1) * page_size
+
+    count_res = (
+        db.table("question_sets")
+        .select("id", count="exact")
+        .execute()
+    )
+    total = count_res.count or 0
+    total_pages = max(1, (total + page_size - 1) // page_size)
+
+    res = (
+        db.table("question_sets")
+        .select("id, material_id, title, mode, total_questions, difficulty, subject, chapter, topic, created_at")
+        .order("created_at", desc=True)
+        .range(offset, offset + page_size - 1)
+        .execute()
+    )
+    items = [QuestionSetOut(**r) for r in (res.data or [])]
+    return PaginatedQuestionSets(
+        items=items,
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=total_pages,
+    )
 
 
 @router.get("/{set_id}", response_model=QuestionSetDetail)

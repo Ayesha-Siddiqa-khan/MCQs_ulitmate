@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppNav } from "@/components/app-nav";
 import { SiteFooter } from "@/components/site-footer";
+import { getCurrentUser } from "@/lib/auth";
 
 import "./globals.css";
 
@@ -26,11 +27,14 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch user once in layout to avoid duplicate /auth/me calls
+  const user = await getCurrentUser();
+
   return (
     <html
       lang="en"
@@ -39,9 +43,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider>
-          <AppNav />
+          <AppNav user={user} />
           <div className="flex-1">{children}</div>
-          <SiteFooter />
+          <SiteFooter user={user} />
           <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>

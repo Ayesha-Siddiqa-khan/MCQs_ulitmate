@@ -23,14 +23,15 @@ import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import type {
   DeleteMaterialResponse,
-  Material,
+  MaterialListItem,
   MaterialFileType,
   MaterialStatus,
   MaterialUsage,
+  PaginatedMaterials,
 } from "@/lib/types";
 
 interface MaterialsBrowserProps {
-  materials: Material[];
+  materials: PaginatedMaterials;
   usage: MaterialUsage;
 }
 
@@ -82,10 +83,10 @@ function formatSize(bytes: number | null): string {
 
 export function MaterialsBrowser({ materials, usage }: MaterialsBrowserProps) {
   const router = useRouter();
-  const [items, setItems] = useState(materials);
+  const [items, setItems] = useState(materials.items);
   const [usageState, setUsageState] = useState(usage);
   const [query, setQuery] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<Material | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<MaterialListItem | null>(null);
   const [deletePending, setDeletePending] = useState(false);
 
   const filtered = useMemo(() => {

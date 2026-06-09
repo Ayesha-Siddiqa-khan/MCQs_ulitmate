@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
-import { type Mistake, type MistakeFilter, type StartPracticeResponse } from "@/lib/types";
+import { type MistakeListItem, type MistakeFilter, type StartPracticeResponse, type PaginatedMistakes } from "@/lib/types";
 
-function matchesFilter(m: Mistake, onlyUnmastered: boolean, onlyRepeated: boolean): boolean {
+function matchesFilter(m: MistakeListItem, onlyUnmastered: boolean, onlyRepeated: boolean): boolean {
   if (onlyUnmastered && m.mastery_status === "mastered") return false;
   if (onlyRepeated && m.wrong_count < 2) return false;
   return true;
@@ -55,13 +55,13 @@ export function PracticeStartForm() {
   const [onlyRepeated, setOnlyRepeated] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const [mistakes, setMistakes] = useState<Mistake[] | null>(null);
+  const [mistakes, setMistakes] = useState<MistakeListItem[] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    api<Mistake[]>("/mistakes", { query: { only_unmastered: false } })
-      .then((rows) => {
-        if (!cancelled) setMistakes(rows);
+    api<PaginatedMistakes>("/mistakes", { query: { only_unmastered: false, page_size: 100 } })
+      .then((result) => {
+        if (!cancelled) setMistakes(result.items);
       })
       .catch(() => {
         if (!cancelled) setMistakes([]);

@@ -12,8 +12,10 @@ from app.schemas.common import MasteryStatus, QuestionSetMode, QuizMode
 from app.schemas.mistakes import (
     DeleteMistakesResponse,
     MistakeFilter,
+    MistakeListOut,
     MistakeOut,
     MistakeRecommendation,
+    PaginatedMistakes,
     StartPracticeResponse,
 )
 from app.services.quiz.recommendation_service import build_recommendations
@@ -21,30 +23,83 @@ from app.services.quiz.recommendation_service import build_recommendations
 router = APIRouter(prefix="/mistakes", tags=["mistakes"])
 
 
-@router.get("", response_model=list[MistakeOut])
+@router.get("", response_model=PaginatedMistakes)
 async def list_mistakes(
     user: CurrentUserDep,
     db: Annotated[Client, Depends(get_user_client)],
     only_unmastered: bool = True,
-) -> list[MistakeOut]:
+    page: int = 1,
+    page_size: int = 20,
+) -> PaginatedMistakes:
+    """List user's mistakes with pagination. Returns lightweight question summaries."""
+    page = max(1, page)
+    page_size = max(1, min(100, page_size))
+    offset = (page - 1) * page_size
+
+    # Get total count
+    count_q = db.table("mistake_bank").select("id", count="exact")
+    if only_unmastered:
+        count_q = count_q.neq("mastery_status", "mastered")
+    count_res = count_q.execute()
+    total = count_res.count or 0
+    total_pages = max(1, (total + page_size - 1) // page_size)
+
+    # Get summary counts for all statuses
+    all_counts_res = (
+        db.table("mistake_bank")
+        .select("id, mastery_status")
+        .execute()
+    ).data or []
+    counts: dict[str, int] = {
+        "new_mistake": 0,
+        "needs_practice": 0,
+        "improving": 0,
+        "mastered": 0,
+        "total": len(all_counts_res),
+    }
+    for r in all_counts_res:
+        status = r.get("mastery_status", "new_mistake")
+        if status in counts:
+            counts[status] += 1
+
+    # Fetch mistakes with lightweight question data (only text, subject, chapter, topic, difficulty)
     q = (
         db.table("mistake_bank")
-        .select("*, question:questions(*)")
+        .select("id, question_id, wrong_count, correct_after_wrong_count, mastery_status, last_practiced_at, created_at, question:questions(id, question_text, subject, chapter, topic, difficulty)")
         .order("updated_at", desc=True)
     )
     if only_unmastered:
         q = q.neq("mastery_status", "mastered")
-    res = q.execute()
-    out: list[MistakeOut] = []
+    res = q.range(offset, offset + page_size - 1).execute()
+
+    items: list[MistakeListOut] = []
     for r in res.data or []:
         question_row = r.pop("question", None)
-        question = None
-        if question_row:
-            from app.api.routes.question_sets import _row_to_question
+        items.append(
+            MistakeListOut(
+                id=r["id"],
+                question_id=r["question_id"],
+                wrong_count=r["wrong_count"],
+                correct_after_wrong_count=r["correct_after_wrong_count"],
+                mastery_status=r["mastery_status"],
+                last_practiced_at=r.get("last_practiced_at"),
+                created_at=r.get("created_at"),
+                question_text=question_row.get("question_text") if question_row else None,
+                subject=question_row.get("subject") if question_row else None,
+                chapter=question_row.get("chapter") if question_row else None,
+                topic=question_row.get("topic") if question_row else None,
+                difficulty=question_row.get("difficulty") if question_row else None,
+            )
+        )
 
-            question = _row_to_question(question_row)
-        out.append(MistakeOut(**r, question=question))
-    return out
+    return PaginatedMistakes(
+        items=items,
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=total_pages,
+        counts=counts,
+    )
 
 
 @router.get("/recommendations", response_model=list[MistakeRecommendation])
@@ -52,10 +107,12 @@ async def recommendations(
     user: CurrentUserDep,
     db: Annotated[Client, Depends(get_user_client)],
 ) -> list[MistakeRecommendation]:
+    # Only fetch lightweight question data for recommendations
     res = (
         db.table("mistake_bank")
-        .select("*, question:questions(*)")
+        .select("id, question_id, mastery_status, wrong_count, question:questions(subject, chapter, topic, difficulty)")
         .neq("mastery_status", "mastered")
+        .limit(100)
         .execute()
     )
     return build_recommendations(res.data or [])
@@ -123,7 +180,7 @@ async def start_mistake_practice(
 ) -> StartPracticeResponse:
     """Builds an ad-hoc question_set + quiz_attempt out of the student's mistakes."""
 
-    q = db.table("mistake_bank").select("*, question:questions(*)")
+    q = db.table("mistake_bank").select("id, question_id, mastery_status, wrong_count, question:questions(id, question_text, options_json, correct_answer, subject, chapter, topic, difficulty)")
     if payload.only_unmastered:
         q = q.neq("mastery_status", "mastered")
     if payload.only_repeated:

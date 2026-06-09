@@ -61,17 +61,17 @@ async def summary(
             )
         )
 
-    # Mistakes summary
-    mistakes = (
+    # Mistakes summary - use count query instead of fetching all rows
+    mistakes_count_res = (
         db.table("mistake_bank")
-        .select("id, mastery_status, question_id")
+        .select("id, mastery_status")
         .execute()
     ).data or []
-    mastered = sum(1 for m in mistakes if m.get("mastery_status") == "mastered")
-    total_wrong = len([m for m in mistakes if m.get("mastery_status") != "mastered"])
+    mastered = sum(1 for m in mistakes_count_res if m.get("mastery_status") == "mastered")
+    total_wrong = len([m for m in mistakes_count_res if m.get("mastery_status") != "mastered"])
 
     # Weak topics
-    weak_topic_ids = [m["question_id"] for m in mistakes if m.get("mastery_status") in ("new_mistake", "needs_practice")]
+    weak_topic_ids = [m["question_id"] for m in mistakes_count_res if m.get("mastery_status") in ("new_mistake", "needs_practice")]
     weak_topics: list[str] = []
     if weak_topic_ids:
         rows = (

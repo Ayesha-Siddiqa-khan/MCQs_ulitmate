@@ -10,7 +10,7 @@ import { type MaterialUsage } from "@/lib/types";
 export default async function NewMaterialPage() {
   await requireUser();
   const usage = await api<MaterialUsage>("/materials/usage").catch(
-    () => ({ used: 0, limit: 5, remaining: 5 }) satisfies MaterialUsage,
+    () => ({ used: 0, limit: 2, remaining: 2 }) satisfies MaterialUsage,
   );
   const isAtLimit = usage.used >= usage.limit;
 
@@ -24,7 +24,7 @@ export default async function NewMaterialPage() {
       {isAtLimit ? (
         <Card className="border-2 border-destructive/40 bg-destructive/5">
           <CardContent className="pt-6 text-sm text-destructive">
-            You have reached the 5-material limit. Delete an older material before uploading a new one.
+            You have reached the {usage.limit}-material limit. Delete an older material before uploading a new one.
           </CardContent>
         </Card>
       ) : (

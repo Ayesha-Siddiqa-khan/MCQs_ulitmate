@@ -66,7 +66,7 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
 
   useEffect(() => {
     api<UploadLimits>("/config/upload-limits").then(setLimits).catch(() => {
-      setLimits({ max_upload_mb: 50, max_materials_per_user: 5, allowed_extensions: ["pdf","docx","txt","md","csv","json"] });
+      setLimits({ max_upload_mb: 50, max_materials_per_user: 2, allowed_extensions: ["pdf","docx","txt","md","csv","json"] });
     });
   }, []);
 
@@ -86,7 +86,7 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
 
   function onFileSubmit(values: FileValues) {
     if (storageMode === "saved" && usage.used >= usage.limit) {
-      setError("You have reached the 5-material limit. Practice without saving or delete an old material.");
+      setError(`You have reached the ${usage.limit}-material limit. Practice without saving or delete an old material.`);
       return;
     }
     setError(null);
@@ -106,7 +106,7 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
 
   function onPasteSubmit(values: PasteValues) {
     if (storageMode === "saved" && usage.used >= usage.limit) {
-      setError("You have reached the 5-material limit. Practice without saving or delete an old material.");
+      setError(`You have reached the ${usage.limit}-material limit. Practice without saving or delete an old material.`);
       return;
     }
     setError(null);

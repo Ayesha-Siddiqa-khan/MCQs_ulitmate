@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
@@ -61,6 +62,7 @@ def _material_count(db: Client, user_id: str) -> int:
         db.table("learning_materials")
         .select("id", count="exact")
         .eq("user_id", user_id)
+        .eq("storage_mode", "saved")
         .execute()
     )
     return res.count or 0
@@ -120,6 +122,7 @@ async def upload_material(
         _enforce_material_limit(db, user.id, settings)
 
     file_type = _file_type_from_ext(ext)
+    now = datetime.now(timezone.utc)
     insert = (
         db.table("learning_materials")
         .insert(
@@ -135,6 +138,7 @@ async def upload_material(
                 "size_bytes": len(data),
                 "status": "uploaded",
                 "storage_mode": "temporary" if is_temporary else "saved",
+                "expires_at": (now + timedelta(hours=24)).isoformat() if is_temporary else None,
             }
         )
         .execute()
@@ -173,6 +177,7 @@ async def paste_text(
     if not is_temporary:
         _enforce_material_limit(db, user.id, settings)
 
+    now = datetime.now(timezone.utc)
     insert = (
         db.table("learning_materials")
         .insert(
@@ -189,6 +194,7 @@ async def paste_text(
                 "size_bytes": len(payload.text.encode("utf-8")),
                 "status": "extracted",
                 "storage_mode": "temporary" if is_temporary else "saved",
+                "expires_at": (now + timedelta(hours=24)).isoformat() if is_temporary else None,
             }
         )
         .execute()
@@ -328,6 +334,7 @@ async def extract_preview(
 async def list_materials(
     user: CurrentUserDep,
     db: Annotated[Client, Depends(get_user_client)],
+    settings: Annotated[Settings, Depends(get_settings)],
     page: int = 1,
     page_size: int = 20,
 ) -> PaginatedMaterials:
@@ -335,6 +342,9 @@ async def list_materials(
     page = max(1, page)
     page_size = max(1, min(100, page_size))
     offset = (page - 1) * page_size
+
+    # Auto-cleanup expired temporary materials
+    _cleanup_expired_temporaries(db, settings, user.id)
 
     # Get total count
     count_res = (
@@ -349,7 +359,7 @@ async def list_materials(
     # Fetch page of materials WITHOUT extracted_text
     res = (
         db.table("learning_materials")
-        .select("id, title, original_file_name, file_type, subject, chapter, topic, exam_type, status, storage_mode, size_bytes, page_count, created_at")
+        .select("id, title, original_file_name, file_type, subject, chapter, topic, exam_type, status, storage_mode, expires_at, size_bytes, page_count, created_at")
         .order("created_at", desc=True)
         .range(offset, offset + page_size - 1)
         .execute()
@@ -443,7 +453,7 @@ async def save_temporary_material(
         # Check material limit before saving
         _enforce_material_limit(db, user.id, settings)
         db.table("learning_materials").update(
-            {"storage_mode": "saved"}
+            {"storage_mode": "saved", "expires_at": None}
         ).eq("id", material_id).execute()
         return SaveTemporaryResponse(
             material_id=material_id,
@@ -470,3 +480,37 @@ async def save_temporary_material(
         action="discarded",
         message="Temporary session discarded. All data removed.",
     )
+
+
+def _cleanup_expired_temporaries(db: Client, settings: Settings, user_id: str) -> int:
+    """Delete temporary materials past their expires_at. Returns count cleaned."""
+    now = datetime.now(timezone.utc).isoformat()
+    expired = (
+        db.table("learning_materials")
+        .select("id")
+        .eq("user_id", user_id)
+        .eq("storage_mode", "temporary")
+        .not_.is_("expires_at", "null")
+        .lt("expires_at", now)
+        .execute()
+    ).data
+    if not expired:
+        return 0
+    count = 0
+    for row in expired:
+        cleanup = delete_material_tree(db, user_id, row["id"])
+        if cleanup:
+            _remove_storage_paths(db, settings, cleanup.storage_paths)
+            count += 1
+    return count
+
+
+@router.delete("/cleanup-temporary")
+async def cleanup_expired_temporary_materials(
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> dict:
+    """Delete all expired temporary materials for the current user."""
+    count = _cleanup_expired_temporaries(db, settings, user.id)
+    return {"cleaned": count}

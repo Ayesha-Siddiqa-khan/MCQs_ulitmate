@@ -31,6 +31,7 @@ class MaterialOut(BaseModel):
     exam_type: str | None = None
     status: MaterialStatus
     storage_mode: str = "saved"
+    expires_at: datetime | None = None
     size_bytes: int | None = None
     page_count: int | None = None
     notes: str | None = None
@@ -50,6 +51,7 @@ class MaterialListOut(BaseModel):
     exam_type: str | None = None
     status: MaterialStatus
     storage_mode: str = "saved"
+    expires_at: datetime | None = None
     size_bytes: int | None = None
     page_count: int | None = None
     created_at: datetime | None = None

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ChevronRight, File, FileText, Plus, Search, Trash2, Upload } from "lucide-react";
+import { ChevronRight, Clock, File, FileText, Plus, Search, Trash2, Upload } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -79,6 +79,18 @@ function formatSize(bytes: number | null): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function formatExpiresAt(expiresAt: string | null): string {
+  if (!expiresAt) return "";
+  const now = new Date();
+  const expiry = new Date(expiresAt);
+  const diffMs = expiry.getTime() - now.getTime();
+  if (diffMs <= 0) return "Expired";
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  if (hours > 0) return `Expires in ${hours}h ${minutes}m`;
+  return `Expires in ${minutes}m`;
 }
 
 export function MaterialsBrowser({ materials, usage }: MaterialsBrowserProps) {
@@ -206,6 +218,11 @@ export function MaterialsBrowser({ materials, usage }: MaterialsBrowserProps) {
                     >
                       {m.status}
                     </Badge>
+                    {m.storage_mode === "temporary" && (
+                      <Badge className="border-transparent bg-amber-500/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 text-[10px] uppercase tracking-wide">
+                        Temporary
+                      </Badge>
+                    )}
                     <button
                       type="button"
                       onClick={() => setDeleteTarget(m)}
@@ -228,6 +245,12 @@ export function MaterialsBrowser({ materials, usage }: MaterialsBrowserProps) {
                       <span>-</span>
                       <span>{formatDate(m.created_at)}</span>
                     </div>
+                    {m.storage_mode === "temporary" && m.expires_at && (
+                      <div className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400">
+                        <Clock className="h-3 w-3" />
+                        <span>{formatExpiresAt(m.expires_at)}</span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">

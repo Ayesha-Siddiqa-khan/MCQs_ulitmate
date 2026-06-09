@@ -10,14 +10,14 @@ import { type PaginatedMaterials, type MaterialUsage } from "@/lib/types";
 export default async function MaterialsPage() {
   await requireUser();
   let materials: PaginatedMaterials = { items: [], total: 0, page: 1, page_size: 20, total_pages: 1 };
-  let usage: MaterialUsage = { used: 0, limit: 5, remaining: 5 };
+  let usage: MaterialUsage = { used: 0, limit: 2, remaining: 2 };
   let error: string | null = null;
   try {
     materials = await api<PaginatedMaterials>("/materials");
     usage = await api<MaterialUsage>("/materials/usage");
   } catch (e) {
     error = (e as Error).message;
-    usage = { used: materials.total, limit: 5, remaining: Math.max(0, 5 - materials.total) };
+    usage = { used: materials.total, limit: 2, remaining: Math.max(0, 2 - materials.total) };
   }
 
   return (

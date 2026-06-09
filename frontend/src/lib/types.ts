@@ -44,6 +44,7 @@ export interface Material {
   exam_type: string | null;
   status: MaterialStatus;
   storage_mode: StorageMode;
+  expires_at: string | null;
   size_bytes: number | null;
   page_count: number | null;
   notes: string | null;
@@ -257,6 +258,7 @@ export interface MaterialListItem {
   exam_type: string | null;
   status: MaterialStatus;
   storage_mode: StorageMode;
+  expires_at: string | null;
   size_bytes: number | null;
   page_count: number | null;
   created_at: string | null;

@@ -302,6 +302,8 @@ async def extract_preview(
 
     # For PDFs, try to get rich text with font metadata for bold detection
     rich_lines = None
+    ocr_used = False
+    source_type = "text_pdf"
     file_type = row.get("file_type", "")
     storage_path = row.get("storage_path", "")
     if file_type == "pdf" and storage_path:
@@ -313,12 +315,19 @@ async def extract_preview(
                 from app.services.extraction.pdf_extractor import extract_pdf_rich
                 rich_result = extract_pdf_rich(data)
                 rich_lines = rich_result.rich_lines
-                log.info("Bold detection: extracted %d pages of rich lines for material %s", len(rich_lines), material_id)
+                ocr_used = rich_result.ocr_used
+                source_type = rich_result.source_type
+                log.info("Bold detection: extracted %d pages of rich lines for material %s (ocr=%s)", len(rich_lines), material_id, ocr_used)
         except Exception as exc:
             log.warning("Bold detection failed for material %s: %s", material_id, exc)
-            # Still fall back to plain text, but now we know why
 
-    stats = preview_mcqs_with_rich_text(text, rich_lines=rich_lines)
+    # Use OCR parser for image-based PDFs, standard parser for text PDFs
+    if ocr_used and source_type == "image_based_pdf":
+        from app.services.extraction.mcq_parser import preview_ocr_mcqs
+        stats = preview_ocr_mcqs(text)
+        log.info("OCR preview: %d MCQs detected from image-based PDF", stats.total_detected)
+    else:
+        stats = preview_mcqs_with_rich_text(text, rich_lines=rich_lines)
 
     confidence = "high"
     warnings: list[str] = []
@@ -362,6 +371,8 @@ async def extract_preview(
         confidence=confidence,
         warnings=warnings,
         answer_sources=answer_sources,
+        ocr_used=ocr_used,
+        source_type=source_type,
     )
 
 

@@ -82,6 +82,8 @@ export interface ExtractPreviewResponse {
   confidence: string;
   warnings: string[];
   answer_sources?: Record<string, number>;
+  ocr_used?: boolean;
+  source_type?: string;
 }
 
 export interface ExtractExistingMCQsResponse extends QuestionSet {

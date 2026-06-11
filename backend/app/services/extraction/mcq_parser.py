@@ -555,6 +555,34 @@ def preview_mcqs_with_rich_text(
     )
 
 
+def preview_ocr_mcqs(text: str) -> ExtractionPreview:
+    """Preview MCQs from OCR-extracted scanned PDF text."""
+    questions = parse_ocr_mcqs(text)
+
+    total = len(questions)
+    with_answers = sum(1 for q in questions if q.correct_answer is not None)
+    without_answers = total - with_answers
+    with_explanations = 0
+
+    # Count duplicates
+    seen: dict[str, int] = {}
+    for q in questions:
+        normalized = q.options[0].text.strip().lower() if q.options else ""
+        seen[normalized] = seen.get(normalized, 0) + 1
+    duplicates = sum(1 for count in seen.values() if count > 1)
+
+    answer_sources = {"ocr_detected": with_answers}
+
+    return ExtractionPreview(
+        total_detected=total,
+        with_answers=with_answers,
+        without_answers=without_answers,
+        with_explanations=with_explanations,
+        duplicates=duplicates,
+        answer_sources=answer_sources,
+    )
+
+
 def _split_answer_key(text: str) -> tuple[str, str]:
     match = _ANSWER_KEY_HEADING.search(text)
     if not match:
@@ -824,3 +852,277 @@ def _parse_answer_key(text: str) -> dict[tuple[str | None, int], _AnswerKeyItem]
 
     flush()
     return answers
+
+
+# --- OCR/Scanned PDF MCQ Parser ---
+
+# Question header: "|Question No : 1 of 26 Marks: 1 (Budgeted Time 1 Min)"
+# OCR may misread digits (e.g. "8" as "&"), so we allow common misreads
+_OCR_QUESTION_HEADER = re.compile(
+    r"Question\s+No\s*[:\.]?\s*(\d+|[&§])\s+of\s+(\d+)\s+Marks\s*:\s*(\d+)\s*\((?:Budgeted\s+Time\s+)?(\d+)\s*(?:Min|Minute)",
+    re.IGNORECASE,
+)
+
+# Broader header match to catch questions even when digits are misread
+_OCR_QUESTION_HEADER_LOOSE = re.compile(
+    r"Question\s+No\s*[:\.]?\s*(\d+|[&§])\s+of\s+(\d+)\s+Marks",
+    re.IGNORECASE,
+)
+
+# Map common OCR misreads of digits back to the actual digit
+_OCR_DIGIT_MAP = {"&": "8", "§": "9", "O": "0", "o": "0", "l": "1", "I": "1"}
+
+# MCQ indicator: "Please select your correct option"
+_OCR_MCQ_MARKER = re.compile(r"Please\s+select\s+your\s+correct\s+option", re.IGNORECASE)
+
+# Long-answer indicator: "Please click here to Add Answer"
+_OCR_LONG_ANSWER_MARKER = re.compile(r"Please\s+click\s+here\s+to\s+Add\s+Answer", re.IGNORECASE)
+
+# Correct marker (various OCR spellings)
+_CORRECT_MARKER = re.compile(r"\b[Cc][Oo]?[Rr]?[Rr]?[Ee]?[Cc]?[Tt]\b")
+
+# Noise lines to skip
+_OCR_NOISE = re.compile(
+    r"^\s*(?:Made\s+By|Whade\s+By|Wade\s+By|made\s+By|Uagqar|Ueagqar|Waqar|Wagar|Siddhu|S Us|Siddha|S ak|Ssiddhu|S ae)\b",
+    re.IGNORECASE,
+)
+
+# OCR noise patterns to filter from option text
+_OCR_OPTION_NOISE = re.compile(
+    r"(?:^[©®™±×÷a]{1,3}\s*(?:ar|ara|ct)?\s*$|^\d{1,2}$|^[^a-zA-Z0-9]{2,}$|^\s*$|^c\s*a\s*$|^-\s*i\s*$)"
+)
+
+# Common OCR misreads of option noise
+_OCR_GARBAGE = re.compile(
+    r"^(?:[a]\s*$|[©®]\s*(?:ar|ara)?\s*$|\d{1,2}\s*$|_[\s_]*$|[\s_]*$|c\s*a\s*$|-\s*i\s*$)"
+)
+
+
+@dataclass
+class OcrParsedQuestion:
+    """A question parsed from OCR text of a scanned PDF."""
+    question_number: int
+    total_questions: int
+    marks: int
+    question_text: str
+    options: list[Option]
+    correct_answer: str | None = None
+    answer_source: str = "missing"
+    confidence: str = "low"
+    is_mcq: bool = True
+    page_number: int | None = None
+
+
+def parse_ocr_mcqs(text: str) -> list[OcrParsedQuestion]:
+    """Parse MCQs from OCR text of scanned/image-based PDFs.
+
+    Supports the format:
+        Question No : X of Y Marks: Z (Budgeted Time N Min)
+        Question text...
+        Answer ( Please select your correct option )
+        Option 1
+        correct
+        Option 2
+        ...
+        Made By: ...
+
+    Returns list of OcrParsedQuestion with correct_answer detected
+    from "correct" markers when possible.
+    """
+    if not text or not text.strip():
+        return []
+
+    lines = text.split("\n")
+    questions: list[OcrParsedQuestion] = []
+
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+
+        # Check for question header
+        m = _OCR_QUESTION_HEADER.search(line)
+        if not m:
+            i += 1
+            continue
+
+        q_num_str = m.group(1)
+        # Map OCR misreads of digits
+        q_num_str = _OCR_DIGIT_MAP.get(q_num_str, q_num_str)
+        try:
+            q_num = int(q_num_str)
+        except ValueError:
+            i += 1
+            continue
+        total = int(m.group(2))
+        marks = int(m.group(3))
+
+        # Collect question body lines (until we hit the answer section)
+        i += 1
+        question_lines: list[str] = []
+        while i < len(lines):
+            ln = lines[i].strip()
+            if not ln:
+                i += 1
+                continue
+            # Check for answer section marker
+            if _OCR_MCQ_MARKER.search(ln) or _OCR_LONG_ANSWER_MARKER.search(ln):
+                break
+            # Skip noise
+            if _OCR_NOISE.match(ln):
+                i += 1
+                continue
+            question_lines.append(ln)
+            i += 1
+
+        question_text = " ".join(question_lines).strip()
+        # Clean up common OCR artifacts
+        question_text = re.sub(r"\s*=\s*$", "", question_text)
+        question_text = re.sub(r"^\s*['\"]", "", question_text)
+
+        # Check if this is an MCQ or long-answer question
+        is_mcq = True
+        if i < len(lines) and _OCR_LONG_ANSWER_MARKER.search(lines[i].strip()):
+            is_mcq = False
+
+        # Skip the answer marker line
+        if i < len(lines) and (_OCR_MCQ_MARKER.search(lines[i].strip()) or _OCR_LONG_ANSWER_MARKER.search(lines[i].strip())):
+            i += 1
+
+        # Parse options (only for MCQs)
+        options: list[Option] = []
+        correct_idx: int | None = None
+
+        if is_mcq:
+            # Collect raw lines between answer marker and next question
+            raw_lines: list[str] = []
+            while i < len(lines):
+                ln = lines[i].strip()
+                i += 1
+                if _OCR_QUESTION_HEADER.search(ln):
+                    i -= 1
+                    break
+                if _OCR_NOISE.match(ln):
+                    continue
+                if not ln:
+                    continue
+                # Skip answer section artifacts
+                if ln.startswith(("Answer", "lanswer", "lAnswer", "Ce SE", "a | CS")):
+                    continue
+                raw_lines.append(ln)
+
+            # Single pass: collect options and detect correct marker
+            option_lines: list[str] = []
+            correct_line_idx: int | None = None
+
+            for idx, ln in enumerate(raw_lines):
+                stripped = ln.strip()
+
+                # ALWAYS check for correct marker first — even on noise lines
+                if _CORRECT_MARKER.search(stripped):
+                    cleaned = _CORRECT_MARKER.sub("", stripped).strip()
+                    cleaned = re.sub(r"^[.·•_\-\s]+", "", cleaned).strip()
+                    cleaned = re.sub(r"\b(?:Wade|Made|Whade|Uagqar|Ueagqar|Waqar|Wagar|Siddhu|S Us|Siddha)\b.*$", "", cleaned, flags=re.IGNORECASE).strip()
+                    cleaned = re.sub(r"^c\s*a\s*$", "", cleaned).strip()
+                    cleaned = re.sub(r"^-\s*i\s*$", "", cleaned).strip()
+                    if not cleaned or len(cleaned) <= 3:
+                        # Pure correct marker — marks previous option
+                        if option_lines:
+                            correct_line_idx = len(option_lines) - 1
+                        continue
+                    # "correct" is embedded with real option text — keep cleaned text
+                    stripped = cleaned
+
+                # Skip noise lines
+                if _OCR_NOISE.match(stripped):
+                    continue
+                # Skip single chars, numbers, radio symbols
+                if len(stripped) <= 2:
+                    continue
+                if _OCR_OPTION_NOISE.match(stripped):
+                    continue
+                if _OCR_GARBAGE.match(stripped):
+                    continue
+                if re.match(r"^[^a-zA-Z0-9]+$", stripped):
+                    continue
+                if _OCR_QUESTION_HEADER_LOOSE.search(stripped):
+                    continue
+                if stripped.startswith(("Answer", "lanswer", "lAnswer", "Ce SE", "a | CS")):
+                    continue
+
+                option_lines.append(stripped)
+
+            # Map to A/B/C/D
+            keys = ["A", "B", "C", "D", "E", "F", "G"]
+            for idx, text in enumerate(option_lines):
+                if idx < len(keys):
+                    options.append(Option(key=keys[idx], text=text))
+
+            if correct_line_idx is not None and correct_line_idx < len(options):
+                correct_idx = correct_line_idx
+
+        correct_answer = None
+        answer_source = "missing"
+        confidence = "low"
+
+        if correct_idx is not None and correct_idx < len(options):
+            correct_answer = options[correct_idx].key
+            answer_source = "visual_correct_marker"
+            confidence = "high"
+        elif is_mcq and options:
+            answer_source = "format_uncertain"
+            confidence = "low"
+
+        questions.append(OcrParsedQuestion(
+            question_number=q_num,
+            total_questions=total,
+            marks=marks,
+            question_text=question_text,
+            options=options,
+            correct_answer=correct_answer,
+            answer_source=answer_source,
+            confidence=confidence,
+            is_mcq=is_mcq,
+        ))
+
+    return questions
+
+
+def extract_ocr_mcqs_as_generated(text: str) -> list[GeneratedQuestion]:
+    """Parse OCR MCQs and return as GeneratedQuestion objects for API compatibility."""
+    parsed = parse_ocr_mcqs(text)
+    questions: list[GeneratedQuestion] = []
+    for p in parsed:
+        if not p.is_mcq:
+            continue  # Skip long-answer questions
+        if len(p.options) < 2:
+            continue  # Need at least 2 options
+        # Clean up option text — remove remaining OCR artifacts
+        clean_options: list[Option] = []
+        for opt in p.options:
+            t = opt.text.strip()
+            # Skip options that are clearly noise
+            if re.match(r"^[^a-zA-Z0-9]{1,3}$", t):
+                continue
+            if len(t) <= 1:
+                continue
+            clean_options.append(Option(key=opt.key, text=t))
+        if len(clean_options) < 2:
+            continue
+        # Re-key options A, B, C, D after filtering
+        keys = ["A", "B", "C", "D", "E", "F", "G"]
+        final_options = []
+        correct_key = None
+        for idx, opt in enumerate(clean_options):
+            if idx < len(keys):
+                new_key = keys[idx]
+                final_options.append(Option(key=new_key, text=opt.text))
+                if p.correct_answer and opt.key == p.correct_answer:
+                    correct_key = new_key
+        questions.append(GeneratedQuestion(
+            question_text=p.question_text,
+            options=final_options,
+            correct_answer=correct_key,
+            explanation=None,
+            chapter=None,
+        ))
+    return questions

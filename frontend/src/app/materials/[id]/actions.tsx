@@ -316,6 +316,18 @@ export function MaterialActions({ material }: { material: Material }) {
               </div>
             )}
 
+            {preview.ocr_used && (
+              <div className="flex items-center gap-2 text-sm">
+                <Badge variant="outline" className="bg-purple-500/10 text-purple-700">
+                  <Eye className="h-3 w-3 mr-1" />
+                  Image-based PDF detected
+                </Badge>
+                <span className="text-muted-foreground">
+                  OCR extraction was used to read scanned content
+                </span>
+              </div>
+            )}
+
             {preview.total_detected > 0 && (
               <div className="flex gap-2 pt-1">
                 <Button size="sm" onClick={onExtractExisting} disabled={pending}>
@@ -362,6 +374,12 @@ export function MaterialActions({ material }: { material: Material }) {
                   {preview.answer_sources.missing && (
                     <Badge variant="secondary" className="text-xs bg-red-500/10 text-red-700">
                       Missing: {preview.answer_sources.missing}
+                    </Badge>
+                  )}
+                  {preview.answer_sources.ocr_detected && (
+                    <Badge variant="secondary" className="text-xs bg-purple-500/10 text-purple-700">
+                      <Eye className="h-3 w-3 mr-1" />
+                      OCR detected: {preview.answer_sources.ocr_detected}
                     </Badge>
                   )}
                 </div>

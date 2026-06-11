@@ -120,6 +120,8 @@ async def extract_existing(
 
     # Try to get rich text for bold detection (PDFs only)
     rich_lines = None
+    ocr_used = False
+    source_type = "text_pdf"
     file_type = material.get("file_type", "")
     storage_path = material.get("storage_path", "")
     if file_type == "pdf" and storage_path:
@@ -130,12 +132,20 @@ async def extract_existing(
                 from app.services.extraction.pdf_extractor import extract_pdf_rich
                 rich_result = extract_pdf_rich(data)
                 rich_lines = rich_result.rich_lines
-                log.info("Bold detection: extracted %d pages of rich lines for material %s", len(rich_lines), payload.material_id)
+                ocr_used = rich_result.ocr_used
+                source_type = rich_result.source_type
+                log.info("Bold detection: extracted %d pages of rich lines for material %s (ocr=%s)", len(rich_lines), payload.material_id, ocr_used)
         except Exception as exc:
             log.warning("Bold detection failed for material %s: %s", payload.material_id, exc)
-            # Still fall back to plain text, but now we know why
 
-    questions = extract_existing_mcqs_with_rich_text(text, rich_lines=rich_lines)
+    # Use OCR parser for image-based PDFs, standard parser for text PDFs
+    if ocr_used and source_type == "image_based_pdf":
+        from app.services.extraction.mcq_parser import extract_ocr_mcqs_as_generated
+        questions = extract_ocr_mcqs_as_generated(text)
+        log.info("OCR parser: extracted %d MCQs from image-based PDF", len(questions))
+    else:
+        questions = extract_existing_mcqs_with_rich_text(text, rich_lines=rich_lines)
+
     with_answers = sum(1 for q in questions if q.correct_answer is not None)
     without_answers = len(questions) - with_answers
 

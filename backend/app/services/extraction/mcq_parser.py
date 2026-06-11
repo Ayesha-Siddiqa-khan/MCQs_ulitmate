@@ -39,7 +39,7 @@ _INLINE_ANSWER_LINE = re.compile(
     re.IGNORECASE,
 )
 _ANSWER_KEY_HEADING = re.compile(
-    r"(?im)^\s*(?:complete\s+)?(?:answer(?:\s+(?:key|sheet|section|list))\b|correct\s+answers?\b|solution\s+key\b|answers\b|answer\s*$)"
+    r"(?im)^\s*(?:complete\s+)?(?:answer(?:\s+(?:key|sheet|section|list))\s*$|correct\s+answers?\s*$|solution\s+key\s*$|answers?\s*$)"
 )
 _ANSWER_KEY_ENTRY = re.compile(r"^\s*(\d{1,3})[.)]\s*\(?([A-Da-d])\)?[).:\-]?\s*(.*)$")
 _ANSWER_KEY_VERTICAL_NUMBER = re.compile(r"^\d{1,3}$")
@@ -310,17 +310,18 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
             answer = m_a.group(1).upper()
             continue
 
-        m_o = _OPTION_LINE.match(line)
-        if m_o and current_q is not None:
-            options.append(Option(key=m_o.group(1).upper(), text=m_o.group(2).strip()))
-            continue
-
-        # Check for inline options on a single line (e.g. "A) Solid B) Liquid C) Gas D) Plasma")
+        # Check for inline options on a single line BEFORE single-option matching,
+        # because _OPTION_LINE matches "A) Solid B) Liquid..." and swallows everything.
         if current_q is not None and not options:
             inline_opts = _split_inline_options(line)
             if len(inline_opts) >= 2:
                 options.extend(inline_opts)
                 continue
+
+        m_o = _OPTION_LINE.match(line)
+        if m_o and current_q is not None:
+            options.append(Option(key=m_o.group(1).upper(), text=m_o.group(2).strip()))
+            continue
 
         if _PAGE_NOISE.match(line):
             continue

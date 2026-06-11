@@ -252,9 +252,12 @@ def generate_quiz_report(
     submitted = result.get("submitted_at")
     if submitted:
         try:
-            dt = datetime.fromisoformat(submitted.replace("Z", "+00:00"))
+            if isinstance(submitted, datetime):
+                dt = submitted
+            else:
+                dt = datetime.fromisoformat(str(submitted).replace("Z", "+00:00"))
             pdf.info_row("Date & Time", dt.strftime("%B %d, %Y at %I:%M %p"))
-        except (ValueError, AttributeError):
+        except (ValueError, AttributeError, TypeError):
             pdf.info_row("Date & Time", str(submitted))
     else:
         pdf.info_row("Date & Time", "N/A")

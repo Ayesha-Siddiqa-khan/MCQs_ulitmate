@@ -1,6 +1,7 @@
 """Quiz attempt endpoints: start, submit, get-result, report PDF."""
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime
 from typing import Annotated
 
@@ -24,6 +25,8 @@ from app.schemas.quiz import (
 from app.services.pdf.report_generator import generate_quiz_report
 from app.services.quiz.mistake_service import process_attempt_updates
 from app.services.quiz.scoring_service import group_by_label, is_correct, score_attempt
+
+log = logging.getLogger("mcq-mentor.quiz-attempts")
 
 router = APIRouter(prefix="/quiz-attempts", tags=["quiz-attempts"])
 
@@ -423,6 +426,7 @@ async def download_report(
             .execute()
         ).data
 
+    mistakes_data: list[dict] | None = None
     mistake_rows = (
         db.table("question_attempts")
         .select("id, question_id, selected_answer, correct_answer, is_correct")
@@ -431,40 +435,50 @@ async def download_report(
         .execute()
     ).data or []
 
-    mistakes = []
-    for mr in mistake_rows:
-        q = qmap.get(mr["question_id"])
-        if q is None:
-            continue
-        mb = (
-            db.table("mistake_bank")
-            .select("mastery_status")
-            .eq("user_id", user.id)
-            .eq("question_id", mr["question_id"])
-            .maybe_single()
-            .execute()
-        ).data
-        mistakes.append({
-            "selected_answer": mr.get("selected_answer"),
-            "correct_answer": mr.get("correct_answer"),
-            "mastery_status": mb.get("mastery_status") if mb else None,
-            "question": {
-                "question_text": q.get("question_text", ""),
-                "correct_answer": q.get("correct_answer"),
-                "explanation": q.get("explanation"),
-            },
-        })
+    if mistake_rows:
+        mistakes = []
+        for mr in mistake_rows:
+            q = qmap.get(mr["question_id"])
+            if q is None:
+                continue
+            try:
+                mb = (
+                    db.table("mistake_bank")
+                    .select("mastery_status")
+                    .eq("user_id", user.id)
+                    .eq("question_id", mr["question_id"])
+                    .maybe_single()
+                    .execute()
+                ).data
+            except Exception:
+                log.warning("failed to fetch mistake_bank for question %s", mr["question_id"])
+                mb = None
+            mistakes.append({
+                "selected_answer": mr.get("selected_answer"),
+                "correct_answer": mr.get("correct_answer"),
+                "mastery_status": mb.get("mastery_status") if mb else None,
+                "question": {
+                    "question_text": q.get("question_text", ""),
+                    "correct_answer": q.get("correct_answer"),
+                    "explanation": q.get("explanation"),
+                },
+            })
+        mistakes_data = mistakes if mistakes else None
 
     result_dict = result.model_dump()
     result_dict["mode"] = attempt.get("mode", "practice")
 
-    pdf_bytes = generate_quiz_report(
-        result=result_dict,
-        question_set=qset,
-        material=material,
-        user_email=user.email,
-        mistakes=mistakes if mistakes else None,
-    )
+    try:
+        pdf_bytes = generate_quiz_report(
+            result=result_dict,
+            question_set=qset,
+            material=material,
+            user_email=user.email,
+            mistakes=mistakes_data,
+        )
+    except Exception as exc:
+        log.exception("PDF generation failed for attempt %s", attempt_id)
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {exc}") from exc
 
     safe_title = (qset.get("title") or "quiz-result").replace(" ", "-")[:50]
     filename = f"MCQ-Mentor-{safe_title}.pdf"

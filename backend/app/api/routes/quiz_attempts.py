@@ -347,8 +347,8 @@ def _build_result(
                 question=_row_to_question(q),
                 selected_answer=a.get("selected_answer"),
                 is_correct=a.get("is_correct"),
-                is_marked=a.get("is_marked") or False,
-                time_spent_seconds=a.get("time_spent_seconds") or 0,
+                is_marked=bool(a.get("is_marked")),
+                time_spent_seconds=int(a.get("time_spent_seconds") or 0),
             )
         )
         label_rows_topic.append({"topic": q.get("topic") or q.get("chapter") or q.get("subject"), "is_correct": a.get("is_correct")})
@@ -366,7 +366,7 @@ def _build_result(
         incorrect=breakdown.incorrect,
         unanswered=breakdown.unanswered,
         percentage=breakdown.percentage,
-        time_spent_seconds=sum(a.get("time_spent_seconds") or 0 for a in qattempts),
+        time_spent_seconds=sum(int(a.get("time_spent_seconds") or 0) for a in qattempts),
         submitted_at=submitted_at,
         questions=per_question,
         topic_breakdown=topic_breakdown,
@@ -381,13 +381,15 @@ async def download_report(
     db: Annotated[Client, Depends(get_user_client)],
 ) -> Response:
     """Generate and return a PDF report for a completed quiz attempt."""
+    import traceback
     try:
         return await _generate_report_pdf(attempt_id, user, db)
     except HTTPException:
         raise
     except Exception as exc:
-        log.exception("report.pdf failed for attempt %s user %s", attempt_id, user.id)
-        raise HTTPException(status_code=500, detail=f"report generation failed: {exc}") from exc
+        tb = traceback.format_exc()
+        log.exception("report.pdf failed for attempt %s user %s\n%s", attempt_id, user.id, tb)
+        raise HTTPException(status_code=500, detail=f"report generation failed: {type(exc).__name__}: {exc}") from exc
 
 
 async def _generate_report_pdf(
@@ -498,6 +500,17 @@ async def _generate_report_pdf(
     if val is not None and not isinstance(val, (int, float)):
         log.warning("result_dict[percentage] is %r (type=%s), coercing to float", val, type(val).__name__)
         result_dict["percentage"] = float(val)
+
+    # Also ensure questions list has proper numeric types
+    for qd in result_dict.get("questions", []):
+        if isinstance(qd, dict) and "time_spent_seconds" in qd:
+            v = qd["time_spent_seconds"]
+            if v is not None and not isinstance(v, (int, float)):
+                qd["time_spent_seconds"] = int(v)
+        if isinstance(qd, dict) and "is_marked" in qd:
+            v = qd["is_marked"]
+            if not isinstance(v, bool):
+                qd["is_marked"] = bool(v)
 
     pdf_bytes = generate_quiz_report(
         result=result_dict,

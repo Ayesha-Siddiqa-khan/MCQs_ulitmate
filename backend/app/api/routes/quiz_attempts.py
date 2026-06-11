@@ -1,10 +1,11 @@
-"""Quiz attempt endpoints: start, submit, get-result."""
+"""Quiz attempt endpoints: start, submit, get-result, report PDF."""
 from __future__ import annotations
 
 from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from supabase import Client
 
 from app.core.security import CurrentUserDep
@@ -20,6 +21,7 @@ from app.schemas.quiz import (
     SubmitQuizRequest,
     TopicBreakdown,
 )
+from app.services.pdf.report_generator import generate_quiz_report
 from app.services.quiz.mistake_service import process_attempt_updates
 from app.services.quiz.scoring_service import group_by_label, is_correct, score_attempt
 
@@ -366,4 +368,111 @@ def _build_result(
         questions=per_question,
         topic_breakdown=topic_breakdown,
         difficulty_breakdown=diff_breakdown,
+    )
+
+
+@router.get("/{attempt_id}/report.pdf")
+async def download_report(
+    attempt_id: str,
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+) -> Response:
+    """Generate and return a PDF report for a completed quiz attempt."""
+    attempt = (
+        db.table("quiz_attempts")
+        .select("*")
+        .eq("id", attempt_id)
+        .maybe_single()
+        .execute()
+    ).data
+    if attempt is None:
+        raise HTTPException(status_code=404, detail="attempt not found")
+    if attempt.get("user_id") != user.id:
+        raise HTTPException(status_code=403, detail="not authorized to access this report")
+    if not attempt.get("is_submitted"):
+        raise HTTPException(status_code=400, detail="quiz attempt has not been submitted yet")
+
+    qattempts = (
+        db.table("question_attempts")
+        .select("*")
+        .eq("quiz_attempt_id", attempt_id)
+        .order("created_at")
+        .execute()
+    ).data or []
+    questions, _ = _load_selected_attempt_questions(db, attempt)
+    qmap = {q["id"]: q for q in questions}
+    breakdown = score_attempt([(r["selected_answer"], r["correct_answer"]) for r in qattempts])
+
+    result = _build_result(attempt_id, attempt["question_set_id"], breakdown, qmap, qattempts, attempt.get("submitted_at"))
+
+    qset = (
+        db.table("question_sets")
+        .select("id, title, material_id")
+        .eq("id", attempt["question_set_id"])
+        .maybe_single()
+        .execute()
+    ).data
+
+    material = None
+    if qset and qset.get("material_id"):
+        material = (
+            db.table("learning_materials")
+            .select("id, title")
+            .eq("id", qset["material_id"])
+            .maybe_single()
+            .execute()
+        ).data
+
+    mistake_rows = (
+        db.table("question_attempts")
+        .select("id, question_id, selected_answer, correct_answer, is_correct")
+        .eq("quiz_attempt_id", attempt_id)
+        .eq("is_correct", False)
+        .execute()
+    ).data or []
+
+    mistakes = []
+    for mr in mistake_rows:
+        q = qmap.get(mr["question_id"])
+        if q is None:
+            continue
+        mb = (
+            db.table("mistake_bank")
+            .select("mastery_status")
+            .eq("user_id", user.id)
+            .eq("question_id", mr["question_id"])
+            .maybe_single()
+            .execute()
+        ).data
+        mistakes.append({
+            "selected_answer": mr.get("selected_answer"),
+            "correct_answer": mr.get("correct_answer"),
+            "mastery_status": mb.get("mastery_status") if mb else None,
+            "question": {
+                "question_text": q.get("question_text", ""),
+                "correct_answer": q.get("correct_answer"),
+                "explanation": q.get("explanation"),
+            },
+        })
+
+    result_dict = result.model_dump()
+    result_dict["mode"] = attempt.get("mode", "practice")
+
+    pdf_bytes = generate_quiz_report(
+        result=result_dict,
+        question_set=qset,
+        material=material,
+        user_email=user.email,
+        mistakes=mistakes if mistakes else None,
+    )
+
+    safe_title = (qset.get("title") or "quiz-result").replace(" ", "-")[:50]
+    filename = f"MCQ-Mentor-{safe_title}.pdf"
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+        },
     )

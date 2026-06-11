@@ -17,6 +17,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { PageHeader } from "@/components/page-header";
 import { TemporarySessionActions } from "@/app/results/[attemptId]/temporary-actions";
+import { DownloadReportButton } from "@/app/results/[attemptId]/download-report-button";
 import { api } from "@/lib/api-server";
 import { requireUser } from "@/lib/auth";
 import { type QuizResult, type TopicBreakdown, type QuestionSet, type Material } from "@/lib/types";
@@ -142,17 +143,20 @@ export default async function ResultsPage({
         </CardHeader>
         <CardContent>
           <Progress value={pct} className="h-3" />
-          {r.incorrect > 0 && !isTemporary ? (
-            <Button asChild className="mt-4">
-              <Link href="/practice">
-                <Sparkles className="mr-2 h-4 w-4" /> Practice wrong questions again
-              </Link>
-            </Button>
-          ) : !isTemporary ? (
-            <Button asChild variant="outline" className="mt-4">
-              <Link href="/materials">Back to materials</Link>
-            </Button>
-          ) : null}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            {r.incorrect > 0 && !isTemporary ? (
+              <Button asChild>
+                <Link href="/practice">
+                  <Sparkles className="mr-2 h-4 w-4" /> Practice wrong questions again
+                </Link>
+              </Button>
+            ) : !isTemporary ? (
+              <Button asChild variant="outline">
+                <Link href="/materials">Back to materials</Link>
+              </Button>
+            ) : null}
+            <DownloadReportButton attemptId={attemptId} />
+          </div>
         </CardContent>
       </Card>
 

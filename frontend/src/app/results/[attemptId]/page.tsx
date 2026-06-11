@@ -215,7 +215,7 @@ export default async function ResultsPage({
                   </p>
                   {isUngraded ? (
                     <Badge variant="outline" className="text-muted-foreground">
-                      no answer key
+                      Not auto-graded
                     </Badge>
                   ) : isRight ? (
                     <Badge className="bg-green-500 text-white hover:bg-green-500/90">

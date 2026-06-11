@@ -128,6 +128,8 @@ class _ParsedQuestion:
     answer_source: str = "missing"
     bold_option_key: str | None = None
     url_option_key: str | None = None
+    detection_signals: list[str] = field(default_factory=list)
+    confidence: str = "low"
 
 
 @dataclass
@@ -141,8 +143,12 @@ class BoldDetectionResult:
     """Result of bold/dark text detection for a question."""
     option_bold_flags: dict[str, bool] = field(default_factory=dict)
     option_url_flags: dict[str, bool] = field(default_factory=dict)
+    option_visual_scores: dict[str, int] = field(default_factory=dict)
+    option_signals: dict[str, list[str]] = field(default_factory=dict)
     detected_bold_key: str | None = None
     detected_url_key: str | None = None
+    detected_answer_source: str | None = None
+    confidence: str = "low"
 
 
 def _detect_bold_from_rich_lines(
@@ -200,7 +206,7 @@ def _detect_bold_from_rich_lines(
         if _OPTION_LINE_RE.match(text) or len(text) < 60:
             option_rich_lines.append(rl)
 
-    # For each option, check if any of its text appears bold in the scoped option lines
+    # For each option, calculate visual score and detect signals
     for key, opt_text in option_texts.items():
         cleaned = _clean_url_markers(opt_text).lower().strip()
         if not cleaned:
@@ -208,6 +214,8 @@ def _detect_bold_from_rich_lines(
 
         bold_found = False
         url_found = False
+        visual_score = 0
+        signals: list[str] = []
 
         for rl in option_rich_lines:
             line_text_lower = rl.text.lower()
@@ -216,28 +224,60 @@ def _detect_bold_from_rich_lines(
             if cleaned not in line_text_lower and rl.text.strip().lower() != opt_text.strip().lower():
                 continue
 
-            # Check individual bold spans (not whole-line ratio)
+            # Check individual bold spans
             for span in rl.spans:
                 span_text = _clean_url_markers(span.text).lower().strip()
-                if cleaned in span_text and span.is_bold:
-                    bold_found = True
-                    break
+                if cleaned in span_text:
+                    if span.is_bold:
+                        bold_found = True
+                        visual_score += 3
+                        signals.append("bold_font")
+                    # Check font size (larger = more emphasis)
+                    if span.size and span.size > 12:
+                        visual_score += 1
+                        signals.append("larger_font")
+                    # Check for underline (flags bit 0)
+                    if span.flags & (1 << 0):
+                        visual_score += 2
+                        signals.append("underline")
 
-            # Check for URL marker
+            # Check for URL marker (weak signal)
             if _has_url_marker(rl.text):
                 url_found = True
+                visual_score += 1
+                signals.append("url_marker")
 
         result.option_bold_flags[key] = bold_found
         result.option_url_flags[key] = url_found
+        result.option_visual_scores[key] = visual_score
+        result.option_signals[key] = signals
 
-    # Determine which option is the bold one (if exactly one)
-    bold_keys = [k for k, v in result.option_bold_flags.items() if v]
-    if len(bold_keys) == 1:
-        result.detected_bold_key = bold_keys[0]
+    # Determine the best answer based on visual scores
+    if result.option_visual_scores:
+        max_score = max(result.option_visual_scores.values())
+        best_keys = [k for k, v in result.option_visual_scores.items() if v == max_score]
 
-    # Determine which option has URL marker (if exactly one)
+        if max_score > 0 and len(best_keys) == 1:
+            best_key = best_keys[0]
+            if result.option_bold_flags.get(best_key):
+                result.detected_bold_key = best_key
+                result.detected_answer_source = "bold_format"
+                result.confidence = "high" if max_score >= 3 else "medium"
+            elif result.option_url_flags.get(best_key):
+                result.detected_url_key = best_key
+                result.detected_answer_source = "url_marker"
+                result.confidence = "medium"
+            else:
+                result.detected_answer_source = "format_uncertain"
+                result.confidence = "low"
+        elif max_score > 0:
+            # Multiple options with same score - uncertain
+            result.detected_answer_source = "format_uncertain"
+            result.confidence = "low"
+
+    # Determine URL marker if exactly one
     url_keys = [k for k, v in result.option_url_flags.items() if v]
-    if len(url_keys) == 1:
+    if len(url_keys) == 1 and not result.detected_bold_key:
         result.detected_url_key = url_keys[0]
 
     return result
@@ -369,11 +409,18 @@ def _apply_bold_detection(
         if bold_result.detected_bold_key:
             parsed.bold_option_key = bold_result.detected_bold_key
             parsed.correct_answer = bold_result.detected_bold_key
-            parsed.answer_source = "bold_format"
+            parsed.answer_source = bold_result.detected_answer_source or "bold_format"
+            parsed.detection_signals = bold_result.option_signals.get(bold_result.detected_bold_key, [])
+            parsed.confidence = bold_result.confidence
         elif bold_result.detected_url_key:
             parsed.url_option_key = bold_result.detected_url_key
             parsed.correct_answer = bold_result.detected_url_key
-            parsed.answer_source = "url_marker"
+            parsed.answer_source = bold_result.detected_answer_source or "url_marker"
+            parsed.detection_signals = bold_result.option_signals.get(bold_result.detected_url_key, [])
+            parsed.confidence = bold_result.confidence
+        elif bold_result.detected_answer_source == "format_uncertain":
+            parsed.answer_source = "format_uncertain"
+            parsed.confidence = "low"
 
 
 @dataclass

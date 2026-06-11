@@ -328,13 +328,42 @@ export function MaterialActions({ material }: { material: Material }) {
             {/* Answer source breakdown */}
             {preview.answer_sources && Object.keys(preview.answer_sources).length > 0 && (
               <div className="pt-2 border-t">
-                <p className="text-xs font-medium text-muted-foreground mb-1">Answer sources:</p>
+                <p className="text-xs font-medium text-muted-foreground mb-1">Answer detection breakdown:</p>
                 <div className="flex flex-wrap gap-1">
-                  {Object.entries(preview.answer_sources).map(([source, count]) => (
-                    <Badge key={source} variant="secondary" className="text-xs">
-                      {source.replace(/_/g, " ")}: {count}
+                  {preview.answer_sources.explicit_answer_key && (
+                    <Badge variant="secondary" className="text-xs bg-green-500/10 text-green-700">
+                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                      Answer key: {preview.answer_sources.explicit_answer_key}
                     </Badge>
-                  ))}
+                  )}
+                  {preview.answer_sources.bold_format && (
+                    <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-700">
+                      <Eye className="h-3 w-3 mr-1" />
+                      Bold/format: {preview.answer_sources.bold_format}
+                    </Badge>
+                  )}
+                  {preview.answer_sources.url_marker && (
+                    <Badge variant="secondary" className="text-xs bg-purple-500/10 text-purple-700">
+                      URL marker: {preview.answer_sources.url_marker}
+                    </Badge>
+                  )}
+                  {preview.answer_sources.inline_answer && (
+                    <Badge variant="secondary" className="text-xs bg-green-500/10 text-green-700">
+                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                      Inline: {preview.answer_sources.inline_answer}
+                    </Badge>
+                  )}
+                  {preview.answer_sources.format_uncertain && (
+                    <Badge variant="secondary" className="text-xs bg-yellow-500/10 text-yellow-700">
+                      <AlertTriangle className="h-3 w-3 mr-1" />
+                      Uncertain: {preview.answer_sources.format_uncertain}
+                    </Badge>
+                  )}
+                  {preview.answer_sources.missing && (
+                    <Badge variant="secondary" className="text-xs bg-red-500/10 text-red-700">
+                      Missing: {preview.answer_sources.missing}
+                    </Badge>
+                  )}
                 </div>
               </div>
             )}

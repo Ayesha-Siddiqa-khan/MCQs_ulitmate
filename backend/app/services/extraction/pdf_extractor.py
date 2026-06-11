@@ -78,30 +78,53 @@ def _ocr_pdf_pages(data: bytes, dpi: int = 200) -> tuple[str, list[str]]:
 
     Returns (combined_text, per_page_texts).
     """
+    import os
     try:
         import fitz
         import pytesseract
         from PIL import Image
     except ImportError as e:
-        log.warning("OCR dependencies missing: %s", e)
+        log.error("OCR dependencies missing — cannot run OCR: %s", e)
         return "", []
 
-    # Auto-detect tesseract path on Windows
-    import os
+    # Auto-detect tesseract path
     tesseract_candidates = [
         r"C:\Program Files\Tesseract-OCR\tesseract.exe",
         r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
         "/usr/bin/tesseract",
         "/usr/local/bin/tesseract",
+        "/nix/store/*/bin/tesseract",
     ]
+    found = False
     for path in tesseract_candidates:
         if os.path.isfile(path):
             pytesseract.pytesseract.tesseract_cmd = path
+            log.info("Using tesseract at: %s", path)
+            found = True
             break
+    if not found:
+        # Try PATH lookup
+        try:
+            import shutil
+            which = shutil.which("tesseract")
+            if which:
+                pytesseract.pytesseract.tesseract_cmd = which
+                log.info("Using tesseract from PATH: %s", which)
+                found = True
+        except Exception:
+            pass
+    if not found:
+        log.error("Tesseract binary not found in any location: %s", tesseract_candidates)
+        return "", []
 
     from io import BytesIO
 
-    doc = fitz.open(stream=BytesIO(data), filetype="pdf")
+    try:
+        doc = fitz.open(stream=BytesIO(data), filetype="pdf")
+    except Exception as e:
+        log.error("Failed to open PDF for OCR: %s", e)
+        return "", []
+
     page_texts: list[str] = []
 
     for page in doc:

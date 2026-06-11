@@ -81,6 +81,7 @@ export interface ExtractPreviewResponse {
   duplicates: number;
   confidence: string;
   warnings: string[];
+  answer_sources?: Record<string, number>;
 }
 
 export interface ExtractExistingMCQsResponse extends QuestionSet {

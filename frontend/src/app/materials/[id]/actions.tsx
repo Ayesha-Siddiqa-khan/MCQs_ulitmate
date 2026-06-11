@@ -324,6 +324,20 @@ export function MaterialActions({ material }: { material: Material }) {
                 </Button>
               </div>
             )}
+
+            {/* Answer source breakdown */}
+            {preview.answer_sources && Object.keys(preview.answer_sources).length > 0 && (
+              <div className="pt-2 border-t">
+                <p className="text-xs font-medium text-muted-foreground mb-1">Answer sources:</p>
+                <div className="flex flex-wrap gap-1">
+                  {Object.entries(preview.answer_sources).map(([source, count]) => (
+                    <Badge key={source} variant="secondary" className="text-xs">
+                      {source.replace(/_/g, " ")}: {count}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       ) : null}

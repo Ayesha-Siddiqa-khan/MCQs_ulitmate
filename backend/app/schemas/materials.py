@@ -82,6 +82,7 @@ class ExtractPreviewResponse(BaseModel):
     duplicates: int
     confidence: str  # "high", "medium", "low", "none"
     warnings: list[str] = []
+    answer_sources: dict[str, int] = {}  # e.g. {"explicit_answer_key": 5, "bold_format": 3, "missing": 2}
 
 
 class MaterialUsageResponse(BaseModel):

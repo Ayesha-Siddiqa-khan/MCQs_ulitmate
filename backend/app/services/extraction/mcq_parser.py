@@ -1,35 +1,39 @@
 """Heuristic parser for solved MCQ PDFs / text.
 
-This is mode 1 of the generator. It does NOT call an LLM. It scans for
-patterns like:
+Supports multiple MCQ formats:
+- Numbered questions (1. or 1))
+- Question No: headers with marks
+- A/B/C/D options and ► bullet options
+- Explicit answer keys (Answer: A, Ans: B, answer sheet at end)
+- Bold/dark formatted correct answers (via font metadata)
+- URL markers indicating bold/dark text
+- Inline options on a single line
+- Chapter/section headings
+- Explanation paragraphs after options
 
-    1. Question text here?
-    A) option one
-    B) option two
-    C) option three
-    D) option four
-    Answer: B
-
-It also supports inline options on one line:
-
-    1. Question text here?
-    A) option one B) option two C) option three D) option four
-    Ans: B) option two
-
-Real-world MCQ books vary wildly. This parser handles the most common shapes
-and returns a list of GeneratedQuestion (with `source_type == 'extracted'`).
-Anything it cannot parse confidently is dropped rather than guessed.
+Any format it cannot parse confidently is dropped rather than guessed.
 """
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from app.schemas.common import GeneratedQuestion, Option
 
-# Allow both numeric ("1.", "1)") and roman/letter starts.
+# --- Regex patterns ---
+
+# Question starts: "1. Question text", "Question No: 19 ( M - 1 ) ."
 _Q_START = re.compile(r"^\s*(?:Q\.?\s*)?(\d{1,3})[.)]\s*(.*)$", re.MULTILINE)
+_Q_NO_HEADER = re.compile(
+    r"^\s*Question\s+No\s*:\s*(\d{1,3})\s*(?:\(\s*M\s*[-‐]\s*(\d+)\s*\))?\s*[.:\-]?\s*(.*)$",
+    re.IGNORECASE,
+)
+
+# Options: "A) text", "(A) text", "A. text", "A - text", "A: text", "► text"
 _OPTION_LINE = re.compile(r"^\s*\(?([A-Ga-g])[).:\-]\s*(.+)$")
+_OPTION_BULLET = re.compile(r"^\s*[►▸▹◆●]\s*(.+)$")
+
+# Answer patterns
 _ANSWER_LINE = re.compile(
     r"(?:^|\s)(?:Answer|Ans|Key|Correct)\s*[:=\-]\s*([A-Ga-g])\b",
     re.IGNORECASE,
@@ -38,6 +42,8 @@ _INLINE_ANSWER_LINE = re.compile(
     r"^\s*(?:Answer|Ans|Correct(?:\s+Answer)?)\s*[:\-]?\s*\(?([A-Ga-g])\)?[).:\-]?\s*(.*?)\s*$",
     re.IGNORECASE,
 )
+
+# Answer key patterns
 _ANSWER_KEY_HEADING = re.compile(
     r"(?im)^\s*(?:complete\s+)?(?:answer(?:\s+(?:key|sheet|section|list))\s*[:]*\s*$|correct\s+answers?\s*[:]*\s*$|solution\s+key\s*[:]*\s*$|answers?\s*[:]*\s*$)"
 )
@@ -45,43 +51,37 @@ _ANSWER_KEY_ENTRY = re.compile(r"^\s*(\d{1,3})[.)]\s*\(?([A-Ga-g])\)?[).:\-]?\s*
 _ANSWER_KEY_VERTICAL_NUMBER = re.compile(r"^\d{1,3}$")
 _ANSWER_KEY_VERTICAL_ANSWER = re.compile(r"^[A-Ga-g]$")
 _ANSWER_KEY_HEADER_CELL = re.compile(r"^(?:Q|Ans)$", re.IGNORECASE)
+
+# Explanation patterns
 _EXPLANATION_PREFIX = re.compile(r"^\s*Explanation\s*[:\-]?\s*(.*)$", re.IGNORECASE)
+
+# Section/chapter headings
 _CHAPTER_HEADING = re.compile(r"^\s*(Chapter\s*:?\s*\d+(?:\s*-\s*.+)?)\s*$", re.IGNORECASE)
 _SECTION_HEADING = re.compile(
     r"^\s*(?:Section\s+[A-Z](?:\s*:\s*MCQs?)?(?:\s*\(([^)]+)\))?)\s*$",
     re.IGNORECASE,
 )
-_PAGE_NOISE = re.compile(r"^\s*(?:Page\s+\d+|CS201\s+MCQs\s+Practice.*)\s*$", re.IGNORECASE)
 
-# Regex to split inline options on a single line.
-# Matches patterns like: A) Solid, B) Liquid, (C) Gas, D - Plasma, E: Plasma
+# Noise
+_PAGE_NOISE = re.compile(r"^\s*(?:Page\s+\d+|CS201\s+MCQs\s+Practice.*)\s*$", re.IGNORECASE)
+_URL_MARKER = re.compile(r"\(?\s*https?://[^\s)]+\s*\)?", re.IGNORECASE)
+
+# Inline option splitting
 _INLINE_OPTION_PATTERN = re.compile(
     r"\(?([A-Ga-g])\s*[).:\-]\s*"
 )
 
 
 def _split_inline_options(line: str) -> list[Option]:
-    """Split a line containing multiple inline options into a list of Option objects.
-
-    Supports formats like:
-        A) Solid B) Liquid C) Gas D) Plasma
-        (A) Solid (B) Liquid (C) Gas (D) Plasma
-        A - Solid B - Liquid C - Gas D - Plasma
-        A: Solid B: Liquid C: Gas D: Plasma
-        A. Solid B. Liquid C. Gas D. Plasma
-    """
+    """Split a line containing multiple inline options."""
     parts = _INLINE_OPTION_PATTERN.split(line)
-    # split returns: ['text_before', 'A', 'text_after_A', 'B', ...]
     if len(parts) < 3:
         return []
 
     options: list[Option] = []
-    # parts[0] is text before the first option marker (usually empty or whitespace)
-    # Then alternating: letter, text for that option
     for i in range(1, len(parts), 2):
         letter = parts[i].upper()
         text = parts[i + 1].strip() if i + 1 < len(parts) else ""
-        # Clean trailing option markers that may have been captured
         text = re.sub(r"\s+\(?[A-Ga-g]\s*[).:\-].*$", "", text).strip()
         if letter in {"A", "B", "C", "D", "E", "F", "G"} and text:
             options.append(Option(key=letter, text=text))
@@ -89,34 +89,32 @@ def _split_inline_options(line: str) -> list[Option]:
 
 
 def _extract_inline_answer(line: str) -> tuple[str, str]:
-    """Extract the answer letter and optional answer text from an inline answer line.
-
-    Returns (letter, text). If no text after the letter, text is empty.
-    Examples:
-        'Ans: A) Solid' -> ('A', 'Solid')
-        'Ans: A' -> ('A', '')
-        'Answer: B' -> ('B', '')
-        'Correct Answer: C' -> ('C', '')
-    """
+    """Extract answer from inline answer lines."""
     m = _INLINE_ANSWER_LINE.match(line)
     if not m:
         return "", ""
     letter = m.group(1).upper()
     text = m.group(2).strip()
-    # Clean trailing punctuation or option markers from text
     text = re.sub(r"\s*[).:\-]\s*$", "", text).strip()
     return letter, text
 
 
 def _extract_section_title(line: str) -> str | None:
-    """Extract the topic/title from a section heading like 'Section A: MCQs (Phase Changes & Gas Laws)'.
-
-    Returns the parenthetical content if present, otherwise None.
-    """
+    """Extract topic from section heading."""
     m = _SECTION_HEADING.match(line)
     if not m:
         return None
     return m.group(1).strip() if m.group(1) else None
+
+
+def _clean_url_markers(text: str) -> str:
+    """Remove URL markers from option text."""
+    return _URL_MARKER.sub("", text).strip()
+
+
+def _has_url_marker(text: str) -> bool:
+    """Check if text contains URL markers."""
+    return bool(_URL_MARKER.search(text))
 
 
 @dataclass
@@ -126,6 +124,10 @@ class _ParsedQuestion:
     question_text: str
     options: list[Option]
     correct_answer: str | None = None
+    explanation: str | None = None
+    answer_source: str = "missing"
+    bold_option_key: str | None = None
+    url_option_key: str | None = None
 
 
 @dataclass
@@ -134,12 +136,75 @@ class _AnswerKeyItem:
     explanation: str | None = None
 
 
-def extract_existing_mcqs(text: str) -> list[GeneratedQuestion]:
-    """Extract MCQs from text. Returns questions with or without answers.
+@dataclass
+class BoldDetectionResult:
+    """Result of bold/dark text detection for a question."""
+    option_bold_flags: dict[str, bool] = field(default_factory=dict)
+    option_url_flags: dict[str, bool] = field(default_factory=dict)
+    detected_bold_key: str | None = None
+    detected_url_key: str | None = None
 
-    Questions without an answer key are returned with correct_answer=None
-    so the caller can offer practice-without-grading or manual answer entry.
+
+def _detect_bold_from_rich_lines(
+    question_text: str,
+    option_texts: dict[str, str],
+    rich_lines_for_page: list,
+    question_y: float | None = None,
+) -> BoldDetectionResult:
+    """Detect bold options from rich text lines with font metadata.
+
+    Args:
+        question_text: The question text for context
+        option_texts: Dict mapping option key to option text
+        rich_lines_for_page: List of RichTextLine objects for the page
+        question_y: Approximate Y position of the question
+
+    Returns:
+        BoldDetectionResult with bold/url detection info
     """
+    result = BoldDetectionResult()
+
+    if not rich_lines_for_page or not option_texts:
+        return result
+
+    # For each option, check if any of its text appears bold in the rich lines
+    for key, opt_text in option_texts.items():
+        cleaned = _clean_url_markers(opt_text).lower()
+        if not cleaned:
+            continue
+
+        bold_found = False
+        url_found = False
+
+        for rl in rich_lines_for_page:
+            line_text = rl.text.lower()
+            # Check if this line contains the option text
+            if cleaned in line_text or rl.text.strip().lower() == opt_text.strip().lower():
+                # Check for bold
+                if rl.has_bold and rl.bold_ratio > 0.5:
+                    bold_found = True
+                # Check for URL marker
+                if _has_url_marker(rl.text):
+                    url_found = True
+
+        result.option_bold_flags[key] = bold_found
+        result.option_url_flags[key] = url_found
+
+    # Determine which option is the bold one (if exactly one)
+    bold_keys = [k for k, v in result.option_bold_flags.items() if v]
+    if len(bold_keys) == 1:
+        result.detected_bold_key = bold_keys[0]
+
+    # Determine which option has URL marker (if exactly one)
+    url_keys = [k for k, v in result.option_url_flags.items() if v]
+    if len(url_keys) == 1:
+        result.detected_url_key = url_keys[0]
+
+    return result
+
+
+def extract_existing_mcqs(text: str) -> list[GeneratedQuestion]:
+    """Extract MCQs from text. Returns questions with or without answers."""
     if not text or not text.strip():
         return []
 
@@ -151,12 +216,24 @@ def extract_existing_mcqs(text: str) -> list[GeneratedQuestion]:
     for parsed in parsed_questions:
         key_item = answer_key.get((_chapter_key(parsed.chapter), parsed.number)) or answer_key.get((None, parsed.number))
         correct_answer = parsed.correct_answer or (key_item.answer if key_item else None)
+        explanation = parsed.explanation or (key_item.explanation if key_item else None)
+
+        # Determine answer source
+        answer_source = parsed.answer_source
+        if correct_answer and answer_source == "missing":
+            if key_item:
+                answer_source = "explicit_answer_key"
+            elif parsed.bold_option_key:
+                answer_source = "bold_format"
+            elif parsed.url_option_key:
+                answer_source = "url_marker"
+
         questions.append(
             GeneratedQuestion(
                 question_text=parsed.question_text,
                 options=parsed.options,
                 correct_answer=correct_answer,
-                explanation=key_item.explanation if key_item else None,
+                explanation=explanation,
                 chapter=parsed.chapter,
             )
         )
@@ -171,6 +248,7 @@ class ExtractionResult:
     with_answers: int
     without_answers: int
     has_answer_key: bool
+    answer_sources: dict[str, int] = field(default_factory=dict)
 
 
 def extract_existing_mcqs_with_stats(text: str) -> ExtractionResult:
@@ -193,6 +271,7 @@ class ExtractionPreview:
     without_answers: int
     with_explanations: int
     duplicates: int
+    answer_sources: dict[str, int] = field(default_factory=dict)
 
 
 def preview_mcqs(text: str) -> ExtractionPreview:
@@ -252,12 +331,16 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
     current_section_title: str | None = None
     options: list[Option] = []
     answer: str | None = None
+    explanation_parts: list[str] = []
+    collecting_explanation = False
+    pending_bullet_options: list[str] = []
 
     def flush() -> None:
-        nonlocal current_q, current_number, options, answer
+        nonlocal current_q, current_number, options, answer, explanation_parts, collecting_explanation, pending_bullet_options
         if current_q is not None and current_number is not None and options:
             qtext = " ".join(s.strip() for s in current_q if s.strip()).strip()
             if qtext and len(options) >= 2:
+                explanation = " ".join(explanation_parts).strip() if explanation_parts else None
                 questions.append(
                     _ParsedQuestion(
                         number=current_number,
@@ -265,19 +348,26 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
                         question_text=qtext,
                         options=options,
                         correct_answer=answer.upper() if answer else None,
+                        explanation=explanation,
                     )
                 )
         current_q = None
         current_number = None
         options = []
         answer = None
+        explanation_parts = []
+        collecting_explanation = False
+        pending_bullet_options = []
 
     for raw_line in lines:
         line = raw_line.rstrip()
         if not line.strip():
+            # Empty line may signal end of explanation
+            if collecting_explanation and explanation_parts:
+                collecting_explanation = False
             continue
 
-        # Check for section headings like "Section A: MCQs (Phase Changes & Gas Laws)"
+        # Check for section headings
         section_title = _extract_section_title(line)
         if section_title:
             flush()
@@ -291,52 +381,92 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
             current_section_title = None
             continue
 
+        # Check for Question No: header format
+        m_qno = _Q_NO_HEADER.match(line)
+        if m_qno:
+            flush()
+            current_number = int(m_qno.group(1))
+            qtext_after = m_qno.group(3).strip() if m_qno.group(3) else ""
+            current_q = [qtext_after] if qtext_after else []
+            collecting_explanation = False
+            continue
+
+        # Check for standard numbered question
         m_q = _Q_START.match(line)
         if m_q:
             flush()
             current_number = int(m_q.group(1))
             current_q = [m_q.group(2).strip()]
+            collecting_explanation = False
             continue
 
-        # Check for inline answer lines like "Ans: A) Solid" or "Answer: B"
-        # This must be checked BEFORE option parsing since Ans lines contain option-like patterns
+        # If we're collecting explanation, keep adding lines
+        if collecting_explanation and current_q is not None:
+            explanation_parts.append(line.strip())
+            continue
+
+        # Check for explanation prefix
+        m_expl = _EXPLANATION_PREFIX.match(line)
+        if m_expl and current_q is not None:
+            collecting_explanation = True
+            if m_expl.group(1).strip():
+                explanation_parts.append(m_expl.group(1).strip())
+            continue
+
+        # Check for inline answer lines
         letter, answer_text = _extract_inline_answer(line)
         if letter:
             answer = letter
+            collecting_explanation = False
             continue
 
         m_a = _ANSWER_LINE.match(line)
         if m_a:
             answer = m_a.group(1).upper()
+            collecting_explanation = False
             continue
 
-        # Check for inline options on a single line BEFORE single-option matching,
-        # because _OPTION_LINE matches "A) Solid B) Liquid..." and swallows everything.
-        # Only try inline splitting if the line actually contains multiple option markers.
+        # Check for ► bullet options
+        m_bullet = _OPTION_BULLET.match(line)
+        if m_bullet and current_q is not None:
+            collecting_explanation = False
+            opt_text = _clean_url_markers(m_bullet.group(1).strip())
+            if opt_text:
+                pending_bullet_options.append(opt_text)
+                # Map to letter based on position
+                idx = len(pending_bullet_options) - 1
+                if idx < 7:  # A-G
+                    key = chr(ord("A") + idx)
+                    options.append(Option(key=key, text=opt_text))
+            continue
+
+        # Check for inline options on a single line
         if current_q is not None and not options:
-            # Quick check: does the line have at least two option markers like "A)" and "B)"?
             option_marker_count = len(re.findall(r"(?:^|\s)\(?[A-Ga-g]\s*[).:\-]", line))
             if option_marker_count >= 2:
                 inline_opts = _split_inline_options(line)
                 if len(inline_opts) >= 2:
                     options.extend(inline_opts)
+                    collecting_explanation = False
                     continue
 
+        # Check for standard lettered options
         m_o = _OPTION_LINE.match(line)
         if m_o and current_q is not None:
+            collecting_explanation = False
             options.append(Option(key=m_o.group(1).upper(), text=m_o.group(2).strip()))
             continue
 
         if _PAGE_NOISE.match(line):
             continue
 
+        # Continuation of question stem (before options)
         if current_q is not None and not options:
-            # Continuation of the question stem
             current_q.append(line.strip())
             continue
 
+        # Continuation of wrapped option line
         if current_q is not None and options:
-            # Continuation of a wrapped option line from PDF extraction.
             last = options[-1]
             last.text = f"{last.text} {line.strip()}".strip()
 

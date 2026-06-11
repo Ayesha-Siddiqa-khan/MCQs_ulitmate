@@ -319,6 +319,17 @@ async def extract_preview(
         confidence = "low" if confidence != "none" else confidence
         warnings.append(f"{stats.duplicates} duplicate question(s) detected.")
 
+    # Check for bold/url-based answers that may need review
+    answer_sources = getattr(stats, 'answer_sources', {})
+    bold_count = answer_sources.get('bold_format', 0) + answer_sources.get('url_marker', 0)
+    if bold_count > 0:
+        if confidence == "high":
+            confidence = "medium"
+        warnings.append(
+            f"{bold_count} answer(s) were identified from formatting (bold/dark text or URL markers). "
+            "Please review these answers before starting auto-graded practice."
+        )
+
     return ExtractPreviewResponse(
         material_id=material_id,
         total_detected=stats.total_detected,
@@ -328,6 +339,7 @@ async def extract_preview(
         duplicates=stats.duplicates,
         confidence=confidence,
         warnings=warnings,
+        answer_sources=answer_sources,
     )
 
 

@@ -6,6 +6,26 @@ from datetime import datetime
 from fpdf import FPDF
 
 
+def _safe_int(value, default: int = 0) -> int:
+    """Safely convert a value to int, handling strings, None, etc."""
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_float(value, default: float = 0.0) -> float:
+    """Safely convert a value to float, handling strings, None, etc."""
+    if value is None:
+        return default
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
 class QuizReportPDF(FPDF):
     """Custom PDF class for quiz result reports."""
 
@@ -231,9 +251,9 @@ def generate_quiz_report(
     else:
         pdf.info_row("Date & Time", "N/A")
 
-    time_spent = result.get("time_spent_seconds", 0)
+    time_spent = _safe_int(result.get("time_spent_seconds"))
     if time_spent:
-        m, s = divmod(int(time_spent), 60)
+        m, s = divmod(time_spent, 60)
         pdf.info_row("Time Spent", f"{m}m {s}s" if m else f"{s}s")
 
     # Check if auto-grading was available
@@ -262,11 +282,11 @@ def generate_quiz_report(
     # --- Score Summary ---
     pdf.section_title("Score Summary")
 
-    total = result.get("total_questions", 0)
-    correct = result.get("correct", 0)
-    incorrect = result.get("incorrect", 0)
-    unanswered = result.get("unanswered", 0)
-    percentage = result.get("percentage", 0)
+    total = _safe_int(result.get("total_questions"))
+    correct = _safe_int(result.get("correct"))
+    incorrect = _safe_int(result.get("incorrect"))
+    unanswered = _safe_int(result.get("unanswered"))
+    percentage = _safe_float(result.get("percentage"))
 
     # Stat boxes in a row
     pdf.stat_box("Total", str(total))

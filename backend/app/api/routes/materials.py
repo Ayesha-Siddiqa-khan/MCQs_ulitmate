@@ -211,8 +211,16 @@ async def paste_text(
 def _extract_for(file_type: str, data: bytes) -> tuple[str, str | None, int | None]:
     """Returns (text, warning, page_count)."""
     if file_type == "pdf":
-        result = extract_pdf(data)
-        return result.text, result.warning, result.page_count
+        from app.services.extraction.pdf_extractor import extract_pdf_rich
+        rich = extract_pdf_rich(data)
+        log.info(
+            "PDF extraction: %d chars, ocr=%s, source_type=%s",
+            len(rich.text), rich.ocr_used, rich.source_type,
+        )
+        warning = rich.warning
+        if rich.ocr_used:
+            warning = "Image-based PDF detected. Text was extracted using OCR and may contain errors."
+        return rich.text, warning, rich.page_count
     if file_type == "docx":
         return extract_docx(data), None, None
     if file_type == "csv":

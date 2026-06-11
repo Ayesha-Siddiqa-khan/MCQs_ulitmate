@@ -169,7 +169,7 @@ def _detect_bold_from_rich_lines(
 
     # For each option, check if any of its text appears bold in the rich lines
     for key, opt_text in option_texts.items():
-        cleaned = _clean_url_markers(opt_text).lower()
+        cleaned = _clean_url_markers(opt_text).lower().strip()
         if not cleaned:
             continue
 
@@ -177,15 +177,22 @@ def _detect_bold_from_rich_lines(
         url_found = False
 
         for rl in rich_lines_for_page:
-            line_text = rl.text.lower()
+            line_text_lower = rl.text.lower()
+
             # Check if this line contains the option text
-            if cleaned in line_text or rl.text.strip().lower() == opt_text.strip().lower():
-                # Check for bold
-                if rl.has_bold and rl.bold_ratio > 0.5:
+            if cleaned not in line_text_lower and rl.text.strip().lower() != opt_text.strip().lower():
+                continue
+
+            # Check individual bold spans (not whole-line ratio)
+            for span in rl.spans:
+                span_text = _clean_url_markers(span.text).lower().strip()
+                if cleaned in span_text and span.is_bold:
                     bold_found = True
-                # Check for URL marker
-                if _has_url_marker(rl.text):
-                    url_found = True
+                    break
+
+            # Check for URL marker
+            if _has_url_marker(rl.text):
+                url_found = True
 
         result.option_bold_flags[key] = bold_found
         result.option_url_flags[key] = url_found
@@ -242,7 +249,7 @@ def extract_existing_mcqs(text: str) -> list[GeneratedQuestion]:
 
 def extract_existing_mcqs_with_rich_text(
     text: str,
-    rich_lines: list[RichTextLine] | None = None,
+    rich_lines: list[list[RichTextLine]] | list[RichTextLine] | None = None,
 ) -> list[GeneratedQuestion]:
     """Extract MCQs with optional bold detection from rich text metadata.
 
@@ -293,15 +300,22 @@ def extract_existing_mcqs_with_rich_text(
 
 def _apply_bold_detection(
     parsed_questions: list[_ParsedQuestion],
-    rich_lines: list[RichTextLine],
+    rich_lines: list[list[RichTextLine]] | list[RichTextLine],
 ) -> None:
     """Apply bold detection to parsed questions using rich text metadata."""
     if not rich_lines:
         return
 
-    # Group rich_lines by page (approximate — all lines passed in are from same extraction)
-    # For now, use all rich_lines for all questions (best effort)
-    all_rich_lines = rich_lines
+    # Flatten per-page rich_lines into a single list
+    all_rich_lines: list[RichTextLine] = []
+    for item in rich_lines:
+        if isinstance(item, list):
+            all_rich_lines.extend(item)
+        else:
+            all_rich_lines.append(item)
+
+    if not all_rich_lines:
+        return
 
     for parsed in parsed_questions:
         if len(parsed.options) < 2:
@@ -321,9 +335,11 @@ def _apply_bold_detection(
         # Use bold detection result
         if bold_result.detected_bold_key:
             parsed.bold_option_key = bold_result.detected_bold_key
+            parsed.correct_answer = bold_result.detected_bold_key
             parsed.answer_source = "bold_format"
         elif bold_result.detected_url_key:
             parsed.url_option_key = bold_result.detected_url_key
+            parsed.correct_answer = bold_result.detected_url_key
             parsed.answer_source = "url_marker"
 
 
@@ -403,7 +419,7 @@ def preview_mcqs(text: str) -> ExtractionPreview:
 
 def preview_mcqs_with_rich_text(
     text: str,
-    rich_lines: list[RichTextLine] | None = None,
+    rich_lines: list[list[RichTextLine]] | list[RichTextLine] | None = None,
 ) -> ExtractionPreview:
     """Preview MCQs with optional bold detection for answer coverage."""
     if not text or not text.strip():
@@ -612,10 +628,23 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
             current_q.append(line.strip())
             continue
 
-        # Continuation of wrapped option line
-        if current_q is not None and options:
+        # Continuation of wrapped option line — only for first option (to handle wraps)
+        # After 2+ options, don't append to avoid capturing explanation text
+        if current_q is not None and len(options) == 1:
             last = options[-1]
-            last.text = f"{last.text} {line.strip()}".strip()
+            stripped = line.strip()
+            is_continuation = (
+                len(stripped) < 40
+                and not stripped.startswith(("http", "www", "http://", "https://"))
+                and not re.match(r"^\d+[.)]", stripped)
+                and not re.match(r"^Question\s+No", stripped, re.IGNORECASE)
+                and "?" not in stripped
+                and "------" not in stripped
+                and not _EXPLANATION_PREFIX.match(stripped)
+                and len(stripped.split()) <= 4
+            )
+            if is_continuation:
+                last.text = f"{last.text} {stripped}".strip()
 
     flush()
     return questions

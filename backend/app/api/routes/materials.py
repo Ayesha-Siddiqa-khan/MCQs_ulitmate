@@ -1,12 +1,15 @@
 """Material upload / paste / extract endpoints."""
 from __future__ import annotations
 
+import logging
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from supabase import Client
+
+log = logging.getLogger("mcq-mentor.materials")
 
 from app.core.config import Settings, get_settings
 from app.core.security import CurrentUserDep
@@ -304,14 +307,16 @@ async def extract_preview(
     if file_type == "pdf" and storage_path:
         try:
             data = (
-                db.storage.from_("materials").download(storage_path)
+                db.storage.from_(settings.supabase_storage_bucket).download(storage_path)
             )
             if data:
                 from app.services.extraction.pdf_extractor import extract_pdf_rich
                 rich_result = extract_pdf_rich(data)
                 rich_lines = rich_result.rich_lines
-        except Exception:
-            pass  # Fall back to plain text parsing
+                log.info("Bold detection: extracted %d pages of rich lines for material %s", len(rich_lines), material_id)
+        except Exception as exc:
+            log.warning("Bold detection failed for material %s: %s", material_id, exc)
+            # Still fall back to plain text, but now we know why
 
     stats = preview_mcqs_with_rich_text(text, rich_lines=rich_lines)
 

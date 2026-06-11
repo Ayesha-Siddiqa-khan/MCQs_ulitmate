@@ -486,6 +486,7 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
             qtext = " ".join(s.strip() for s in current_q if s.strip()).strip()
             if qtext and len(options) >= 2:
                 explanation = " ".join(explanation_parts).strip() if explanation_parts else None
+                qtext = _clean_url_markers(qtext)
                 questions.append(
                     _ParsedQuestion(
                         number=current_number,
@@ -532,6 +533,7 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
             flush()
             current_number = int(m_qno.group(1))
             qtext_after = m_qno.group(3).strip() if m_qno.group(3) else ""
+            qtext_after = _clean_url_markers(qtext_after)
             current_q = [qtext_after] if qtext_after else []
             collecting_explanation = False
             continue

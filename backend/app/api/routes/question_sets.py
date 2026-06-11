@@ -21,7 +21,7 @@ from app.schemas.questions import (
     QuestionSetDetail,
     QuestionSetOut,
 )
-from app.services.extraction.mcq_parser import extract_existing_mcqs_with_stats
+from app.services.extraction.mcq_parser import extract_existing_mcqs_with_rich_text, extract_existing_mcqs_with_stats
 from app.services.generation.mcq_generator import generate_mcqs
 from app.services.generation.provider_factory import resolve_provider
 from app.services.generation.providers import ProviderError
@@ -33,7 +33,7 @@ router = APIRouter(prefix="/question-sets", tags=["question-sets"])
 def _load_material_text(db: Client, material_id: str) -> tuple[dict, str]:
     row = (
         db.table("learning_materials")
-        .select("id, title, extracted_text, subject, chapter, topic")
+        .select("id, title, file_type, storage_path, extracted_text, subject, chapter, topic")
         .eq("id", material_id)
         .maybe_single()
         .execute()
@@ -114,14 +114,33 @@ async def extract_existing(
     payload: ExtractExistingMCQsRequest,
 ) -> ExtractExistingMCQsResponse:
     material, text = _load_material_text(db, payload.material_id)
-    result = extract_existing_mcqs_with_stats(text)
-    if not result.questions:
+
+    # Try to get rich text for bold detection (PDFs only)
+    rich_lines = None
+    file_type = material.get("file_type", "")
+    storage_path = material.get("storage_path", "")
+    if file_type == "pdf" and storage_path:
+        try:
+            data = db.storage.from_("materials").download(storage_path)
+            if data:
+                from app.services.extraction.pdf_extractor import extract_pdf_rich
+                rich_result = extract_pdf_rich(data)
+                rich_lines = rich_result.rich_lines
+        except Exception:
+            pass  # Fall back to plain text parsing
+
+    questions = extract_existing_mcqs_with_rich_text(text, rich_lines=rich_lines)
+    with_answers = sum(1 for q in questions if q.correct_answer is not None)
+    without_answers = len(questions) - with_answers
+
+    if not questions:
         raise HTTPException(
             status_code=422,
             detail=(
                 "No MCQs detected. The file must contain numbered questions with A-G options."
             ),
         )
+
     title = payload.title or f"Extracted MCQs - {material['title']}"
     qset, inserted = _persist_set(
         db=db,
@@ -130,7 +149,7 @@ async def extract_existing(
         title=title,
         mode=QuestionSetMode.extract_existing,
         difficulty=None,
-        questions=result.questions,
+        questions=questions,
         source_type=QuestionSource.extracted,
         subject=material.get("subject"),
         chapter=material.get("chapter"),
@@ -139,9 +158,9 @@ async def extract_existing(
     return ExtractExistingMCQsResponse(
         **qset,
         questions=[_row_to_question(r) for r in inserted],
-        answers_detected=result.with_answers,
-        answers_missing=result.without_answers,
-        can_auto_grade=result.has_answer_key,
+        answers_detected=with_answers,
+        answers_missing=without_answers,
+        can_auto_grade=with_answers > 0,
     )
 
 

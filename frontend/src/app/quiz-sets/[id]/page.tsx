@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, BookOpen, FileQuestion } from "lucide-react";
+import { ArrowLeft, BookOpen, FileQuestion, RefreshCw } from "lucide-react";
 
 import { StartAttemptButton } from "@/app/quiz-sets/[id]/start-button";
+import { RedetectButton } from "@/app/quiz-sets/[id]/redetect-button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -87,6 +88,9 @@ export default async function QuizSetPage({
               </Link>
             ) : null}
           </AlertDescription>
+          <div className="mt-3">
+            <RedetectButton setId={qs.id} />
+          </div>
         </Alert>
       ) : null}
 

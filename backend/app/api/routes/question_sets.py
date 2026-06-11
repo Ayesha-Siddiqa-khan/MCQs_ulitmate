@@ -371,3 +371,110 @@ async def bulk_update_answers(
         .execute()
     ).data or []
     return QuestionSetDetail(**qset, questions=[_row_to_question(q) for q in qs])
+
+
+class RedetectAnswersResponse(BaseModel):
+    set_id: str
+    questions_updated: int
+    answers_detected: int
+    answers_unchanged: int
+
+
+@router.post("/{set_id}/redetect-answers", response_model=RedetectAnswersResponse)
+async def redetect_answers(
+    set_id: str,
+    user: CurrentUserDep,
+    db: Annotated[Client, Depends(get_user_client)],
+) -> RedetectAnswersResponse:
+    """Re-run bold detection on an existing question set and update NULL correct_answer fields.
+
+    This fixes questions extracted before bold detection was available.
+    Only updates questions where correct_answer is currently NULL.
+    """
+    qset = (
+        db.table("question_sets")
+        .select("id, material_id")
+        .eq("id", set_id)
+        .maybe_single()
+        .execute()
+    ).data
+    if qset is None:
+        raise HTTPException(status_code=404, detail="question set not found")
+
+    material_id = qset.get("material_id")
+    if not material_id:
+        raise HTTPException(status_code=400, detail="question set has no linked material")
+
+    material = (
+        db.table("learning_materials")
+        .select("id, file_type, storage_path, extracted_text")
+        .eq("id", material_id)
+        .maybe_single()
+        .execute()
+    ).data
+    if material is None:
+        raise HTTPException(status_code=404, detail="material not found")
+
+    text = (material.get("extracted_text") or "").strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="material has no extracted text")
+
+    # Get rich lines from PDF for bold detection
+    rich_lines = None
+    file_type = material.get("file_type", "")
+    storage_path = material.get("storage_path", "")
+    if file_type == "pdf" and storage_path:
+        try:
+            settings = get_settings()
+            data = db.storage.from_(settings.supabase_storage_bucket).download(storage_path)
+            if data:
+                from app.services.extraction.pdf_extractor import extract_pdf_rich
+                rich_result = extract_pdf_rich(data)
+                rich_lines = rich_result.rich_lines
+                log.info("Redetect: extracted %d pages of rich lines for material %s", len(rich_lines), material_id)
+        except Exception as exc:
+            log.warning("Redetect bold detection failed for material %s: %s", material_id, exc)
+
+    # Run extraction with bold detection
+    detected = extract_existing_mcqs_with_rich_text(text, rich_lines=rich_lines)
+    detected_map = {(q.question_text.strip().lower(), tuple(o.text.strip().lower() for o in q.options)): q.correct_answer for q in detected}
+
+    # Load existing questions
+    existing = (
+        db.table("questions")
+        .select("id, question_text, options_json, correct_answer, position")
+        .eq("question_set_id", set_id)
+        .order("position")
+        .execute()
+    ).data or []
+
+    questions_updated = 0
+    answers_unchanged = 0
+    for q in existing:
+        # Only update questions without answers
+        if q.get("correct_answer"):
+            answers_unchanged += 1
+            continue
+
+        # Find matching detected question by text + options
+        opts = q.get("options_json") or []
+        opts_text = tuple(
+            (o.get("text", "") or "").strip().lower()
+            for o in opts if isinstance(o, dict)
+        )
+        key = (q.get("question_text", "").strip().lower(), opts_text)
+        detected_answer = detected_map.get(key)
+
+        if detected_answer:
+            db.table("questions").update(
+                {"correct_answer": detected_answer}
+            ).eq("id", q["id"]).execute()
+            questions_updated += 1
+            log.info("Redetect: Q%d -> %s", q.get("position", 0), detected_answer)
+
+    return RedetectAnswersResponse(
+        set_id=set_id,
+        questions_updated=questions_updated,
+        answers_detected=len(detected),
+        answers_unchanged=answers_unchanged,
+    )

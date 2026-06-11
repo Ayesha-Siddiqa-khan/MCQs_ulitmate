@@ -31,6 +31,7 @@ from app.services.extraction import (
     extract_pdf,
     extract_text,
 )
+from app.services.extraction.pdf_extractor import extract_pdf_rich
 from app.services.study_data_cleanup import delete_material_tree
 
 router = APIRouter(prefix="/materials", tags=["materials"])
@@ -277,11 +278,11 @@ async def extract_preview(
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> ExtractPreviewResponse:
     """Return MCQ detection stats without persisting a question set."""
-    from app.services.extraction.mcq_parser import preview_mcqs
+    from app.services.extraction.mcq_parser import preview_mcqs_with_rich_text
 
     row = (
         db.table("learning_materials")
-        .select("id, file_type, extracted_text")
+        .select("id, file_type, storage_path, extracted_text")
         .eq("id", material_id)
         .maybe_single()
         .execute()
@@ -296,7 +297,23 @@ async def extract_preview(
             detail="material has no extracted text yet. Run extract-text first.",
         )
 
-    stats = preview_mcqs(text)
+    # For PDFs, try to get rich text with font metadata for bold detection
+    rich_lines = None
+    file_type = row.get("file_type", "")
+    storage_path = row.get("storage_path", "")
+    if file_type == "pdf" and storage_path:
+        try:
+            data = (
+                db.storage.from_("materials").download(storage_path)
+            )
+            if data:
+                from app.services.extraction.pdf_extractor import extract_pdf_rich
+                rich_result = extract_pdf_rich(data)
+                rich_lines = rich_result.rich_lines
+        except Exception:
+            pass  # Fall back to plain text parsing
+
+    stats = preview_mcqs_with_rich_text(text, rich_lines=rich_lines)
 
     confidence = "high"
     warnings: list[str] = []

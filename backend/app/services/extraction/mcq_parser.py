@@ -240,6 +240,93 @@ def extract_existing_mcqs(text: str) -> list[GeneratedQuestion]:
     return questions
 
 
+def extract_existing_mcqs_with_rich_text(
+    text: str,
+    rich_lines: list[RichTextLine] | None = None,
+) -> list[GeneratedQuestion]:
+    """Extract MCQs with optional bold detection from rich text metadata.
+
+    When rich_lines (from pymupdf) are provided, bold/dark option detection
+    is applied to identify correct answers from formatting.
+    """
+    if not text or not text.strip():
+        return []
+
+    question_text, key_text = _split_answer_key(text)
+    answer_key = _parse_answer_key(key_text)
+    parsed_questions = _parse_questions(question_text)
+
+    # First pass: look up answers from answer key
+    for parsed in parsed_questions:
+        key_item = answer_key.get((_chapter_key(parsed.chapter), parsed.number)) or answer_key.get((None, parsed.number))
+        if key_item:
+            parsed.correct_answer = key_item.answer
+            parsed.answer_source = "explicit_answer_key"
+            if key_item.explanation:
+                parsed.explanation = key_item.explanation
+
+    # Second pass: apply bold detection only to questions without answers
+    if rich_lines:
+        _apply_bold_detection(parsed_questions, rich_lines)
+
+    questions: list[GeneratedQuestion] = []
+    for parsed in parsed_questions:
+        # Determine final answer source
+        answer_source = parsed.answer_source
+        if parsed.correct_answer and answer_source == "missing":
+            if parsed.bold_option_key:
+                answer_source = "bold_format"
+            elif parsed.url_option_key:
+                answer_source = "url_marker"
+
+        questions.append(
+            GeneratedQuestion(
+                question_text=parsed.question_text,
+                options=parsed.options,
+                correct_answer=parsed.correct_answer,
+                explanation=parsed.explanation,
+                chapter=parsed.chapter,
+            )
+        )
+    return questions
+
+
+def _apply_bold_detection(
+    parsed_questions: list[_ParsedQuestion],
+    rich_lines: list[RichTextLine],
+) -> None:
+    """Apply bold detection to parsed questions using rich text metadata."""
+    if not rich_lines:
+        return
+
+    # Group rich_lines by page (approximate — all lines passed in are from same extraction)
+    # For now, use all rich_lines for all questions (best effort)
+    all_rich_lines = rich_lines
+
+    for parsed in parsed_questions:
+        if len(parsed.options) < 2:
+            continue
+
+        # Skip if already has answer from key or inline
+        if parsed.correct_answer:
+            continue
+
+        option_texts = {opt.key: opt.text for opt in parsed.options}
+        bold_result = _detect_bold_from_rich_lines(
+            question_text=parsed.question_text,
+            option_texts=option_texts,
+            rich_lines_for_page=all_rich_lines,
+        )
+
+        # Use bold detection result
+        if bold_result.detected_bold_key:
+            parsed.bold_option_key = bold_result.detected_bold_key
+            parsed.answer_source = "bold_format"
+        elif bold_result.detected_url_key:
+            parsed.url_option_key = bold_result.detected_url_key
+            parsed.answer_source = "url_marker"
+
+
 @dataclass
 class ExtractionResult:
     """Extraction output with questions and answer-coverage stats."""
@@ -311,6 +398,64 @@ def preview_mcqs(text: str) -> ExtractionPreview:
         without_answers=without_answers,
         with_explanations=with_explanations,
         duplicates=duplicates,
+    )
+
+
+def preview_mcqs_with_rich_text(
+    text: str,
+    rich_lines: list[RichTextLine] | None = None,
+) -> ExtractionPreview:
+    """Preview MCQs with optional bold detection for answer coverage."""
+    if not text or not text.strip():
+        return ExtractionPreview(0, 0, 0, 0, 0)
+
+    question_text, key_text = _split_answer_key(text)
+    answer_key = _parse_answer_key(key_text)
+    parsed_questions = _parse_questions(question_text)
+
+    # First pass: look up answers from answer key
+    for parsed in parsed_questions:
+        key_item = answer_key.get((_chapter_key(parsed.chapter), parsed.number)) or answer_key.get((None, parsed.number))
+        if key_item:
+            parsed.correct_answer = key_item.answer
+            parsed.answer_source = "explicit_answer_key"
+
+    # Second pass: apply bold detection only to questions without answers
+    if rich_lines:
+        _apply_bold_detection(parsed_questions, rich_lines)
+
+    total = len(parsed_questions)
+    with_answers = 0
+    without_answers = 0
+    with_explanations = 0
+    answer_sources: dict[str, int] = {}
+
+    for parsed in parsed_questions:
+        has_answer = parsed.correct_answer is not None or parsed.bold_option_key is not None or parsed.url_option_key is not None
+        if has_answer:
+            with_answers += 1
+        else:
+            without_answers += 1
+
+        # Track answer sources
+        if parsed.correct_answer:
+            src = parsed.answer_source
+            answer_sources[src] = answer_sources.get(src, 0) + 1
+
+    # Count duplicates by normalized question text
+    seen: dict[str, int] = {}
+    for parsed in parsed_questions:
+        normalized = parsed.question_text.strip().lower()
+        seen[normalized] = seen.get(normalized, 0) + 1
+    duplicates = sum(1 for count in seen.values() if count > 1)
+
+    return ExtractionPreview(
+        total_detected=total,
+        with_answers=with_answers,
+        without_answers=without_answers,
+        with_explanations=with_explanations,
+        duplicates=duplicates,
+        answer_sources=answer_sources,
     )
 
 

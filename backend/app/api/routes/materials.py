@@ -183,7 +183,7 @@ async def paste_text(
         .insert(
             {
                 "user_id": user.id,
-                "title": payload.title[:200],
+                "title": (payload.title.strip() or f"Untitled practice - {now.strftime('%b %d, %Y')}")[:200],
                 "file_type": "pasted",
                 "extracted_text": payload.text,
                 "subject": payload.subject,

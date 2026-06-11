@@ -9,7 +9,7 @@ from app.schemas.common import MaterialFileType, MaterialStatus
 
 
 class PasteTextRequest(BaseModel):
-    title: str = Field(min_length=1, max_length=200)
+    title: str = Field(default="", max_length=200)
     text: str = Field(min_length=1)
     subject: str | None = None
     chapter: str | None = None

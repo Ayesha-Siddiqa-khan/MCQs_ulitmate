@@ -39,7 +39,7 @@ const ACCEPTED_EXTENSIONS = ".pdf,.docx,.txt,.md,.csv,.json";
 
 function buildFileSchema(maxMb: number) {
   return z.object({
-    title: z.string().min(1, "Title is required").max(200),
+    title: z.string().max(200).optional().or(z.literal("")),
     file: z
       .custom<File>((v) => v instanceof File, "Pick a file")
       .refine((f) => f.size <= maxMb * 1024 * 1024, `Max ${maxMb} MB`),
@@ -47,7 +47,7 @@ function buildFileSchema(maxMb: number) {
 }
 
 const pasteSchema = z.object({
-  title: z.string().min(1, "Title is required").max(200),
+  title: z.string().max(200).optional().or(z.literal("")),
   content: z.string().min(20, "Paste at least 20 characters of text"),
   subject: z.string().max(100).optional().or(z.literal("")),
   chapter: z.string().max(100).optional().or(z.literal("")),
@@ -61,7 +61,7 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
   const [tab, setTab] = useState<"file" | "paste">("file");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const [storageMode, setStorageMode] = useState<"saved" | "temporary">("saved");
+  const [storageMode, setStorageMode] = useState<"saved" | "temporary">("temporary");
   const [limits, setLimits] = useState<UploadLimits | null>(null);
 
   useEffect(() => {
@@ -91,7 +91,8 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
     }
     setError(null);
     const fd = new FormData();
-    fd.set("title", values.title);
+    const titleValue = values.title?.trim() || values.file?.name?.replace(/\.[^.]+$/, "") || "";
+    fd.set("title", titleValue);
     fd.set("file", values.file);
     fd.set("storage_mode", storageMode);
     startTransition(async () => {
@@ -110,12 +111,13 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
       return;
     }
     setError(null);
-    const { title, content, subject, chapter, topic } = values;
+    const { content, subject, chapter, topic } = values;
+    const titleValue = values.title?.trim() || "";
     startTransition(async () => {
       try {
         const m = await api<Material>(`/materials/paste-text?storage_mode=${storageMode}`, {
           json: {
-            title,
+            title: titleValue,
             text: content,
             subject: subject || undefined,
             chapter: chapter || undefined,
@@ -135,12 +137,14 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
     <Tabs value={tab} onValueChange={(v) => setTab(v as "file" | "paste")}>
       <div className="mb-3 space-y-2">
         <p className="text-sm text-muted-foreground">
-          {usage.used} of {usage.limit} saved materials used. {usage.remaining} slot
-          {usage.remaining === 1 ? "" : "s"} available.
+          Upload a file or paste text to start quick practice. You can save up to 2 materials in your library.
         </p>
-        {atLimit && (
+        <p className="text-xs text-muted-foreground">
+          {usage.used} of {usage.limit} saved materials used.
+        </p>
+        {atLimit && storageMode === "saved" && (
           <p className="text-xs text-amber-600 dark:text-amber-400">
-            You can still practice without saving, or delete an old saved material.
+            You have reached the saved material limit. Switch to &quot;Practice without saving&quot; or delete an old saved material.
           </p>
         )}
       </div>
@@ -153,22 +157,22 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
           className="mt-2 flex gap-4"
         >
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="saved" id="mode-saved" />
-            <Label htmlFor="mode-saved" className="cursor-pointer font-normal flex items-center gap-1.5">
-              <Save className="h-3.5 w-3.5" /> Save to library
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
             <RadioGroupItem value="temporary" id="mode-temp" />
             <Label htmlFor="mode-temp" className="cursor-pointer font-normal flex items-center gap-1.5">
               <Zap className="h-3.5 w-3.5" /> Practice without saving
             </Label>
           </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="saved" id="mode-saved" />
+            <Label htmlFor="mode-saved" className="cursor-pointer font-normal flex items-center gap-1.5">
+              <Save className="h-3.5 w-3.5" /> Save to library
+            </Label>
+          </div>
         </RadioGroup>
         <p className="mt-1 text-xs text-muted-foreground">
-          {storageMode === "saved"
-            ? "Material is saved to your library and counts toward your limit."
-            : "Material is processed temporarily. You can save or discard after practice."}
+          {storageMode === "temporary"
+            ? "Use this for quick practice. Your file will not count toward your saved material limit unless you choose to save it later."
+            : "Save this material permanently. It counts toward your 2-material limit."}
         </p>
       </div>
 
@@ -196,9 +200,9 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Title (optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Biology chapter 5 notes" {...field} />
+                    <Input placeholder="Optional — we'll use the file name if left blank" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -242,9 +246,9 @@ export function MaterialNewForm({ usage }: { usage: MaterialUsage }) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Title (optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Calculus formulas" {...field} />
+                    <Input placeholder="Optional — we'll use a default title if left blank" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -218,6 +218,14 @@ def generate_quiz_report(
     Returns:
         PDF file content as bytes
     """
+    import logging
+    _log = logging.getLogger(__name__)
+
+    # Debug: log types of numeric fields
+    for key in ("total_questions", "correct", "incorrect", "unanswered", "percentage", "time_spent_seconds"):
+        val = result.get(key)
+        _log.debug("generate_quiz_report: result[%r] = %r (type=%s)", key, val, type(val).__name__ if val is not None else "NoneType")
+
     pdf = QuizReportPDF()
     pdf.alias_nb_pages()
     pdf.set_auto_page_break(auto=True, margin=20)

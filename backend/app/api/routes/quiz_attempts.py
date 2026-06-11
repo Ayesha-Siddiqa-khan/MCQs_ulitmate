@@ -488,6 +488,17 @@ async def _generate_report_pdf(
     result_dict = result.model_dump()
     result_dict["mode"] = attempt.get("mode", "practice")
 
+    # Ensure all numeric fields are actual Python ints/floats (not strings from DB)
+    for key in ("total_questions", "correct", "incorrect", "unanswered", "score", "time_spent_seconds"):
+        val = result_dict.get(key)
+        if val is not None and not isinstance(val, (int, float)):
+            log.warning("result_dict[%r] is %r (type=%s), coercing to int", key, val, type(val).__name__)
+            result_dict[key] = int(val)
+    val = result_dict.get("percentage")
+    if val is not None and not isinstance(val, (int, float)):
+        log.warning("result_dict[percentage] is %r (type=%s), coercing to float", val, type(val).__name__)
+        result_dict["percentage"] = float(val)
+
     pdf_bytes = generate_quiz_report(
         result=result_dict,
         question_set=qset,

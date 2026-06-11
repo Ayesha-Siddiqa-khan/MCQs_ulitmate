@@ -10,6 +10,12 @@ patterns like:
     D) option four
     Answer: B
 
+It also supports inline options on one line:
+
+    1. Question text here?
+    A) option one B) option two C) option three D) option four
+    Ans: B) option two
+
 Real-world MCQ books vary wildly. This parser handles the most common shapes
 and returns a list of GeneratedQuestion (with `source_type == 'extracted'`).
 Anything it cannot parse confidently is dropped rather than guessed.
@@ -25,7 +31,11 @@ from app.schemas.common import GeneratedQuestion, Option
 _Q_START = re.compile(r"^\s*(?:Q\.?\s*)?(\d{1,3})[.)]\s*(.*)$", re.MULTILINE)
 _OPTION_LINE = re.compile(r"^\s*\(?([A-Da-d])[).:\-]\s*(.+)$")
 _ANSWER_LINE = re.compile(
-    r"^\s*(?:Answer|Ans|Correct(?:\s+Answer)?)\s*[:\-]?\s*\(?([A-Da-d])\)?\s*\.?\s*$",
+    r"^\s*(?:Answer|Ans|Correct(?:\s+Answer)?)\s*[:\-]?\s*\(?([A-Da-d])\)?\s*\.?\s*(?:.*)$",
+    re.IGNORECASE,
+)
+_INLINE_ANSWER_LINE = re.compile(
+    r"^\s*(?:Answer|Ans|Correct(?:\s+Answer)?)\s*[:\-]?\s*\(?([A-Da-d])\)?[).:\-]?\s*(.*?)\s*$",
     re.IGNORECASE,
 )
 _ANSWER_KEY_HEADING = re.compile(
@@ -37,7 +47,76 @@ _ANSWER_KEY_VERTICAL_ANSWER = re.compile(r"^[A-Da-d]$")
 _ANSWER_KEY_HEADER_CELL = re.compile(r"^(?:Q|Ans)$", re.IGNORECASE)
 _EXPLANATION_PREFIX = re.compile(r"^\s*Explanation\s*[:\-]?\s*(.*)$", re.IGNORECASE)
 _CHAPTER_HEADING = re.compile(r"^\s*(Chapter\s+\d+(?:\s*-\s*.+)?)\s*$", re.IGNORECASE)
+_SECTION_HEADING = re.compile(
+    r"^\s*(?:Section\s+[A-Z](?:\s*:\s*MCQs?)?(?:\s*\(([^)]+)\))?)\s*$",
+    re.IGNORECASE,
+)
 _PAGE_NOISE = re.compile(r"^\s*(?:Page\s+\d+|CS201\s+MCQs\s+Practice.*)\s*$", re.IGNORECASE)
+
+# Regex to split inline options on a single line.
+# Matches patterns like: A) Solid, B) Liquid, (C) Gas, D - Plasma, E: Plasma
+_INLINE_OPTION_PATTERN = re.compile(
+    r"\(?([A-Da-d])\s*[).:\-]\s*"
+)
+
+
+def _split_inline_options(line: str) -> list[Option]:
+    """Split a line containing multiple inline options into a list of Option objects.
+
+    Supports formats like:
+        A) Solid B) Liquid C) Gas D) Plasma
+        (A) Solid (B) Liquid (C) Gas (D) Plasma
+        A - Solid B - Liquid C - Gas D - Plasma
+        A: Solid B: Liquid C: Gas D: Plasma
+        A. Solid B. Liquid C. Gas D. Plasma
+    """
+    parts = _INLINE_OPTION_PATTERN.split(line)
+    # split returns: ['text_before', 'A', 'text_after_A', 'B', ...]
+    if len(parts) < 3:
+        return []
+
+    options: list[Option] = []
+    # parts[0] is text before the first option marker (usually empty or whitespace)
+    # Then alternating: letter, text for that option
+    for i in range(1, len(parts), 2):
+        letter = parts[i].upper()
+        text = parts[i + 1].strip() if i + 1 < len(parts) else ""
+        # Clean trailing option markers that may have been captured
+        text = re.sub(r"\s+\(?[A-Da-d]\s*[).:\-].*$", "", text).strip()
+        if letter in {"A", "B", "C", "D"} and text:
+            options.append(Option(key=letter, text=text))
+    return options
+
+
+def _extract_inline_answer(line: str) -> tuple[str, str]:
+    """Extract the answer letter and optional answer text from an inline answer line.
+
+    Returns (letter, text). If no text after the letter, text is empty.
+    Examples:
+        'Ans: A) Solid' -> ('A', 'Solid')
+        'Ans: A' -> ('A', '')
+        'Answer: B' -> ('B', '')
+        'Correct Answer: C' -> ('C', '')
+    """
+    m = _INLINE_ANSWER_LINE.match(line)
+    if not m:
+        return "", ""
+    letter = m.group(1).upper()
+    text = m.group(2).strip()
+    # Clean trailing punctuation or option markers from text
+    text = re.sub(r"\s*[).:\-]\s*$", "", text).strip()
+    return letter, text
+
+
+def _extract_section_title(line: str) -> str | None:
+    """Extract the topic/title from a section heading like 'Section A: MCQs (Phase Changes & Gas Laws)'.
+
+    Returns the parenthetical content if present, otherwise None.
+    """
+    m = _SECTION_HEADING.match(line)
+    if not m:
+        return None
+    return m.group(1).strip() if m.group(1) else None
 
 
 @dataclass
@@ -170,6 +249,7 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
     current_q: list[str] | None = None
     current_number: int | None = None
     current_chapter: str | None = None
+    current_section_title: str | None = None
     options: list[Option] = []
     answer: str | None = None
 
@@ -181,7 +261,7 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
                 questions.append(
                     _ParsedQuestion(
                         number=current_number,
-                        chapter=current_chapter,
+                        chapter=current_section_title or current_chapter,
                         question_text=qtext,
                         options=options,
                         correct_answer=answer.upper() if answer else None,
@@ -197,10 +277,18 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
         if not line.strip():
             continue
 
+        # Check for section headings like "Section A: MCQs (Phase Changes & Gas Laws)"
+        section_title = _extract_section_title(line)
+        if section_title:
+            flush()
+            current_section_title = section_title
+            continue
+
         chapter = _normalise_chapter(line)
         if chapter:
             flush()
             current_chapter = chapter
+            current_section_title = None
             continue
 
         m_q = _Q_START.match(line)
@@ -208,6 +296,13 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
             flush()
             current_number = int(m_q.group(1))
             current_q = [m_q.group(2).strip()]
+            continue
+
+        # Check for inline answer lines like "Ans: A) Solid" or "Answer: B"
+        # This must be checked BEFORE option parsing since Ans lines contain option-like patterns
+        letter, answer_text = _extract_inline_answer(line)
+        if letter:
+            answer = letter
             continue
 
         m_a = _ANSWER_LINE.match(line)
@@ -219,6 +314,13 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
         if m_o and current_q is not None:
             options.append(Option(key=m_o.group(1).upper(), text=m_o.group(2).strip()))
             continue
+
+        # Check for inline options on a single line (e.g. "A) Solid B) Liquid C) Gas D) Plasma")
+        if current_q is not None and not options:
+            inline_opts = _split_inline_options(line)
+            if len(inline_opts) >= 2:
+                options.extend(inline_opts)
+                continue
 
         if _PAGE_NOISE.match(line):
             continue

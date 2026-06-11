@@ -303,6 +303,12 @@ async def extract_preview(
     if stats.total_detected == 0:
         confidence = "none"
         warnings.append("No MCQs detected. The file may have an unusual format.")
+    elif stats.without_answers > 0 and stats.with_answers == 0:
+        confidence = "low"
+        warnings.append(
+            "MCQs detected, but no answer key or inline answers were found. "
+            "Questions were detected but answers are missing."
+        )
     elif stats.without_answers > 0:
         confidence = "medium"
         warnings.append(
@@ -312,11 +318,6 @@ async def extract_preview(
     if stats.duplicates > 0:
         confidence = "low" if confidence != "none" else confidence
         warnings.append(f"{stats.duplicates} duplicate question(s) detected.")
-    if stats.total_detected > 0 and stats.with_answers == 0:
-        confidence = "low"
-        warnings.append(
-            "No answer key found. Questions were detected but answers are missing."
-        )
 
     return ExtractPreviewResponse(
         material_id=material_id,

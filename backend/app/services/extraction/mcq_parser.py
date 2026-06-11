@@ -29,24 +29,24 @@ from app.schemas.common import GeneratedQuestion, Option
 
 # Allow both numeric ("1.", "1)") and roman/letter starts.
 _Q_START = re.compile(r"^\s*(?:Q\.?\s*)?(\d{1,3})[.)]\s*(.*)$", re.MULTILINE)
-_OPTION_LINE = re.compile(r"^\s*\(?([A-Da-d])[).:\-]\s*(.+)$")
+_OPTION_LINE = re.compile(r"^\s*\(?([A-Ga-g])[).:\-]\s*(.+)$")
 _ANSWER_LINE = re.compile(
-    r"^\s*(?:Answer|Ans|Correct(?:\s+Answer)?)\s*[:\-]?\s*\(?([A-Da-d])\)?\s*\.?\s*(?:.*)$",
+    r"(?:^|\s)(?:Answer|Ans|Key|Correct)\s*[:=\-]\s*([A-Ga-g])\b",
     re.IGNORECASE,
 )
 _INLINE_ANSWER_LINE = re.compile(
-    r"^\s*(?:Answer|Ans|Correct(?:\s+Answer)?)\s*[:\-]?\s*\(?([A-Da-d])\)?[).:\-]?\s*(.*?)\s*$",
+    r"^\s*(?:Answer|Ans|Correct(?:\s+Answer)?)\s*[:\-]?\s*\(?([A-Ga-g])\)?[).:\-]?\s*(.*?)\s*$",
     re.IGNORECASE,
 )
 _ANSWER_KEY_HEADING = re.compile(
-    r"(?im)^\s*(?:complete\s+)?(?:answer(?:\s+(?:key|sheet|section|list))\s*$|correct\s+answers?\s*$|solution\s+key\s*$|answers?\s*$)"
+    r"(?im)^\s*(?:complete\s+)?(?:answer(?:\s+(?:key|sheet|section|list))\s*[:]*\s*$|correct\s+answers?\s*[:]*\s*$|solution\s+key\s*[:]*\s*$|answers?\s*[:]*\s*$)"
 )
-_ANSWER_KEY_ENTRY = re.compile(r"^\s*(\d{1,3})[.)]\s*\(?([A-Da-d])\)?[).:\-]?\s*(.*)$")
+_ANSWER_KEY_ENTRY = re.compile(r"^\s*(\d{1,3})[.)]\s*\(?([A-Ga-g])\)?[).:\-]?\s*(.*)$")
 _ANSWER_KEY_VERTICAL_NUMBER = re.compile(r"^\d{1,3}$")
-_ANSWER_KEY_VERTICAL_ANSWER = re.compile(r"^[A-Da-d]$")
+_ANSWER_KEY_VERTICAL_ANSWER = re.compile(r"^[A-Ga-g]$")
 _ANSWER_KEY_HEADER_CELL = re.compile(r"^(?:Q|Ans)$", re.IGNORECASE)
 _EXPLANATION_PREFIX = re.compile(r"^\s*Explanation\s*[:\-]?\s*(.*)$", re.IGNORECASE)
-_CHAPTER_HEADING = re.compile(r"^\s*(Chapter\s+\d+(?:\s*-\s*.+)?)\s*$", re.IGNORECASE)
+_CHAPTER_HEADING = re.compile(r"^\s*(Chapter\s*:?\s*\d+(?:\s*-\s*.+)?)\s*$", re.IGNORECASE)
 _SECTION_HEADING = re.compile(
     r"^\s*(?:Section\s+[A-Z](?:\s*:\s*MCQs?)?(?:\s*\(([^)]+)\))?)\s*$",
     re.IGNORECASE,
@@ -56,7 +56,7 @@ _PAGE_NOISE = re.compile(r"^\s*(?:Page\s+\d+|CS201\s+MCQs\s+Practice.*)\s*$", re
 # Regex to split inline options on a single line.
 # Matches patterns like: A) Solid, B) Liquid, (C) Gas, D - Plasma, E: Plasma
 _INLINE_OPTION_PATTERN = re.compile(
-    r"\(?([A-Da-d])\s*[).:\-]\s*"
+    r"\(?([A-Ga-g])\s*[).:\-]\s*"
 )
 
 
@@ -82,8 +82,8 @@ def _split_inline_options(line: str) -> list[Option]:
         letter = parts[i].upper()
         text = parts[i + 1].strip() if i + 1 < len(parts) else ""
         # Clean trailing option markers that may have been captured
-        text = re.sub(r"\s+\(?[A-Da-d]\s*[).:\-].*$", "", text).strip()
-        if letter in {"A", "B", "C", "D"} and text:
+        text = re.sub(r"\s+\(?[A-Ga-g]\s*[).:\-].*$", "", text).strip()
+        if letter in {"A", "B", "C", "D", "E", "F", "G"} and text:
             options.append(Option(key=letter, text=text))
     return options
 
@@ -312,11 +312,15 @@ def _parse_questions(text: str) -> list[_ParsedQuestion]:
 
         # Check for inline options on a single line BEFORE single-option matching,
         # because _OPTION_LINE matches "A) Solid B) Liquid..." and swallows everything.
+        # Only try inline splitting if the line actually contains multiple option markers.
         if current_q is not None and not options:
-            inline_opts = _split_inline_options(line)
-            if len(inline_opts) >= 2:
-                options.extend(inline_opts)
-                continue
+            # Quick check: does the line have at least two option markers like "A)" and "B)"?
+            option_marker_count = len(re.findall(r"(?:^|\s)\(?[A-Ga-g]\s*[).:\-]", line))
+            if option_marker_count >= 2:
+                inline_opts = _split_inline_options(line)
+                if len(inline_opts) >= 2:
+                    options.extend(inline_opts)
+                    continue
 
         m_o = _OPTION_LINE.match(line)
         if m_o and current_q is not None:
@@ -366,7 +370,7 @@ def _parse_answer_key(text: str) -> dict[tuple[str | None, int], _AnswerKeyItem]
     pending_vertical_number: int | None = None
 
     def store(chapter: str | None, number: int, answer: str, explanation: str | None = None) -> None:
-        if answer.upper() not in {"A", "B", "C", "D"}:
+        if answer.upper() not in {"A", "B", "C", "D", "E", "F", "G"}:
             return
         answers[(_chapter_key(chapter), number)] = _AnswerKeyItem(
             answer=answer.upper(),

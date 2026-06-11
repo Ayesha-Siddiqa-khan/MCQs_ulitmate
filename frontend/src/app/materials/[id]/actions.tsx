@@ -47,7 +47,7 @@ import {
 } from "@/lib/types";
 
 const difficultyOptions: Difficulty[] = ["easy", "medium", "hard"];
-const ANSWER_KEYS = ["A", "B", "C", "D"] as const;
+const ANSWER_KEYS = ["A", "B", "C", "D", "E", "F", "G"] as const;
 
 function confidenceColor(confidence: string): string {
   if (confidence === "high") return "bg-green-500 text-white hover:bg-green-500/90";
@@ -374,7 +374,7 @@ export function MaterialActions({ material }: { material: Material }) {
           <DialogHeader>
             <DialogTitle>Add answers manually</DialogTitle>
             <DialogDescription>
-              Select the correct answer (A-D) for each question. Leave blank to skip.
+              Select the correct answer (A-G) for each question. Leave blank to skip.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">

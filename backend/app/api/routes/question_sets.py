@@ -119,7 +119,7 @@ async def extract_existing(
         raise HTTPException(
             status_code=422,
             detail=(
-                "No MCQs detected. The file must contain numbered questions with A-D options."
+                "No MCQs detected. The file must contain numbered questions with A-G options."
             ),
         )
     title = payload.title or f"Extracted MCQs - {material['title']}"
@@ -297,8 +297,8 @@ async def update_question_answer(
 
     update: dict = {}
     if payload.correct_answer is not None:
-        if payload.correct_answer.upper() not in {"A", "B", "C", "D"}:
-            raise HTTPException(status_code=422, detail="correct_answer must be A, B, C, or D")
+        if payload.correct_answer.upper() not in {"A", "B", "C", "D", "E", "F", "G"}:
+            raise HTTPException(status_code=422, detail="correct_answer must be A, B, C, D, E, F, or G")
         update["correct_answer"] = payload.correct_answer.upper()
     if payload.explanation is not None:
         update["explanation"] = payload.explanation
@@ -329,10 +329,10 @@ async def bulk_update_answers(
         raise HTTPException(status_code=404, detail="question set not found")
 
     for qid, answer in payload.answers.items():
-        if answer is not None and answer.upper() not in {"A", "B", "C", "D"}:
+        if answer is not None and answer.upper() not in {"A", "B", "C", "D", "E", "F", "G"}:
             raise HTTPException(
                 status_code=422,
-                detail=f"invalid answer '{answer}' for question {qid}. Must be A, B, C, or D.",
+                detail=f"invalid answer '{answer}' for question {qid}. Must be A, B, C, D, E, F, or G.",
             )
         db.table("questions").update(
             {"correct_answer": answer.upper() if answer else None}

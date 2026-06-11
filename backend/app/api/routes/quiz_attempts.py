@@ -381,6 +381,20 @@ async def download_report(
     db: Annotated[Client, Depends(get_user_client)],
 ) -> Response:
     """Generate and return a PDF report for a completed quiz attempt."""
+    try:
+        return await _generate_report_pdf(attempt_id, user, db)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        log.exception("report.pdf failed for attempt %s user %s", attempt_id, user.id)
+        raise HTTPException(status_code=500, detail=f"report generation failed: {exc}") from exc
+
+
+async def _generate_report_pdf(
+    attempt_id: str,
+    user: CurrentUserDep,
+    db: Client,
+) -> Response:
     attempt = (
         db.table("quiz_attempts")
         .select("*")
@@ -418,22 +432,29 @@ async def download_report(
 
     material = None
     if qset and qset.get("material_id"):
-        material = (
-            db.table("learning_materials")
-            .select("id, title")
-            .eq("id", qset["material_id"])
-            .maybe_single()
-            .execute()
-        ).data
+        try:
+            material = (
+                db.table("learning_materials")
+                .select("id, title")
+                .eq("id", qset["material_id"])
+                .maybe_single()
+                .execute()
+            ).data
+        except Exception:
+            log.warning("failed to fetch material %s", qset["material_id"])
 
     mistakes_data: list[dict] | None = None
-    mistake_rows = (
-        db.table("question_attempts")
-        .select("id, question_id, selected_answer, correct_answer, is_correct")
-        .eq("quiz_attempt_id", attempt_id)
-        .eq("is_correct", False)
-        .execute()
-    ).data or []
+    try:
+        mistake_rows = (
+            db.table("question_attempts")
+            .select("id, question_id, selected_answer, correct_answer, is_correct")
+            .eq("quiz_attempt_id", attempt_id)
+            .eq("is_correct", False)
+            .execute()
+        ).data or []
+    except Exception:
+        log.warning("failed to fetch mistake rows for attempt %s", attempt_id)
+        mistake_rows = []
 
     if mistake_rows:
         mistakes = []
@@ -451,7 +472,6 @@ async def download_report(
                     .execute()
                 ).data
             except Exception:
-                log.warning("failed to fetch mistake_bank for question %s", mr["question_id"])
                 mb = None
             mistakes.append({
                 "selected_answer": mr.get("selected_answer"),
@@ -468,17 +488,13 @@ async def download_report(
     result_dict = result.model_dump()
     result_dict["mode"] = attempt.get("mode", "practice")
 
-    try:
-        pdf_bytes = generate_quiz_report(
-            result=result_dict,
-            question_set=qset,
-            material=material,
-            user_email=user.email,
-            mistakes=mistakes_data,
-        )
-    except Exception as exc:
-        log.exception("PDF generation failed for attempt %s", attempt_id)
-        raise HTTPException(status_code=500, detail=f"PDF generation failed: {exc}") from exc
+    pdf_bytes = generate_quiz_report(
+        result=result_dict,
+        question_set=qset,
+        material=material,
+        user_email=user.email,
+        mistakes=mistakes_data,
+    )
 
     safe_title = (qset.get("title") or "quiz-result").replace(" ", "-")[:50]
     filename = f"MCQ-Mentor-{safe_title}.pdf"

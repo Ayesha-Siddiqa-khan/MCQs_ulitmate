@@ -167,7 +167,40 @@ def _detect_bold_from_rich_lines(
     if not rich_lines_for_page or not option_texts:
         return result
 
-    # For each option, check if any of its text appears bold in the rich lines
+    # Pre-filter: only consider lines that look like option lines
+    _OPTION_LINE_RE = re.compile(
+        r"^\s*[►▸▹◆●]\s*|[A-Ga-g]\s*[).:\-]\s*|\([A-Ga-g]\)\s*",
+    )
+
+    # Find the question text in rich lines to scope matching
+    q_lower = question_text.lower().strip()[:40]  # first 40 chars for matching
+    q_start_idx = 0
+    q_end_idx = len(rich_lines_for_page)
+
+    for i, rl in enumerate(rich_lines_for_page):
+        if q_lower and q_lower in rl.text.lower():
+            q_start_idx = i
+            break
+
+    # Find next question header to limit scope
+    _Q_HEADER_RE = re.compile(r"question\s+no\s*:\s*\d+", re.IGNORECASE)
+    for i in range(q_start_idx + 1, len(rich_lines_for_page)):
+        if _Q_HEADER_RE.match(rich_lines_for_page[i].text.strip()):
+            q_end_idx = i
+            break
+
+    # Only consider lines within the question's scope
+    scoped_lines = rich_lines_for_page[q_start_idx:q_end_idx]
+
+    option_rich_lines = []
+    for rl in scoped_lines:
+        text = rl.text.strip()
+        if not text:
+            continue
+        if _OPTION_LINE_RE.match(text) or len(text) < 60:
+            option_rich_lines.append(rl)
+
+    # For each option, check if any of its text appears bold in the scoped option lines
     for key, opt_text in option_texts.items():
         cleaned = _clean_url_markers(opt_text).lower().strip()
         if not cleaned:
@@ -176,7 +209,7 @@ def _detect_bold_from_rich_lines(
         bold_found = False
         url_found = False
 
-        for rl in rich_lines_for_page:
+        for rl in option_rich_lines:
             line_text_lower = rl.text.lower()
 
             # Check if this line contains the option text
